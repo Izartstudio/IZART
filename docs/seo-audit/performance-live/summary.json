@@ -1,0 +1,124 @@
+{
+  "measuredAt": "2026-10-27T08:56:38.105Z",
+  "origin": "https://www.izart.in",
+  "runs": 3,
+  "method": "curl fresh connections; Lighthouse simulated mobile lab, no field INP",
+  "results": [
+    {
+      "url": "https://www.izart.in/",
+      "ttfbP75Ms": 199.752,
+      "samples": [
+        {
+          "ttfbMs": 199.752,
+          "totalMs": 233.00799999999998,
+          "dnsMs": 48.275,
+          "tlsMs": 96.134,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 81.971,
+          "totalMs": 107.7,
+          "dnsMs": 3.797,
+          "tlsMs": 67.553,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 105.239,
+          "totalMs": 154.70700000000002,
+          "dnsMs": 2.661,
+          "tlsMs": 95.16199999999999,
+          "redirects": 0
+        }
+      ],
+      "lab": [],
+      "passed": true
+    },
+    {
+      "url": "https://www.izart.in/blogs",
+      "ttfbP75Ms": 131.661,
+      "samples": [
+        {
+          "ttfbMs": 131.661,
+          "totalMs": 195.894,
+          "dnsMs": 7.499,
+          "tlsMs": 116.35900000000001,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 40.419999999999995,
+          "totalMs": 71.122,
+          "dnsMs": 2.856,
+          "tlsMs": 31.202,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 34.602000000000004,
+          "totalMs": 65.786,
+          "dnsMs": 3.968,
+          "tlsMs": 22.945,
+          "redirects": 0
+        }
+      ],
+      "lab": [],
+      "passed": true
+    },
+    {
+      "url": "https://www.izart.in/brand-identity",
+      "ttfbP75Ms": 45.913000000000004,
+      "samples": [
+        {
+          "ttfbMs": 45.913000000000004,
+          "totalMs": 77.027,
+          "dnsMs": 3.5460000000000003,
+          "tlsMs": 26.363999999999997,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 36.545,
+          "totalMs": 139.06199999999998,
+          "dnsMs": 3.053,
+          "tlsMs": 24.778000000000002,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 38.656000000000006,
+          "totalMs": 75.931,
+          "dnsMs": 3.888,
+          "tlsMs": 27.339,
+          "redirects": 0
+        }
+      ],
+      "lab": [],
+      "passed": true
+    },
+    {
+      "url": "https://www.izart.in/blogs/best-branding-for-startups-differentiation-vs-distinction",
+      "ttfbP75Ms": 96.76,
+      "samples": [
+        {
+          "ttfbMs": 40.387,
+          "totalMs": 66.976,
+          "dnsMs": 4.957999999999999,
+          "tlsMs": 28.715,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 57.620999999999995,
+          "totalMs": 75.81400000000001,
+          "dnsMs": 13.294,
+          "tlsMs": 45.267,
+          "redirects": 0
+        },
+        {
+          "ttfbMs": 96.76,
+          "totalMs": 119.707,
+          "dnsMs": 11.036000000000001,
+          "tlsMs": 87.407,
+          "redirects": 0
+        }
+      ],
+      "lab": [],
+      "passed": true
+    }
+  ]
+}

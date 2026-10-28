@@ -1,0 +1,398 @@
+{
+  "baseUrl": "http://127.0.0.1:3101",
+  "expectedIndexable": true,
+  "pagesChecked": 65,
+  "results": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Izart Studio | A Multi Disciplinary Design Agency | Branding, Web Design, Content IPs",
+      "failures": []
+    },
+    {
+      "path": "/authors",
+      "status": 200,
+      "title": "Authors",
+      "failures": []
+    },
+    {
+      "path": "/authors/akash-kalra",
+      "status": 200,
+      "title": "Akash Kalra | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/authors/nipun-kondal",
+      "status": 200,
+      "title": "Nipun Kondal | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs",
+      "status": 200,
+      "title": "Notes from the Studio | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs/a-definitive-guide-to-understand-brand-strategys-fundamentals",
+      "status": 200,
+      "title": "What Is Brand Strategy? Not a Logo.",
+      "failures": []
+    },
+    {
+      "path": "/blogs/after-the-raise-series-a-and-the-post-funding-brand-trap",
+      "status": 200,
+      "title": "After the Raise: The Post-Funding Brand Trap",
+      "failures": []
+    },
+    {
+      "path": "/blogs/ai-wont-kill-brand-design-it-will-expose-bad-thinking",
+      "status": 200,
+      "title": "AI Won't Kill Brand Design. It Will Expose Bad Thinking.",
+      "failures": []
+    },
+    {
+      "path": "/blogs/art-not-marketing-is-the-driver-of-brand-building-in-2025",
+      "status": 200,
+      "title": "Why the Best Brands Borrow From Art, Not Analytics",
+      "failures": []
+    },
+    {
+      "path": "/blogs/best-branding-for-startups-differentiation-vs-distinction",
+      "status": 200,
+      "title": "Best Branding for Startups: Differentiation vs. Distinction",
+      "failures": []
+    },
+    {
+      "path": "/blogs/boutique-branding-agency-when-taste-becomes-culture",
+      "status": 200,
+      "title": "Boutique Branding's True Test: When Taste Becomes Culture",
+      "failures": []
+    },
+    {
+      "path": "/blogs/brand-architecture-strategy-split-stack-or-endorse",
+      "status": 200,
+      "title": "Brand Architecture Strategy: Split, Stack, or Endorse?",
+      "failures": []
+    },
+    {
+      "path": "/blogs/brand-strategy-for-startups-category-design-vs-entry",
+      "status": 200,
+      "title": "Category Design vs Entry: Brand Strategy for Startups",
+      "failures": []
+    },
+    {
+      "path": "/blogs/brand-strategy-for-startups-why-belief-builds-demand",
+      "status": 200,
+      "title": "Brand Strategy for Startups: Why Brand Strategy for Startups: Why Belief Builds DemandBelief Builds Demand",
+      "failures": []
+    },
+    {
+      "path": "/blogs/branding-for-a-series-a-startup-escaping-the-founder-paradox",
+      "status": 200,
+      "title": "Branding for a Series A Startup - Escaping the Founder Paradox",
+      "failures": []
+    },
+    {
+      "path": "/blogs/branding-is-culture-it-always-was",
+      "status": 200,
+      "title": "Branding as a Cultural Practice: From Clay to Code",
+      "failures": []
+    },
+    {
+      "path": "/blogs/brands-that-create-culture-vs-brands-that-reflect-it",
+      "status": 200,
+      "title": "Brands That Create Culture vs. Brands That Reflect It",
+      "failures": []
+    },
+    {
+      "path": "/blogs/colour-is-never-a-preference-brand-identity-vs-strategy",
+      "status": 200,
+      "title": "Colour Is Never a Preference: Brand Identity vs Strategy",
+      "failures": []
+    },
+    {
+      "path": "/blogs/colour-without-strategy-is-just-decoration",
+      "status": 200,
+      "title": "Visual Identity Design: Colour Without Strategy Fails",
+      "failures": []
+    },
+    {
+      "path": "/blogs/consumer-brand-identity-and-the-unboxing-economy",
+      "status": 200,
+      "title": "Consumer Brand Identity and the Unboxing Economy",
+      "failures": []
+    },
+    {
+      "path": "/blogs/decoding-the-process-of-becoming-an-expert-10-000-hours-or-something-more",
+      "status": 200,
+      "title": "How to Become an Expert: Lessons From 400 Weavers",
+      "failures": []
+    },
+    {
+      "path": "/blogs/demand-follows-belief-brand-strategy-for-startups",
+      "status": 200,
+      "title": "Demand Follows Belief: Brand Strategy for Startups",
+      "failures": []
+    },
+    {
+      "path": "/blogs/heres-the-branding-playbook-we-used-to-design-40-successful-brands",
+      "status": 200,
+      "title": "Our Brand Identity Process: A Studio's Full Playbook",
+      "failures": []
+    },
+    {
+      "path": "/blogs/how-brands-encode-trust-before-they-say-anything",
+      "status": 200,
+      "title": "Brand Identity vs Strategy: Trust Before Words",
+      "failures": []
+    },
+    {
+      "path": "/blogs/packaging-is-a-brand-surface-not-a-container",
+      "status": 200,
+      "title": "Packaging Is a Brand Surface, Not a Container",
+      "failures": []
+    },
+    {
+      "path": "/blogs/provenance-as-brand-capital-what-heritage-brands-know-that-startups-dont",
+      "status": 200,
+      "title": "Provenance as Brand Capital | Boutique Branding Agency",
+      "failures": []
+    },
+    {
+      "path": "/blogs/quiet-luxury-is-a-starting-point-not-a-destination",
+      "status": 200,
+      "title": "Quiet Luxury Is a Starting Point | Premium Branding Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs/rebranding-is-a-strategy-problem-not-a-design-problem",
+      "status": 200,
+      "title": "Rebranding for Startups: Strategy Comes Before Design",
+      "failures": []
+    },
+    {
+      "path": "/blogs/scalable-packaging-architecture-for-indian-consumer-brands",
+      "status": 200,
+      "title": "Scalable Packaging Architecture for Indian Consumer Brands",
+      "failures": []
+    },
+    {
+      "path": "/blogs/scarcity-was-never-the-product-brand-strategy-for-ai-companies",
+      "status": 200,
+      "title": "Scarcity Was Never the Product: Brand Strategy for AI",
+      "failures": []
+    },
+    {
+      "path": "/blogs/semiotics-for-founders-brand-identity-vs-brand-strategy",
+      "status": 200,
+      "title": "Semiotics for Founders: Brand Identity vs Strategy",
+      "failures": []
+    },
+    {
+      "path": "/blogs/sustainable-packaging-is-brand-identity-not-just-ethics",
+      "status": 200,
+      "title": "Sustainable Packaging Is Brand Identity, Not Just Ethics",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-architecture-of-a-brand-system",
+      "status": 200,
+      "title": "What Is a Brand System, Really? | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-boutique-branding-agency-as-cultural-infrastructure",
+      "status": 200,
+      "title": "The Boutique Branding Agency as Cultural Infrastructure",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-craft-premium-why-slowness-is-the-new-luxury-signal",
+      "status": 200,
+      "title": "The Craft Premium: What Every Premium Branding Studio Knows",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-future-of-branding-is-in-subcultures-not-spreadsheets",
+      "status": 200,
+      "title": "Why Culture Beats Data in Branding | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-japanese-minimalism-that-visual-identity-design-misses",
+      "status": 200,
+      "title": "Japanese Minimalism and Visual Identity Design | Izart",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-rothko-principle-on-emotional-density-in-visual-identity",
+      "status": 200,
+      "title": "The Rothko Principle | Visual Identity Design | Izart",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-shelf-test-what-packaging-must-do-in-200-milliseconds",
+      "status": 200,
+      "title": "Brand Identity for Consumer Brands: The 200ms Shelf Test",
+      "failures": []
+    },
+    {
+      "path": "/blogs/the-waitlist-as-brand-strategy-what-drop-culture-teaches-premium-startups",
+      "status": 200,
+      "title": "The Waitlist Is the Brand | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs/transition-from-a-writer-to-an-editor-with-this-3-step-framework",
+      "status": 200,
+      "title": "The MMP Framework: How to Edit Content Like a Pro",
+      "failures": []
+    },
+    {
+      "path": "/blogs/verbal-identity-design-in-the-age-of-llms",
+      "status": 200,
+      "title": "Verbal Identity Design in the Age of LLMs",
+      "failures": []
+    },
+    {
+      "path": "/blogs/visual-identity-audit-for-startups-a-rebranding-framework",
+      "status": 200,
+      "title": "Visual Identity Audit for Startups | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs/visual-identity-design-white-space-as-a-business-decision",
+      "status": 200,
+      "title": "Visual Identity Design: White Space as a Business Decision",
+      "failures": []
+    },
+    {
+      "path": "/blogs/visual-identity-design-why-typography-is-a-positioning-call",
+      "status": 200,
+      "title": "Visual Identity Design: Why Typography Is a Positioning Call",
+      "failures": []
+    },
+    {
+      "path": "/blogs/want-to-become-a-writer-start-by-reading-like-one",
+      "status": 200,
+      "title": "How to Read Like a Writer (and Improve Your Craft)",
+      "failures": []
+    },
+    {
+      "path": "/blogs/what-brand-strategy-for-ai-companies-can-learn-from-apple",
+      "status": 200,
+      "title": "Brand Strategy for AI Companies: The Apple Demand Model",
+      "failures": []
+    },
+    {
+      "path": "/blogs/what-brutalism-teaches-a-brand-identity-design-studio",
+      "status": 200,
+      "title": "What Brutalism Teaches a Brand Identity Studio",
+      "failures": []
+    },
+    {
+      "path": "/blogs/what-makes-a-design-decision-strategic",
+      "status": 200,
+      "title": "What Makes a Design Decision Strategic, Not Just Nice",
+      "failures": []
+    },
+    {
+      "path": "/blogs/what-visual-identity-is-actually-for-and-what-ai-cannot-replace",
+      "status": 200,
+      "title": "An AI Startup Branding Agency's Position on Visual Identity",
+      "failures": []
+    },
+    {
+      "path": "/blogs/why-premium-fails-as-a-brand-positioning-strategy",
+      "status": 200,
+      "title": "Why 'Premium' Fails as a Brand Positioning Strategy",
+      "failures": []
+    },
+    {
+      "path": "/brand-identity",
+      "status": 200,
+      "title": "Brand Identity Development Services | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/careers",
+      "status": 200,
+      "title": "Careers at Izart Studio | Join Our Creative Team",
+      "failures": []
+    },
+    {
+      "path": "/manifesto",
+      "status": 200,
+      "title": "Our Manifesto | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects",
+      "status": 200,
+      "title": "Project Portfolio | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/gsf",
+      "status": 200,
+      "title": "GSF | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/loupe",
+      "status": 200,
+      "title": "Loupe | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/manjn",
+      "status": 200,
+      "title": "MANJN | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/mystiqare",
+      "status": 200,
+      "title": "MYSTIQARE | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/plattr",
+      "status": 200,
+      "title": "PLATTR | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/seraano",
+      "status": 200,
+      "title": "Seraano by Aarza Realty | Luxury Real Estate Branding | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/soak-studio",
+      "status": 200,
+      "title": "SOAK STUDIO | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/third-align",
+      "status": 200,
+      "title": "THIRD ALIGN | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/projects/wg1",
+      "status": 200,
+      "title": "WG1 | Nutraceutical Brand Identity & Packaging | Izart Studio",
+      "failures": []
+    },
+    {
+      "path": "/website-design-and-development",
+      "status": 200,
+      "title": "Website Design and Development Services | Izart Studio",
+      "failures": []
+    }
+  ],
+  "failures": []
+}

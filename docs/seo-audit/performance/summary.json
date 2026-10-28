@@ -1,0 +1,101 @@
+{
+  "measuredAt": "2026-10-27T09:11:50.786Z",
+  "origin": "http://127.0.0.1:3101",
+  "runs": 1,
+  "method": "curl fresh connections; Lighthouse simulated mobile lab, no field INP",
+  "results": [
+    {
+      "url": "http://127.0.0.1:3101/blogs",
+      "ttfbP75Ms": 38.861,
+      "samples": [
+        {
+          "ttfbMs": 38.861,
+          "totalMs": 38.973,
+          "dnsMs": 0.118,
+          "tlsMs": 0,
+          "redirects": 0
+        }
+      ],
+      "lab": [
+        {
+          "fcpMs": 923.2952,
+          "lcpMs": 2368.4428,
+          "cls": 0,
+          "tbtMs": 34.00000000000023,
+          "performance": 0.98,
+          "seo": 1,
+          "accessibility": 0.96
+        }
+      ],
+      "median": {
+        "fcpMs": 923.2952,
+        "lcpMs": 2368.4428,
+        "cls": 0,
+        "tbtMs": 34.00000000000023
+      },
+      "passed": true
+    },
+    {
+      "url": "http://127.0.0.1:3101/brand-identity",
+      "ttfbP75Ms": 4.235,
+      "samples": [
+        {
+          "ttfbMs": 4.235,
+          "totalMs": 4.31,
+          "dnsMs": 0.06999999999999999,
+          "tlsMs": 0,
+          "redirects": 0
+        }
+      ],
+      "lab": [
+        {
+          "fcpMs": 937.2577000000001,
+          "lcpMs": 2825.2009750000007,
+          "cls": 0.0766239590935803,
+          "tbtMs": 96.87115000000017,
+          "performance": 0.94,
+          "seo": 1,
+          "accessibility": 1
+        }
+      ],
+      "median": {
+        "fcpMs": 937.2577000000001,
+        "lcpMs": 2825.2009750000007,
+        "cls": 0.0766239590935803,
+        "tbtMs": 96.87115000000017
+      },
+      "passed": false
+    },
+    {
+      "url": "http://127.0.0.1:3101/blogs/best-branding-for-startups-differentiation-vs-distinction",
+      "ttfbP75Ms": 4.758,
+      "samples": [
+        {
+          "ttfbMs": 4.758,
+          "totalMs": 4.831,
+          "dnsMs": 0.079,
+          "tlsMs": 0,
+          "redirects": 0
+        }
+      ],
+      "lab": [
+        {
+          "fcpMs": 1063.7114,
+          "lcpMs": 1967.1392500000002,
+          "cls": 0,
+          "tbtMs": 20.5,
+          "performance": 0.99,
+          "seo": 1,
+          "accessibility": 0.96
+        }
+      ],
+      "median": {
+        "fcpMs": 1063.7114,
+        "lcpMs": 1967.1392500000002,
+        "cls": 0,
+        "tbtMs": 20.5
+      },
+      "passed": true
+    }
+  ]
+}

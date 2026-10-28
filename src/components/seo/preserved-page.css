@@ -1,0 +1,12 @@
+.preserved-page { padding:170px max(24px,7vw) 100px; max-width:1600px; margin:auto; color:#eee; }
+.preserved-page header { margin-bottom:64px; }
+.preserved-page header > a { color:#aaa; font-size:14px; }
+.preserved-page h1 { font-weight:400; font-size:clamp(40px,6vw,86px); letter-spacing:-.04em; margin:24px 0; }
+.preserved-page__content { font-size:17px; line-height:1.65; }
+.preserved-page__content p { max-width:850px; color:#bbb; margin:24px 0; }
+.preserved-page__content h2 { font-weight:400; font-size:clamp(26px,3vw,40px); margin:60px 0 24px; }
+.preserved-page__content h3 { font-weight:400; font-size:24px; margin:40px 0 20px; }
+.preserved-page__content img { display:block; width:auto; max-width:100%; height:auto; max-height:1000px; object-fit:contain; margin:40px auto; }
+.preserved-page__content a { text-underline-offset:4px; }
+.preserved-page__content figure { margin:40px 0; }
+@media(max-width:700px) { .preserved-page { padding-top:125px; } .preserved-page__content { font-size:16px; } }

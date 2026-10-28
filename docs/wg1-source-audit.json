@@ -1,0 +1,231 @@
+{
+  "source": "https://www.izart.in/projects/wg1",
+  "meta": [
+    {
+      "charset": "utf-8"
+    },
+    {
+      "content": "Brand identity, packaging design, and visual system for WG1, a nutraceutical brand built around foundational daily nutrition. Calm, restrained, and designed for consistency. By Izart Studio.",
+      "name": "description"
+    },
+    {
+      "content": "WG1 | Nutraceutical Brand Identity & Packaging | Izart Studio",
+      "property": "og:title"
+    },
+    {
+      "content": "Brand identity, packaging design, and visual system for WG1, a nutraceutical brand built around foundational daily nutrition. Calm, restrained, and designed for consistency. By Izart Studio.",
+      "property": "og:description"
+    },
+    {
+      "content": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0995b62b637c42309ca5f5_wg11.avif",
+      "property": "og:image"
+    },
+    {
+      "content": "WG1 | Nutraceutical Brand Identity & Packaging | Izart Studio",
+      "name": "twitter:title"
+    },
+    {
+      "content": "Brand identity, packaging design, and visual system for WG1, a nutraceutical brand built around foundational daily nutrition. Calm, restrained, and designed for consistency. By Izart Studio.",
+      "name": "twitter:description"
+    },
+    {
+      "content": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0995b62b637c42309ca5f5_wg11.avif",
+      "name": "twitter:image"
+    },
+    {
+      "property": "og:type",
+      "content": "website"
+    },
+    {
+      "content": "summary_large_image",
+      "name": "twitter:card"
+    },
+    {
+      "content": "width=device-width, initial-scale=1",
+      "name": "viewport"
+    },
+    {
+      "content": "google-site-verification=9cZ9U2PwJuf45gi5tIOvRTkbaVyr4Qx9q8JW-LEl_hQ",
+      "name": "google-site-verification"
+    },
+    {
+      "content": "Webflow",
+      "name": "generator"
+    },
+    {
+      "name": "google-site-verification",
+      "content": "9cZ9U2PwJuf45gi5tIOvRTkbaVyr4Qx9q8JW-LEl_hQ"
+    }
+  ],
+  "images": [
+    {
+      "height": "1",
+      "width": "1",
+      "style": "display:none",
+      "src": "https://www.facebook.com/tr?id=304657535948898&ev=PageView&noscript=1"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0995b62b637c42309ca5f5_wg11.avif",
+      "loading": "lazy",
+      "alt": "",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/plugins/Basic/assets/placeholder.60f9b1840c.svg",
+      "loading": "lazy",
+      "alt": "",
+      "class": "image-full w-dyn-bind-empty"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/plugins/Basic/assets/placeholder.60f9b1840c.svg",
+      "loading": "lazy",
+      "alt": "",
+      "class": "image-full w-dyn-bind-empty"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fb64758da2f0008298b5_wg1%20mod.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fb64758da2f0008298b5_wg1%20mod-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fb64758da2f0008298b5_wg1%20mod-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fb64758da2f0008298b5_wg1%20mod-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fb64758da2f0008298b5_wg1%20mod.avif 2880w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fe6b7e10b463b935be9b_wg1%202.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fe6b7e10b463b935be9b_wg1%202-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fe6b7e10b463b935be9b_wg1%202-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fe6b7e10b463b935be9b_wg1%202-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fe6b7e10b463b935be9b_wg1%202-p-1600.avif 1600w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fe6b7e10b463b935be9b_wg1%202.avif 3840w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba39d6e7a93cd725df2_wg1%204.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba39d6e7a93cd725df2_wg1%204-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba39d6e7a93cd725df2_wg1%204-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba39d6e7a93cd725df2_wg1%204-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba39d6e7a93cd725df2_wg1%204.avif 2880w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4f59059d710c89b19_wg1%205.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4f59059d710c89b19_wg1%205-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4f59059d710c89b19_wg1%205-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4f59059d710c89b19_wg1%205-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4f59059d710c89b19_wg1%205.avif 2880w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba42b637c4230a2830c_wg1%206.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba42b637c4230a2830c_wg1%206-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba42b637c4230a2830c_wg1%206-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba42b637c4230a2830c_wg1%206-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba42b637c4230a2830c_wg1%206.avif 2880w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba48f7ba45f32a6af3f_wg1%207.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba48f7ba45f32a6af3f_wg1%207-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba48f7ba45f32a6af3f_wg1%207-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba48f7ba45f32a6af3f_wg1%207-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba48f7ba45f32a6af3f_wg1%207.avif 2880w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fe6bcb81582758e9a8c0_wg1%208.avif",
+      "loading": "lazy",
+      "alt": "",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4ee4cc895383630fb_wg1%2011.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4ee4cc895383630fb_wg1%2011-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4ee4cc895383630fb_wg1%2011-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4ee4cc895383630fb_wg1%2011-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4ee4cc895383630fb_wg1%2011.avif 2880w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4e6c494e3bf15e02b_wg1%2012.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4e6c494e3bf15e02b_wg1%2012-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4e6c494e3bf15e02b_wg1%2012-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4e6c494e3bf15e02b_wg1%2012-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09fba4e6c494e3bf15e02b_wg1%2012.avif 2880w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09feba79e7252376cc5e72_wg1%20100.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09feba79e7252376cc5e72_wg1%20100-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09feba79e7252376cc5e72_wg1%20100-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a09feba79e7252376cc5e72_wg1%20100.avif 1920w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d784c1bba46f30a7cab497_82.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d784c1bba46f30a7cab497_82-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d784c1bba46f30a7cab497_82-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d784c1bba46f30a7cab497_82-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d784c1bba46f30a7cab497_82.avif 2517w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d788cf81d992e674d843f5_86.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d788cf81d992e674d843f5_86-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d788cf81d992e674d843f5_86.avif 1678w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0983c9745bb701c7a12293_seraano1.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0983c9745bb701c7a12293_seraano1-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0983c9745bb701c7a12293_seraano1-p-800.avif 800w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0983c9745bb701c7a12293_seraano1-p-1080.avif 1080w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0983c9745bb701c7a12293_seraano1.avif 1920w",
+      "class": "image-full"
+    },
+    {
+      "src": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d79bf442e3408726d0d7dc_85.avif",
+      "loading": "lazy",
+      "alt": "",
+      "sizes": "100vw",
+      "srcset": "https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d79bf442e3408726d0d7dc_85-p-500.avif 500w, https://cdn.prod.website-files.com/69ba531296507e4235379d9c/69d79bf442e3408726d0d7dc_85.avif 1259w",
+      "class": "image-full"
+    }
+  ],
+  "links": [
+    "/",
+    "#Get-Quote",
+    "#",
+    "/brand-identity",
+    "/website-design-and-development",
+    "/projects",
+    "/careers",
+    "#",
+    "/blogs",
+    "/authors",
+    "/manifesto",
+    "#Get-Quote",
+    "/projects/gsf",
+    "/projects/soak-studio",
+    "/projects/seraano",
+    "/projects/plattr",
+    "#",
+    "tel:+91-9711106474",
+    "mailto:operations@izart.in",
+    "/projects",
+    "#Get-Quote",
+    "/authors",
+    "/blogs",
+    "/manifesto",
+    "#",
+    "#",
+    "https://www.behance.net/izartstudio_",
+    "https://www.linkedin.com/company/izart-media",
+    "https://www.instagram.com/izart_studio/",
+    "https://in.pinterest.com/izartstudio/"
+  ],
+  "schema": [
+    "\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"CreativeWork\",\n  \"name\": \"WG1\",\n  \"description\": \"WG1 is a nutraceutical brand built around a single principle: health lives in what you repeat, in the ordinary days, in the things you do without thinking. The project distills foundational nutrition into a calm, dependable daily ritual, designed for people whose lives are too inconsistent for complexity but too aware to ignore the basics.\",\n  \"url\": \"/projects/wg1\",\n  \"image\": \"https://cdn.prod.website-files.com/69ba531296507e4235379d9c/6a0995b62b637c42309ca5f5_wg11.avif\",\n  \"creator\": {\n    \"@type\": \"Organization\",\n    \"name\": \"WG1\"\n  },\n  \"datePublished\": \"2026-05-27T09:23:58.411Z\",\n  \"dateModified\": \"2026-05-27T09:18:33.242Z\",\n  \"inLanguage\": \"en\",\n  \"about\": {\n    \"@type\": \"Service\",\n    \"serviceType\": \"\"\n  },\n  \"temporalCoverage\": \"2025\"\n}\n"
+  ]
+}
