@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-export function ShowcaseMotion({ children }: { children: ReactNode }) {
+export function ShowcaseMotion({ children, projectCount }: { children: ReactNode; projectCount: number }) {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
@@ -15,7 +15,10 @@ export function ShowcaseMotion({ children }: { children: ReactNode }) {
     const intro = track.querySelector<HTMLElement>(".showcase__intro");
     const projectList = track.querySelector<HTMLElement>(".showcase__list");
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const cards = Array.from(track.querySelectorAll<HTMLElement>(".showcase-card"));
+    const bridge = track.querySelector<HTMLElement>(".point-to-pixel");
+    let projectOffsets: number[] = [];
     let frame = 0;
     let travel = 0;
     let sectionTop = 0;
@@ -24,13 +27,24 @@ export function ShowcaseMotion({ children }: { children: ReactNode }) {
 
     const render = () => {
       frame = 0;
-      currentOffset += (targetOffset - currentOffset) * .14;
+      currentOffset += (targetOffset - currentOffset) * (motionQuery.matches ? 1 : .14);
       if (Math.abs(targetOffset - currentOffset) < .1) currentOffset = targetOffset;
-      const progress = travel ? currentOffset / travel : 0;
+      // Match the marker to the card at the viewport center, using the same
+      // eased offset as the track rather than the raw document scroll position.
+      let projectPosition = 0;
+      for (let index = 1; index < projectOffsets.length; index += 1) {
+        const previous = projectOffsets[index - 1];
+        const next = projectOffsets[index];
+        if (currentOffset >= next) projectPosition = index;
+        else {
+          projectPosition = index - 1 + Math.max(0, (currentOffset - previous) / Math.max(1, next - previous));
+          break;
+        }
+      }
+      const progress = projectOffsets.length > 1 ? projectPosition / (projectOffsets.length - 1) : .5;
       track.style.transform = `translate3d(${-currentOffset}px,0,0)`;
       indicator.style.left = `${progress * 100}%`;
 
-      const bridge = track.querySelector<HTMLElement>(".point-to-pixel");
       if (bridge) {
         const bridgeLeft = bridge.offsetLeft - currentOffset;
         const fadeProgress = 1 - Math.min(1, Math.max(0, (bridgeLeft - window.innerWidth * .5) / (window.innerWidth * .5)));
@@ -47,16 +61,21 @@ export function ShowcaseMotion({ children }: { children: ReactNode }) {
     };
 
     const updateTarget = () => {
-      targetOffset = reducedMotion ? 0 : Math.min(travel, Math.max(0, window.scrollY - sectionTop));
+      targetOffset = motionQuery.matches ? 0 : Math.min(travel, Math.max(0, window.scrollY - sectionTop));
       if (!frame) frame = requestAnimationFrame(render);
     };
     const measure = () => {
       travel = Math.max(0, track.scrollWidth - window.innerWidth);
       section.style.setProperty("--showcase-travel", `${travel}px`);
       sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      const trackLeft = track.getBoundingClientRect().left;
+      projectOffsets = cards.map(card => {
+        const rect = card.getBoundingClientRect();
+        return rect.left - trackLeft + rect.width / 2 - window.innerWidth / 2;
+      });
+      currentOffset = Math.min(travel, currentOffset);
       updateTarget();
     };
-    const cards = Array.from(track.querySelectorAll<HTMLElement>(".showcase-card"));
     const playVideo = (event: Event) => {
       const video = (event.currentTarget as HTMLElement).querySelector("video");
       if (video) void video.play().catch(() => undefined);
@@ -67,6 +86,11 @@ export function ShowcaseMotion({ children }: { children: ReactNode }) {
     };
 
     measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(track);
+    observer.observe(section);
+    observer.observe(document.body);
+    motionQuery.addEventListener("change", measure);
     window.addEventListener("scroll", updateTarget, { passive: true });
     window.addEventListener("resize", measure, { passive: true });
     cards.forEach((card) => {
@@ -77,6 +101,8 @@ export function ShowcaseMotion({ children }: { children: ReactNode }) {
     });
     return () => {
       cancelAnimationFrame(frame);
+      observer.disconnect();
+      motionQuery.removeEventListener("change", measure);
       window.removeEventListener("scroll", updateTarget);
       window.removeEventListener("resize", measure);
       cards.forEach((card) => {
@@ -86,13 +112,13 @@ export function ShowcaseMotion({ children }: { children: ReactNode }) {
         card.removeEventListener("blur", pauseVideo);
       });
     };
-  }, []);
+  }, [children, projectCount]);
 
   return <section ref={sectionRef} className="showcase" aria-labelledby="showcase-title">
     <div className="showcase__sticky">
       <div ref={trackRef} className="showcase__track">{children}</div>
       <div className="showcase-progress" aria-hidden="true">
-        <div className="showcase-progress__ticks">{Array.from({ length: 25 }, (_, index) => <i className={index % 4 === 0 ? "is-major" : ""} key={index} />)}</div>
+        <div className="showcase-progress__ticks">{Array.from({ length: Math.max(1, (projectCount - 1) * 4 + 1) }, (_, index) => <i className={index % 4 === 0 ? "is-major" : ""} key={index} />)}</div>
         <span ref={progressRef} className="showcase-progress__marker" />
       </div>
     </div>

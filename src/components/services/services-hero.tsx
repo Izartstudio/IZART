@@ -17,7 +17,7 @@ export function ServicesHero({
 }: ServicesHeroProps) {
   return <section className="services-hero" aria-labelledby="services-hero-title">
     <div className="services-hero__canvas">
-      <div className="home-hero__shade services-hero__radial" aria-hidden="true" />
+      <div className="services-hero__radial" aria-hidden="true" />
       <h1 id="services-hero-title" className="services-hero__title">{title}</h1>
       {description && <p className="services-hero__description">{description}</p>}
       <PerspectiveImageFan images={images} layout={imageLayout} />

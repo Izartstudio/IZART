@@ -28,8 +28,7 @@ export function Homepage({ projects }: { projects: HomepageProject[] }) {
     <Showcase projects={projects} />
     <ServicesIntroduction />
     <ServicesList />
-    <AboutStats />
-    <VideoExpansion />
+    <AboutStats><VideoExpansion /></AboutStats>
     <ContactForm />
   </main><SiteFooter /></>;
 }

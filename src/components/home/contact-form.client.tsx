@@ -18,7 +18,6 @@ const revealStyle = (order: number) => ({ "--reveal-order": order } as CSSProper
 
 export function ContactForm() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [budgetIndex, setBudgetIndex] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -65,7 +64,6 @@ export function ContactForm() {
       if (!response.ok) throw new Error(result.message || "Unable to send your enquiry.");
 
       form.reset();
-      setBudgetIndex(0);
       setStatus("success");
       setMessage("Thank you — we’ll be in touch soon.");
     } catch (error) {
@@ -99,12 +97,11 @@ export function ContactForm() {
           </div>
         </fieldset>
 
-        <fieldset className="contact-form__group contact-form__budget contact-form__animate" style={{ ...revealStyle(7), "--budget-index": budgetIndex } as CSSProperties}>
+        <fieldset className="contact-form__group contact-form__budget contact-form__animate" style={revealStyle(7)}>
           <legend>What’s your budget?</legend>
-          <div className="contact-form__budget-track" aria-hidden="true"><i /></div>
           <div className="contact-form__budget-options">
-            {budgets.map((budget, index) => <label key={budget}>
-              <input type="radio" name="budget" value={budget} checked={budgetIndex === index} onChange={() => setBudgetIndex(index)} />
+            {budgets.map(budget => <label key={budget}>
+              <input type="radio" name="budget" value={budget} />
               <span>{budget}</span>
             </label>)}
           </div>
