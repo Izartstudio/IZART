@@ -7,7 +7,7 @@ import { ShowcaseMotion } from "./showcase-motion.client";
 export function Showcase({ projects }: { projects: HomepageProject[] }) {
   if (!projects.length) return null;
 
-  return <ShowcaseMotion projectCount={projects.length}>
+  return <ShowcaseMotion projectCount={projects.length} bridge={<PointToPixel />}>
     <header className="showcase__intro">
       <h2 id="showcase-title" className="sr-only">Selected work</h2>
       <p>Here is a compilation of some recent standout projects we shipped.</p>
@@ -27,6 +27,5 @@ export function Showcase({ projects }: { projects: HomepageProject[] }) {
         </Link>
       </li>)}
     </ol>
-    <PointToPixel />
   </ShowcaseMotion>;
 }

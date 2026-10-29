@@ -3,8 +3,7 @@ import type { HomepageProject } from "@/sanity/projects";
 import { AboutStats } from "./about-stats.client";
 import { ContactForm } from "./contact-form.client";
 import { HeroTunnel } from "./hero-tunnel.client";
-import { ServicesIntroduction } from "./services-introduction";
-import { ServicesList } from "./services-list.client";
+import { ServicesShowcase } from "@/components/services/services-showcase.client";
 import { Showcase } from "./showcase";
 import { VideoExpansion } from "./video-expansion.client";
 import { SiteFooter } from "@/components/site/site-footer";
@@ -26,8 +25,7 @@ export function Homepage({ projects }: { projects: HomepageProject[] }) {
       </span>
     </section>
     <Showcase projects={projects} />
-    <ServicesIntroduction />
-    <ServicesList />
+    <ServicesShowcase />
     <AboutStats><VideoExpansion /></AboutStats>
     <ContactForm />
   </main><SiteFooter /></>;

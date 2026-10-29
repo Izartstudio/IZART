@@ -19,9 +19,9 @@ const socialLinks = [
 
 function MarqueeGroup({ duplicate = false }: { duplicate?: boolean }) {
   return <div className="site-footer__marquee-group" aria-hidden={duplicate || undefined}>
-    <span>IZART.<em>STUDIO</em></span>
-    <Image src="/assets/footer/marquee-feature.png" alt="" width={270} height={270} />
-    <span>IZART.<em>STUDIO</em></span>
+    <Image className="site-footer__wordmark" src="/assets/footer/footerlogo.svg" alt="" width={788} height={100} unoptimized />
+    <Image className="site-footer__marquee-feature" src="/assets/footer/marquee-feature.png" alt="" width={270} height={270} />
+    <Image className="site-footer__wordmark" src="/assets/footer/footerlogo.svg" alt="" width={788} height={100} unoptimized />
   </div>;
 }
 
@@ -46,7 +46,7 @@ export function SiteFooter() {
       </nav>
     </div>
 
-    <div className="site-footer__marquee" aria-label="Izart Studio">
+    <div className="site-footer__marquee" aria-label="Izart Studio" tabIndex={0}>
       <div className="site-footer__marquee-track">
         <MarqueeGroup />
         <MarqueeGroup duplicate />

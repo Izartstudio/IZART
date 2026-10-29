@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { ContactForm } from "@/components/home/contact-form.client";
-import { ServicesIntroduction } from "@/components/home/services-introduction";
-import { ServicesList } from "@/components/home/services-list.client";
+import { ServicesShowcase } from "@/components/services/services-showcase.client";
 import { OutcomeSection } from "@/components/services/outcome-section";
 import { ProcessFaq } from "@/components/services/process-faq.client";
 import { ServicesHero } from "@/components/services/services-hero";
@@ -24,8 +23,7 @@ export default async function DigitalEcosystemPage() {
         title="Digital Ecosystem"
         description={description}
       />
-      <ServicesIntroduction />
-      <ServicesList />
+      <ServicesShowcase />
       <OutcomeSection />
       <ProcessFaq />
       <ContactForm />

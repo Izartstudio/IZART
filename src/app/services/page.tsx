@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { ServicesHero } from "@/components/services/services-hero";
-import { ServicesIntroduction } from "@/components/home/services-introduction";
-import { ServicesList } from "@/components/home/services-list.client";
+import { ServicesShowcase } from "@/components/services/services-showcase.client";
 import { OutcomeSection } from "@/components/services/outcome-section";
 import { ProcessFaq } from "@/components/services/process-faq.client";
 import { ContactForm } from "@/components/home/contact-form.client";
@@ -17,8 +16,7 @@ export default async function ServicesPage() {
   const images = await getServicesHeroImages();
   return <><main id="main">
     <ServicesHero images={images} />
-    <ServicesIntroduction />
-    <ServicesList />
+    <ServicesShowcase />
     <OutcomeSection />
     <ProcessFaq />
     <ContactForm />

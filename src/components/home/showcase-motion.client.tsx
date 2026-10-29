@@ -1,8 +1,18 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 
-export function ShowcaseMotion({ children, projectCount }: { children: ReactNode; projectCount: number }) {
+const compactQuery = "(max-width: 991px)";
+const subscribeCompact = (notify: () => void) => {
+  const query = window.matchMedia(compactQuery);
+  query.addEventListener("change", notify);
+  return () => query.removeEventListener("change", notify);
+};
+const getCompactSnapshot = () => window.matchMedia(compactQuery).matches;
+const getServerSnapshot = () => false;
+
+export function ShowcaseMotion({ children, projectCount, bridge }: { children: ReactNode; projectCount: number; bridge?: ReactNode }) {
+  const compact = useSyncExternalStore(subscribeCompact, getCompactSnapshot, getServerSnapshot);
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
@@ -112,15 +122,15 @@ export function ShowcaseMotion({ children, projectCount }: { children: ReactNode
         card.removeEventListener("blur", pauseVideo);
       });
     };
-  }, [children, projectCount]);
+  }, [children, projectCount, compact]);
 
-  return <section ref={sectionRef} className="showcase" aria-labelledby="showcase-title">
+  return <><section ref={sectionRef} className="showcase" aria-labelledby="showcase-title">
     <div className="showcase__sticky">
-      <div ref={trackRef} className="showcase__track">{children}</div>
+      <div ref={trackRef} className="showcase__track">{children}{!compact && bridge}</div>
       <div className="showcase-progress" aria-hidden="true">
         <div className="showcase-progress__ticks">{Array.from({ length: Math.max(1, (projectCount - 1) * 4 + 1) }, (_, index) => <i className={index % 4 === 0 ? "is-major" : ""} key={index} />)}</div>
         <span ref={progressRef} className="showcase-progress__marker" />
       </div>
     </div>
-  </section>;
+  </section>{compact && bridge}</>;
 }

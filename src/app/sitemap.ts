@@ -5,6 +5,7 @@ import { getCareerJobSlugs } from '@/sanity/careers';
 import { getBlogs } from '@/sanity/blogs';
 import { getPlaygroundPage } from '@/sanity/playground';
 import preserved from '@/content/preserved-pages.json';
+import { showcaseServices } from '@/components/services/service-showcase-data';
 export const revalidate = 60;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!site.indexable) return [];
@@ -13,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
   const entries: MetadataRoute.Sitemap = [
     ...['/', '/projects', '/services', '/careers', '/blogs', '/brand-identity', '/website-design-and-development'].map(path => ({ url: new URL(path, site.url).href })),
+    ...showcaseServices.map(service => ({ url: new URL(service.href, site.url).href })),
     ...(playground.indexable ? [{ url: new URL('/playground', site.url).href }] : []),
     ...preserved.map(page => ({ url: new URL(page.path, site.url).href })),
     ...blogs.map(post => ({ url: new URL(`/blogs/${post.slug}`, site.url).href, ...(post.updatedAt ? { lastModified: post.updatedAt } : {}) })),
