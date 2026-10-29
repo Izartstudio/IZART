@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { preservedPages, preservedMetadata, PreservedPage } from '@/components/seo/preserved-page';
 type Props = { params: Promise<{ legacy: string[] }> };
-const pages = preservedPages.filter(page => !page.path.startsWith('/projects/'));
+const pages = preservedPages.filter(page => !page.path.startsWith('/projects/') && page.path !== '/manifesto');
 export function generateStaticParams() { return pages.map(page => ({ legacy: page.path.slice(1).split('/') })); }
 export async function generateMetadata({ params }: Props) {
   const path = '/' + (await params).legacy.join('/');
