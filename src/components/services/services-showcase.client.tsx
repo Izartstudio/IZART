@@ -29,6 +29,95 @@ export function ServicesShowcase() {
       if (selected !== state.active) { selected = state.active; setActive(state.active); }
     };
     const requestUpdate = () => { if (!frame) frame = window.requestAnimationFrame(update); };
+
+    // Bound the transition lock by time, never by pointer movement or the end
+    // of a wheel burst. Continuous scrolling can advance again after each fade.
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let lockedUntil = 0;
+    let lastWheel = -Infinity;
+    let wheelTotal = 0;
+    let touchY = 0;
+    let touchConsumed = false;
+    const geometry = () => {
+      const start = window.scrollY + host.getBoundingClientRect().top + intro.offsetHeight;
+      const travel = host.offsetHeight - intro.offsetHeight - sticky.offsetHeight;
+      return { start, end: start + travel, step: travel / showcaseServices.length };
+    };
+    const excluded = (target: EventTarget | null) => {
+      if (document.body.style.overflow === "hidden") return true;
+      if (!(target instanceof Element)) return false;
+      return Boolean(target.closest("input, textarea, select, [contenteditable='true'], [role='dialog']"));
+    };
+    const navigate = (direction: number, distance: number) => {
+      const { start, end, step } = geometry();
+      const y = window.scrollY;
+      if (step <= 0) return false;
+      const entering = direction > 0 && y < start && y + distance >= start;
+      const reentering = direction < 0 && y > end && y + distance <= end;
+      if (!entering && !reentering && (y < start - 1 || y > end + 1)) return false;
+      if (performance.now() < lockedUntil) return true;
+      const current = Math.max(0, selected);
+      // Let the document scroll normally out of the first/last state.
+      if (!entering && !reentering &&
+        ((direction < 0 && current === 0) ||
+         (direction > 0 && current === showcaseServices.length - 1))) return false;
+      const next = entering ? 0 : reentering ? showcaseServices.length - 1 : current + direction;
+      lockedUntil = performance.now() + (motion.matches ? 250 : 1100);
+      window.scrollTo({ top: start + (next + 0.5) * step, behavior: motion.matches ? "instant" : "smooth" });
+      return true;
+    };
+    const wheel = (event: WheelEvent) => {
+      if (event.ctrlKey || excluded(event.target) || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) return;
+      const now = performance.now();
+      if (now - lastWheel > 200) wheelTotal = 0;
+      lastWheel = now;
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+      const { start, end } = geometry();
+      const inside = window.scrollY >= start - 1 && window.scrollY <= end + 1;
+      if (Math.sign(delta) !== Math.sign(wheelTotal)) wheelTotal = 0;
+      wheelTotal += delta;
+      if (inside && now < lockedUntil) {
+        event.preventDefault();
+        wheelTotal = 0;
+        return;
+      }
+      if (inside && Math.abs(wheelTotal) < 36) {
+        const atExit = (delta < 0 && selected === 0) || (delta > 0 && selected === showcaseServices.length - 1);
+        if (!atExit) event.preventDefault();
+        return;
+      }
+      if (navigate(Math.sign(delta), delta)) { event.preventDefault(); wheelTotal = 0; }
+    };
+    const touchStart = (event: TouchEvent) => {
+      touchY = event.touches[0]?.clientY ?? 0;
+      touchConsumed = false;
+    };
+    const touchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 1 || excluded(event.target)) return;
+      const delta = touchY - event.touches[0].clientY;
+      if (touchConsumed) { event.preventDefault(); return; }
+      const { start, end } = geometry();
+      const inside = window.scrollY >= start - 1 && window.scrollY <= end + 1;
+      if (inside && Math.abs(delta) < 42) {
+        const atExit = (delta < 0 && selected === 0) || (delta > 0 && selected === showcaseServices.length - 1);
+        if (!atExit) event.preventDefault();
+        return;
+      }
+      if (Math.abs(delta) >= 42 && navigate(Math.sign(delta), delta)) { event.preventDefault(); touchConsumed = true; }
+    };
+    const keyDown = (event: KeyboardEvent) => {
+      if (excluded(event.target) || event.altKey || event.ctrlKey || event.metaKey ||
+        (event.target instanceof Element && event.target.closest("a, button, summary"))) return;
+      const direction = event.key === "ArrowDown" || event.key === "PageDown" || (event.key === " " && !event.shiftKey) ? 1
+        : event.key === "ArrowUp" || event.key === "PageUp" || (event.key === " " && event.shiftKey) ? -1 : 0;
+      const { start, end } = geometry();
+      if (!direction || window.scrollY < start - 1 || window.scrollY > end + 1) return;
+      if (event.repeat || navigate(direction, direction * window.innerHeight)) event.preventDefault();
+    };
+    window.addEventListener("wheel", wheel, { passive: false });
+    window.addEventListener("touchstart", touchStart, { passive: true });
+    window.addEventListener("touchmove", touchMove, { passive: false });
+    window.addEventListener("keydown", keyDown);
     const observer = new ResizeObserver(requestUpdate);
     observer.observe(host); observer.observe(sticky); observer.observe(intro); observer.observe(document.body);
     window.addEventListener("scroll", requestUpdate, { passive: true });
@@ -38,6 +127,10 @@ export function ServicesShowcase() {
     update();
     return () => {
       window.cancelAnimationFrame(frame); observer.disconnect();
+      window.removeEventListener("wheel", wheel);
+      window.removeEventListener("touchstart", touchStart);
+      window.removeEventListener("touchmove", touchMove);
+      window.removeEventListener("keydown", keyDown);
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
       window.removeEventListener("pageshow", requestUpdate);

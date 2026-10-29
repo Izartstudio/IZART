@@ -30,8 +30,13 @@
   .intro { min-height: 170px; padding: 28px 20px; align-items: flex-start; gap: 22px; }
   .label { padding: 9px; font-size: 11px; }
   .intro p { width: 63%; font-size: 12px; line-height: 1.45; }
+  .showcase, .sticky, .stage { background: #000; }
+  /* Mask the shared media layer once so poster/video overlap cannot brighten the fade. */
+  .media {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 39%) 20%, #000 38%, #000 48%, rgb(0 0 0 / 22%) 64%, rgb(0 0 0 / 8%) 76%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 39%) 20%, #000 38%, #000 48%, rgb(0 0 0 / 22%) 64%, rgb(0 0 0 / 8%) 76%, transparent 100%);
+  }
   .media img, .media video { object-fit: cover; object-position: center; }
-  .media video { object-position: center; }
   .content { inset: 50px 30px max(50px,env(safe-area-inset-bottom)); }
   .previous { display: none; }
   .timeline { position: absolute; inset: 0 0 0 auto; width: 1px; height: auto; }
