@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { showcaseServices, serviceScrollState } from "./service-showcase-data";
+import { showcaseServices, serviceScrollState, type ShowcaseService } from "./service-showcase-data";
 import styles from "./services-showcase.module.css";
 
 export function ServicesShowcase() {
@@ -54,7 +53,7 @@ export function ServicesShowcase() {
       </header>
     <div ref={stickyRef} className={styles.sticky}>
       <div className={styles.stage}>
-        {showcaseServices.map((item, index) => <ServiceMedia key={item.slug} image={item.image} video={item.video} active={index === active} />)}
+        {showcaseServices.map((item, index) => <ServiceMedia key={item.slug} service={item} active={index === active} />)}
         <div className={styles.shade} />
         <div className={styles.entryFade} aria-hidden="true" />
         <div className={styles.content}>
@@ -73,24 +72,97 @@ export function ServicesShowcase() {
   </section>;
 }
 
-function ServiceMedia({ image, video, active }: { image: string; video?: string; active: boolean }) {
+function ServiceMedia({ service, active }: { service: ShowcaseService; active: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const { image, mobileImage, video, mobileVideo } = service;
+
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element || !video) return;
+    if (!active) {
+      element.pause();
+      // Preserve the last frame through the existing background crossfade.
+      const release = window.setTimeout(() => {
+        element.dataset.ready = "false";
+        element.removeAttribute("src");
+        element.load();
+      }, 900);
+      return () => window.clearTimeout(release);
+    }
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let inView = false;
+    const mobile = window.matchMedia("(max-width: 767px)");
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    let visible = false;
+    let disposed = false;
+    let shouldPlay = false;
+    let pending = false;
+    let playRequest = 0;
+
     const update = () => {
-      if (active && inView && !document.hidden && !motion.matches) void element.play().catch(() => undefined);
-      else element.pause();
+      shouldPlay = visible && !document.hidden && !motion.matches && !connection?.saveData;
+      if (!shouldPlay) { element.pause(); return; }
+      const source = mobile.matches ? mobileVideo || video : video;
+      if (element.getAttribute("src") !== source) {
+        playRequest += 1;
+        pending = false;
+        element.dataset.ready = "false";
+        element.src = source;
+        element.load();
+      }
+      // Avoid repeated play promises during visibility/resize events.
+      if (pending || !element.paused) return;
+      pending = true;
+      const request = ++playRequest;
+      void element.play().then(() => {
+        if (disposed || !shouldPlay) element.pause();
+      }).catch(() => {
+        if (!disposed && request === playRequest) element.dataset.ready = "false";
+      }).finally(() => { if (request === playRequest) pending = false; });
     };
-    const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; update(); });
+    const playing = () => {
+      if (disposed || !shouldPlay) { element.pause(); return; }
+      element.dataset.ready = "true";
+    };
+    const failed = () => { element.dataset.ready = "false"; };
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
     observer.observe(element);
-    update(); document.addEventListener("visibilitychange", update); motion.addEventListener("change", update);
-    return () => { observer.disconnect(); element.pause(); document.removeEventListener("visibilitychange", update); motion.removeEventListener("change", update); };
-  }, [active, video]);
-  return <div className={styles.media} data-active={active} data-tone={image.includes("brand-identity") ? "blue" : "dark"} aria-hidden="true">
-    <Image src={image} alt="" width={1440} height={810} sizes="(max-width: 767px) 240vw, 100vw" loading="eager" />
-    {video && <video ref={ref} src={video} poster={image} muted loop playsInline preload="none" onPlaying={event => { event.currentTarget.dataset.ready = "true"; }} onError={event => { event.currentTarget.dataset.ready = "false"; }} />}
+    element.addEventListener("playing", playing);
+    element.addEventListener("error", failed);
+    document.addEventListener("visibilitychange", update);
+    window.addEventListener("pageshow", update);
+    motion.addEventListener("change", update);
+    mobile.addEventListener("change", update);
+    return () => {
+      disposed = true;
+      shouldPlay = false;
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", update);
+      window.removeEventListener("pageshow", update);
+      motion.removeEventListener("change", update);
+      mobile.removeEventListener("change", update);
+      element.removeEventListener("playing", playing);
+      element.removeEventListener("error", failed);
+      element.pause();
+    };
+  }, [active, video, mobileVideo]);
+
+  useEffect(() => {
+    const element = ref.current;
+    return () => {
+      if (!element) return;
+      element.pause();
+      element.removeAttribute("src");
+      element.load();
+    };
+  }, []);
+
+  return <div className={styles.media} data-active={active} aria-hidden="true">
+    <picture>
+      {mobileImage && <source media="(max-width: 767px)" srcSet={mobileImage} />}
+      {/* Native picture selects one already-compressed poster without fetching both variants. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={image} alt="" width={1440} height={810} loading="lazy" decoding="async" />
+    </picture>
+    {video && <video ref={ref} muted loop playsInline preload="none" disablePictureInPicture tabIndex={-1} />}
   </div>;
 }
