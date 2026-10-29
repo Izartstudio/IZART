@@ -22,24 +22,26 @@ const socials = [["Instagram", "https://www.instagram.com/izart_studio/", "ig"],
 
 export function SiteNavigation() {
   const [open, setOpen] = useState(false);
+  const [present, setPresent] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [section, setSection] = useState<string | null>(null);
   const [child, setChild] = useState<string | null>(null);
   const close = () => setOpen(false);
   useEffect(() => {
-    if (!open) return;
+    if (!present) return;
     const old = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const escape = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
     addEventListener("keydown", escape);
     return () => { document.body.style.overflow = old; removeEventListener("keydown", escape); };
-  }, [open]);
+  }, [present]);
   useEffect(() => {
-    if (open) return;
+    if (open) { setPresent(true); return; }
     const resetTimer = window.setTimeout(() => {
+      setPresent(false);
       setSection(null);
       setChild(null);
-    }, 280);
+    }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 520);
     return () => window.clearTimeout(resetTimer);
   }, [open]);
   useEffect(() => {
@@ -49,7 +51,7 @@ export function SiteNavigation() {
       frame = 0;
       const currentY = Math.max(window.scrollY, 0);
       const delta = currentY - previousY;
-      if (open || currentY < 80) setHidden(false);
+      if (present || currentY < 80) setHidden(false);
       else if (delta > 5) setHidden(true);
       else if (delta < -5) setHidden(false);
       previousY = currentY;
@@ -62,7 +64,7 @@ export function SiteNavigation() {
       window.removeEventListener("scroll", onScroll);
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, [open]);
+  }, [present]);
   const activate = (name: string) => { setSection(name); setChild(null); };
   const showDefault = () => { setSection(null); setChild(null); };
   const activateChild = (item: Item) => { if (item.children) setChild(item.label); };
