@@ -1,16 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { getImageProps } from "next/image";
 import { createPaperRenderer, type PaperRenderer } from "../paper-renderer";
 import type { ListingProject } from "../project-types";
 import { DESKTOP_CARD_STEP, DESKTOP_EXIT_RUNWAY, MOBILE_CARD_STEP, MOBILE_EXIT_RUNWAY, MOBILE_QUERY } from "./constants";
 
-type BackdropState = { current: number; colors: [string, string] };
+import { createProjectTheme, type ProjectTheme } from "@/lib/project-theme";
+type BackdropState = { current: number; themes: [ProjectTheme, ProjectTheme] };
 
-export function useProjectGallery(projects: ListingProject[], enabled: boolean, colorsRef: React.RefObject<string[]>) {
+export function useProjectGallery(projects: ListingProject[], enabled: boolean) {
   const [active, setActive] = useState(0);
-  const initialColor = projects[0]?.listingColor || projects[0]?.background || "#132316";
-  const [backdrop, setBackdrop] = useState<BackdropState>({ current: 0, colors: [initialColor, initialColor] });
+  const initialTheme = projects[0]?.theme || createProjectTheme([]);
+  const [backdrop, setBackdrop] = useState<BackdropState>({ current: 0, themes: [initialTheme, initialTheme] });
   const hostRef = useRef<HTMLElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,21 +26,29 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean, 
   const scrollStart = useRef(0);
   const scrollDistance = useRef(1);
   const viewport = useRef({ width: 0, height: 0 });
-  const imageSources = useMemo(() => projects.map(project => project.listingImage.url), [projects]);
+  // WebGL needs CORS-clean textures. Normal <img> elements can display an
+  // external asset even when that same response is forbidden as a GL texture.
+  // Next's existing allowlisted optimizer gives the renderer same-origin URLs.
+  const imageSources = useMemo(() => projects.map(project => getImageProps({
+    src: project.listingImage.url,
+    width: Math.min(1920, project.listingImage.width),
+    height: Math.max(1, Math.round(project.listingImage.height * Math.min(1920, project.listingImage.width) / project.listingImage.width)),
+    alt: "", quality: 75,
+  }).props.src), [projects]);
   const sourceKey = imageSources.join("\u0000");
 
   const select = useCallback((index: number) => {
     if (activeRef.current === index) return;
     activeRef.current = index;
     setActive(index);
-    const color = colorsRef.current[index] || projects[index]?.listingColor || projects[index]?.background || "#132316";
+    const theme = projects[index]?.theme || createProjectTheme([]);
     setBackdrop(previous => {
       const next = 1 - previous.current;
-      const colors: [string, string] = [...previous.colors];
-      colors[next] = color;
-      return { current: next, colors };
+      const themes: [ProjectTheme, ProjectTheme] = [...previous.themes];
+      themes[next] = theme;
+      return { current: next, themes };
     });
-  }, [colorsRef, projects]);
+  }, [projects]);
 
   const requestRender = useCallback(() => {
     if (frameId.current || !enabledRef.current) return;
@@ -73,8 +83,9 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean, 
     const host = hostRef.current, gallery = galleryRef.current;
     if (!host || !gallery || !enabledRef.current) return;
     const nav = document.querySelector<HTMLElement>(".site-nav");
-    const navRect = nav?.getBoundingClientRect();
-    const clearance = navRect && navRect.height > 0 ? Math.max(0, navRect.bottom) + 12 : 96;
+    // The nav's hide/show transform must not resize or reposition the gallery.
+    // Reserve its original layout height even when returning with a hidden nav.
+    const clearance = nav && nav.offsetHeight > 0 ? nav.offsetHeight + 12 : 96;
     host.style.setProperty("--projects-nav-offset", `${clearance}px`);
     const offset = Number.parseFloat(getComputedStyle(gallery).top) || 0;
     scrollStart.current = Math.max(0, host.getBoundingClientRect().top + window.scrollY - offset);
@@ -88,38 +99,57 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean, 
   }, [projects.length, updateTarget]);
 
   useEffect(() => {
-    const onColor = (event: Event) => {
-      const { index, color } = (event as CustomEvent<{ index: number; color: string }>).detail;
-      if (index !== activeRef.current) return;
-      setBackdrop(previous => {
-        if (previous.colors[previous.current] === color) return previous;
-        const next = 1 - previous.current;
-        const colors: [string, string] = [...previous.colors]; colors[next] = color;
-        return { current: next, colors };
-      });
-    };
-    window.addEventListener("iz-project-color", onColor);
-    return () => window.removeEventListener("iz-project-color", onColor);
-  }, []);
-
-  useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    try { rendererRef.current = createPaperRenderer(canvas, imageSources); }
-    catch (error) { console.warn("IZART paper renderer fallback:", error); }
-    const onTexture = () => requestRender();
-    canvas.addEventListener("iz-texture-ready", onTexture);
-    requestRender();
-    return () => {
+    if (!canvas) return;
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    const stop = () => {
       cancelAnimationFrame(frameId.current);
       frameId.current = 0;
       lastTime.current = 0;
-      canvas.removeEventListener("iz-texture-ready", onTexture);
+    };
+    const start = () => {
+      stop();
+      canvas.dataset.painted = "false";
       rendererRef.current?.dispose();
       rendererRef.current = null;
+      if (!motion.matches) {
+        try { rendererRef.current = createPaperRenderer(canvas, imageSources); }
+        catch (error) { console.warn("IZART paper renderer fallback:", error); }
+      }
+      requestRender();
+    };
+    const resume = () => {
+      if (document.hidden) { stop(); return; }
+      stop();
+      // Repaint after history/tab restoration even when scroll progress is unchanged.
+      measure();
+      requestRender();
+    };
+    const lost = (event: Event) => {
+      event.preventDefault(); stop(); canvas.dataset.painted = "false";
+    };
+    const onTexture = () => requestRender();
+    canvas.addEventListener("iz-texture-ready", onTexture);
+    canvas.addEventListener("webglcontextlost", lost);
+    canvas.addEventListener("webglcontextrestored", start);
+    window.addEventListener("pageshow", resume);
+    document.addEventListener("visibilitychange", resume);
+    motion.addEventListener("change", start);
+    // Restore the original initialization order. Geometry is measured on the
+    // following animation frame, after the sticky gallery has its layout.
+    start();
+    return () => {
+      stop();
+      canvas.removeEventListener("iz-texture-ready", onTexture);
+      canvas.removeEventListener("webglcontextlost", lost);
+      canvas.removeEventListener("webglcontextrestored", start);
+      window.removeEventListener("pageshow", resume);
+      document.removeEventListener("visibilitychange", resume);
+      motion.removeEventListener("change", start);
+      rendererRef.current?.dispose(); rendererRef.current = null;
       canvas.dataset.painted = "false";
     };
-    // sourceKey is the stable renderer lifecycle boundary; imageSources has the same contents.
+    // The renderer depends on the cover sources, not palette or text updates.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourceKey]);
 
@@ -159,6 +189,7 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean, 
     const nav = document.querySelector<HTMLElement>(".site-nav");
     const observer = nav && window.ResizeObserver ? new ResizeObserver(scheduleMeasure) : null;
     if (nav && observer) observer.observe(nav);
+
     document.fonts?.ready.then(scheduleMeasure);
     return () => {
       disposed = true;

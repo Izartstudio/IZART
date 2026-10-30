@@ -1,45 +1,28 @@
 import type { Project } from "./project";
-import assets from "./seraano-assets.json";
-const ordered = assets.filter(a => !a.url.includes('moodboard')).sort((a,b) => Number(a.url.match(/seraano(\d+)/)?.[1]) - Number(b.url.match(/seraano(\d+)/)?.[1]));
-const loupeImage = { url: "/assets/projects/loupe.png", width: 1223, height: 688 };
-export const localProjects: Project[] = [{
-  slug: "seraano", name: "Seraano", client: "Seraano", year: "2025-26",
-  introduction: "Seraano is a luxury villa community by Aarza Realty, resting along the Chapora River backwaters in Camurlim, North Goa. Eight residences shaped by the land they stand on. Contemporary architecture that listens to the village before it speaks for itself.",
-  services: ["Branding", "Packaging Design", "Website UI UX"],
-  listingImage: ordered[0], listingColor: "#182817", listingOrder: 1, showInProjects: true,
-  background: "#000000", foreground: "#ffffff",
-  media: ordered.map((image, i) => ({ _key: `seraano-${i}`, _type: "imagePanel", image, alt: `Seraano brand identity and applications — artwork ${i + 1}` })),
-  seoTitle: "Seraano — Brand Identity & Design | Izart Studio",
-  description: "Explore Izart Studio’s brand identity and design for Seraano, a luxury villa community by Aarza Realty in North Goa.",
-  socialImage: ordered[0], indexable: false,
-  // Preview copy based on the supplied project description; replace with approved copy in Sanity.
+import { importedProjects } from "./imported-projects";
+import dogsAndCatsAssets from "./dogs-and-cats-assets.json";
+
+export const retiredProjectSlugs = new Set(["wg1", "project3"]);
+export const localProjects: Project[] = [...importedProjects, {
+  slug: "dogs-and-cats", name: "Dogs & Cats", client: "Dogs & Cats", year: "",
+  introduction: "Dogs & Cats is a cheerful branding project inspired by the joy, chaos, and charm pets bring to everyday life. It celebrates the bond between pets and their owners through playful humor, muddy paws, dramatic meows, and plenty of happy moments.",
+  services: ["Brand Identity", "Packaging Design", "Brand Collaterals"],
+  background: "#FFF4DD", foreground: "#3E2017",
+  listingImage: { url: "/assets/projects/dogs-and-cats/cover.webp", width: 1920, height: 1080 },
+  listingDescription: "A playful pet-store identity spanning packaging, signage, social, and merchandise.",
+  listingColor: "#86C4FE", listingOrder: 8, showInProjects: true, featuredOnHomepage: false,
+  media: dogsAndCatsAssets.map((image, index) => ({
+    _key: `dogs-and-cats-${index + 1}`, _type: "imagePanel", image,
+    alt: `Dogs & Cats pet-store brand identity, packaging, and applications - case study panel ${index + 1}`,
+  })),
   details: [
-    { _key: "objective", title: "The objective", body: "Introduce Seraano, a collection of eight residences by Aarza Realty in Camurlim, North Goa. The identity reflects the quiet setting along the Chapora River backwaters and an architecture shaped by its surroundings." },
-    { _key: "approach", title: "The approach", body: "The case study brings together the landscape, architecture, and daily life of the community. Natural textures and a restrained palette establish the tone across the visual presentation." },
-    { _key: "identity", title: "Visual identity", body: "A flowing wordmark, muted greens, and warm neutral tones connect the brand to its setting. The following artwork presents the identity across imagery, print, and brand applications." },
-    { _key: "outcome", title: "Outcome", body: "A connected collection of brand applications for Seraano. Browse the artwork alongside these project details to explore the visual system." },
+    { _key: "about", title: "About the project", body: "Dogs & Cats is a cheerful branding project inspired by the joy, chaos, and charm pets bring to everyday life. The identity celebrates the bond between pets and their owners through playful humor, muddy paws, dramatic meows, and happy moments." },
+    { _key: "identity", title: "The identity", body: "The logo brings a dog and cat into a soft, rounded frame, creating a warm, playful identity that feels familiar and easy to recognize. A palette of pink, yellow, blue, cream, and dark brown carries the character across the brand." },
+    { _key: "characters", title: "Same characters, different moments", body: "The character system is built to flex across packaging, signage, social, and merchandise without losing recognition. Different poses and moods keep the brand playful and familiar." },
+    { _key: "applications", title: "Brand applications", body: "The case study presents the identity across everyday brand pieces, packaging, digital storefront concepts, and the retail environment. These applications keep Dogs & Cats close, even beyond the store." },
   ],
-}, {
-  slug: "wg1", name: "WG1", client: "WG1", year: "2025",
-  introduction: "WG1 is a nutraceutical brand built around foundational daily nutrition. Izart Studio developed its brand strategy, visual identity, and packaging around a calm, dependable daily ritual.",
-  services: ["Brand Strategy", "Visual Identity", "Packaging"], background: "#000000", foreground: "#ffffff", media: [],
-  seoTitle: "WG1 | Nutraceutical Brand Identity & Packaging | Izart Studio",
-  description: "Explore Izart Studio’s brand strategy, visual identity, and packaging design for WG1.", indexable: false,
-  listingImage: ordered[1], listingColor: "#182817", listingOrder: 2, showInProjects: true,
-}, {
-  slug: "project3", name: "project3", client: "project3", year: "2025",
-  introduction: "WG1 is a nutraceutical brand built around foundational daily nutrition. Izart Studio developed its brand strategy, visual identity, and packaging around a calm, dependable daily ritual.",
-  services: ["Brand Strategy", "Visual Identity", "Packaging"], background: "#000000", foreground: "#ffffff", media: [],
-  seoTitle: "WG1 | Nutraceutical Brand Identity & Packaging | Izart Studio",
-  description: "Explore Izart Studio’s brand strategy, visual identity, and packaging design for WG1.", indexable: false,
-  listingImage: ordered[1], listingColor: "#182817", listingOrder: 2, showInProjects: true,
-}, {
-  slug: "loupe", name: "Loupe", client: "Loupe", year: "",
-  introduction: "", services: [],
-  background: "#0a0c08", foreground: "#ffffff",
-  listingImage: loupeImage, listingOrder: 4, showInProjects: true,
-  featuredOnHomepage: false,
-  media: [{ _key: "loupe-cover", _type: "imagePanel", image: loupeImage, alt: "Loupe jewellery website displayed on a phone beside a ruby ring" }],
-  seoTitle: "Loupe | Izart Studio", description: "Loupe — a project by Izart Studio.",
-  socialImage: loupeImage, indexable: false,
+  seoTitle: "Dogs & Cats | Pet Brand Identity & Packaging | Izart Studio",
+  description: "Explore Dogs & Cats, a playful pet-store brand identity with character illustrations, packaging, and brand applications by Izart Studio.",
+  socialImage: { url: "/assets/projects/dogs-and-cats/cover.webp", width: 1920, height: 1080 },
+  indexable: true,
 }];

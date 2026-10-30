@@ -65,6 +65,15 @@ export function createPaperRenderer(canvas: HTMLCanvasElement, imageSources: str
   const render=(progress:number)=>{
     if (disposed || gl.isContextLost()) return false;
     gl.useProgram(program);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    ([ ["a_position",3,0], ["a_uv",2,3], ["a_blur",1,5], ["a_brightness",1,6], ["a_opacity",1,7] ] as const).forEach(([name,size,offset]) => {
+      const location = gl.getAttribLocation(program, name);
+      gl.enableVertexAttribArray(location);
+      gl.vertexAttribPointer(location, size, gl.FLOAT, false, stride * 4, offset * 4);
+    });
+    gl.activeTexture(gl.TEXTURE0);
     gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
     const cardGap=mobile?.025:.035,center=mobile?.5:(layout.viewport*.5-layout.top)/layout.height,cardAspect=mobile?3/4:815/458.44;
     const desiredHeight=layout.width*.92/cardAspect/layout.height,availableHeight=mobile?.86:Math.max(.02,2*Math.min(center,1-center)-.12),frontHeight=Math.min(desiredHeight,availableHeight),cardWidth=Math.min(.92,frontHeight*layout.height*cardAspect/layout.width);

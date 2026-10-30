@@ -5,12 +5,13 @@ import Link from "next/link";
 import type { RefObject } from "react";
 import type { ListingProject, ProjectsView } from "../project-types";
 import { ProjectPagination } from "./project-pagination";
+import type { PortfolioSettings } from "@/content/portfolio-page";
 import { ViewToggle } from "./view-toggle";
 
 const imageLoader = ({ src }: ImageLoaderProps) => src;
 
-export function ProjectsGallery({ projects, active, view, setView, hostRef, galleryRef, canvasRef, goTo }: {
-  projects: ListingProject[]; active: number; view: ProjectsView; setView: (view: ProjectsView) => void;
+export function ProjectsGallery({ settings, projects, active, view, setView, hostRef, galleryRef, canvasRef, goTo }: {
+  settings: PortfolioSettings; projects: ListingProject[]; active: number; view: ProjectsView; setView: (view: ProjectsView) => void;
   hostRef: RefObject<HTMLElement | null>; galleryRef: RefObject<HTMLDivElement | null>; canvasRef: RefObject<HTMLCanvasElement | null>;
   goTo: (index: number) => void;
 }) {
@@ -25,11 +26,11 @@ export function ProjectsGallery({ projects, active, view, setView, hostRef, gall
           <ul>{project.services.map(service => <li key={service}>{service}</li>)}</ul>
         </div>
         <span className="projects-gallery__dots" aria-hidden="true" />
-        <ViewToggle view={view} setView={setView} />
+        <ViewToggle view={view} setView={setView} labels={settings} />
       </div>
       <div className="projects-gallery__stage">
         <canvas ref={canvasRef} className="projects-paper-canvas" aria-hidden="true" />
-        <Image className="projects-paper-fallback" loader={imageLoader} unoptimized src={project.listingImage.url} width={project.listingImage.width} height={project.listingImage.height} sizes="(max-width: 767px) 88vw, 64vw" alt={`${project.name} project`} priority />
+        <Image className="projects-paper-fallback" loader={imageLoader} unoptimized src={project.listingImage.url} width={project.listingImage.width} height={project.listingImage.height} sizes="(max-width: 767px) 88vw, 64vw" alt={project.listingAlt || `${project.name} project`} priority />
         <Link href={`/projects/${project.slug}`} className="projects-paper-link" aria-label={`View ${project.name} case study`} />
       </div>
     </div>

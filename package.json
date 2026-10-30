@@ -12,7 +12,8 @@
     "studio": "sanity dev",
     "test:seo": "python3 scripts/test-seo.py",
     "test:performance": "node scripts/test-performance.mjs",
-    "test:crawlers": "node scripts/test-crawlers.mjs"
+    "test:crawlers": "node scripts/test-crawlers.mjs",
+    "sanity:import-projects": "sanity exec scripts/import-projects-to-sanity.ts --with-user-token"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -26,6 +27,8 @@
     "react-progressive-blur": "^1.0.6",
     "sanity": "^6.15.0",
     "server-only": "^0.0.1",
+    "sharp": "^0.35.4",
+    "styled-components": "^6.6.0",
     "three": "^0.186.0"
   },
   "devDependencies": {

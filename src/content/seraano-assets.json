@@ -1,92 +1,52 @@
 [
   {
-    "url": "/assets/seraano/seraano1.avif",
+    "url": "/assets/projects/seraano/panel-01.webp",
     "width": 1920,
-    "height": 1080
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano10.avif",
+    "url": "/assets/projects/seraano/panel-02.webp",
     "width": 1920,
-    "height": 663
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano11.avif",
+    "url": "/assets/projects/seraano/panel-03.webp",
     "width": 1920,
-    "height": 1080
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano12.avif",
+    "url": "/assets/projects/seraano/panel-04.webp",
     "width": 1920,
-    "height": 1080
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano13.avif",
+    "url": "/assets/projects/seraano/panel-05.webp",
     "width": 1920,
-    "height": 2148
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano14.avif",
+    "url": "/assets/projects/seraano/panel-06.webp",
     "width": 1920,
-    "height": 1080
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano15.avif",
+    "url": "/assets/projects/seraano/panel-07.webp",
     "width": 1920,
-    "height": 1080
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano16.avif",
+    "url": "/assets/projects/seraano/panel-08.webp",
     "width": 1920,
-    "height": 1080
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano17.avif",
+    "url": "/assets/projects/seraano/panel-09.webp",
     "width": 1920,
-    "height": 1080
+    "height": 2000
   },
   {
-    "url": "/assets/seraano/seraano19.avif",
+    "url": "/assets/projects/seraano/panel-10.webp",
     "width": 1920,
-    "height": 1080
-  },
-  {
-    "url": "/assets/seraano/seraano2.avif",
-    "width": 1920,
-    "height": 1080
-  },
-  {
-    "url": "/assets/seraano/seraano3.jpg",
-    "width": 1920,
-    "height": 1080
-  },
-  {
-    "url": "/assets/seraano/seraano4.avif",
-    "width": 1920,
-    "height": 1080
-  },
-  {
-    "url": "/assets/seraano/seraano5.avif",
-    "width": 1920,
-    "height": 1432
-  },
-  {
-    "url": "/assets/seraano/seraano6.avif",
-    "width": 1920,
-    "height": 1080
-  },
-  {
-    "url": "/assets/seraano/seraano7.avif",
-    "width": 1920,
-    "height": 1080
-  },
-  {
-    "url": "/assets/seraano/seraano8.avif",
-    "width": 1920,
-    "height": 1080
-  },
-  {
-    "url": "/assets/seraano/seraanomoodboard.avif",
-    "width": 1340,
-    "height": 800
+    "height": 599
   }
 ]

@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import type { Project } from "@/content/project";
 import { ProjectImageView } from "./project-image";
 export function ProjectHero({ project }: { project: Project }) {
-  return <header className="project-hero" style={{ "--hero-bg": project.background, "--hero-fg": project.foreground } as CSSProperties}>
+  return <header className="project-hero" style={{ "--hero-bg": project.background, "--hero-fg": project.foreground, "--hero-muted": project.theme?.heroMuted || project.foreground } as CSSProperties}>
     <div className="project-hero__main">
       <div className="project-hero__copy">
         <p className="project-hero__year">{project.year}</p>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { showcaseServices, serviceScrollState, type ShowcaseService } from "./service-showcase-data";
 import styles from "./services-showcase.module.css";
 
@@ -25,8 +25,11 @@ export function ServicesShowcase() {
       // The stylesheet owns direction (horizontal on desktop, vertical on mobile).
       // Clear transforms left by the earlier renderer or a preserved dev session.
       fill.style.removeProperty("transform");
-      fill.style.setProperty("--services-progress", String(state.progress));
-      if (selected !== state.active) { selected = state.active; setActive(state.active); }
+      if (selected !== state.active) {
+        selected = state.active;
+        fill.style.setProperty("--services-progress", "0");
+        setActive(state.active);
+      }
     };
     const requestUpdate = () => { if (!frame) frame = window.requestAnimationFrame(update); };
 
@@ -138,6 +141,21 @@ export function ServicesShowcase() {
     };
   }, []);
 
+  const updatePlaybackProgress = useCallback((progress: number) => {
+    fillRef.current?.style.setProperty("--services-progress", String(progress));
+  }, []);
+  const advanceAfterPlayback = useCallback((index: number) => {
+    const host = hostRef.current, intro = introRef.current, sticky = stickyRef.current;
+    if (!host || !intro || !sticky || document.hidden) return;
+    const top = window.scrollY + host.getBoundingClientRect().top;
+    const travel = host.offsetHeight - intro.offsetHeight - sticky.offsetHeight;
+    const next = index + 1;
+    const destination = next < showcaseServices.length
+      ? top + intro.offsetHeight + (next + 0.5) * travel / showcaseServices.length
+      : top + host.offsetHeight;
+    window.scrollTo({ top: destination, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+  }, []);
+
   const previous = showcaseServices[active - 1];
   return <section ref={hostRef} className={styles.showcase} style={{ "--service-count": showcaseServices.length } as CSSProperties} aria-labelledby="services-showcase-title">
       <header ref={introRef} className={styles.intro}>
@@ -146,7 +164,7 @@ export function ServicesShowcase() {
       </header>
     <div ref={stickyRef} className={styles.sticky}>
       <div className={styles.stage}>
-        {showcaseServices.map((item, index) => <ServiceMedia key={item.slug} service={item} active={index === active} />)}
+        {showcaseServices.map((item, index) => <ServiceMedia key={item.slug} service={item} index={index} active={index === active} onProgress={updatePlaybackProgress} onComplete={advanceAfterPlayback} />)}
         <div className={styles.shade} />
         <div className={styles.entryFade} aria-hidden="true" />
         <div className={styles.content}>
@@ -165,7 +183,13 @@ export function ServicesShowcase() {
   </section>;
 }
 
-function ServiceMedia({ service, active }: { service: ShowcaseService; active: boolean }) {
+function ServiceMedia({ service, index, active, onProgress, onComplete }: {
+  service: ShowcaseService;
+  index: number;
+  active: boolean;
+  onProgress: (progress: number) => void;
+  onComplete: (index: number) => void;
+}) {
   const ref = useRef<HTMLVideoElement>(null);
   const { image, mobileImage, video, mobileVideo } = service;
 
@@ -190,8 +214,36 @@ function ServiceMedia({ service, active }: { service: ShowcaseService; active: b
     let shouldPlay = false;
     let pending = false;
     let playRequest = 0;
+    let progressFrame = 0;
+    let completed = false;
+    let advanced = false;
+    const advance = () => {
+      if (!disposed && completed && !advanced && !document.hidden) {
+        advanced = true;
+        onComplete(index);
+      }
+    };
+    const reportProgress = () => {
+      progressFrame = 0;
+      if (disposed) return;
+      const duration = element.duration;
+      onProgress(Number.isFinite(duration) && duration > 0 ? Math.min(1, element.currentTime / duration) : 0);
+      if (!element.paused && !element.ended && !document.hidden) progressFrame = window.requestAnimationFrame(reportProgress);
+    };
+    const stopProgress = () => { window.cancelAnimationFrame(progressFrame); progressFrame = 0; };
+    const ended = () => {
+      stopProgress();
+      if (disposed || completed) return;
+      completed = true;
+      onProgress(1);
+      advance();
+    };
+    // A fresh visit to a state starts a single playback, rather than a loop.
+    element.currentTime = 0;
+    onProgress(0);
 
     const update = () => {
+      if (completed) { element.pause(); advance(); return; }
       shouldPlay = visible && !document.hidden && !motion.matches && !connection?.saveData;
       if (!shouldPlay) { element.pause(); return; }
       const source = mobile.matches ? mobileVideo || video : video;
@@ -215,12 +267,16 @@ function ServiceMedia({ service, active }: { service: ShowcaseService; active: b
     const playing = () => {
       if (disposed || !shouldPlay) { element.pause(); return; }
       element.dataset.ready = "true";
+      stopProgress();
+      reportProgress();
     };
     const failed = () => { element.dataset.ready = "false"; };
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
     observer.observe(element);
     element.addEventListener("playing", playing);
     element.addEventListener("error", failed);
+    element.addEventListener("pause", stopProgress);
+    element.addEventListener("ended", ended);
     document.addEventListener("visibilitychange", update);
     window.addEventListener("pageshow", update);
     motion.addEventListener("change", update);
@@ -228,6 +284,7 @@ function ServiceMedia({ service, active }: { service: ShowcaseService; active: b
     return () => {
       disposed = true;
       shouldPlay = false;
+      stopProgress();
       observer.disconnect();
       document.removeEventListener("visibilitychange", update);
       window.removeEventListener("pageshow", update);
@@ -235,9 +292,11 @@ function ServiceMedia({ service, active }: { service: ShowcaseService; active: b
       mobile.removeEventListener("change", update);
       element.removeEventListener("playing", playing);
       element.removeEventListener("error", failed);
+      element.removeEventListener("pause", stopProgress);
+      element.removeEventListener("ended", ended);
       element.pause();
     };
-  }, [active, video, mobileVideo]);
+  }, [active, video, mobileVideo, index, onProgress, onComplete]);
 
   useEffect(() => {
     const element = ref.current;
@@ -256,6 +315,6 @@ function ServiceMedia({ service, active }: { service: ShowcaseService; active: b
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={image} alt="" width={1440} height={810} loading="lazy" decoding="async" />
     </picture>
-    {video && <video ref={ref} muted loop playsInline preload="none" disablePictureInPicture tabIndex={-1} />}
+    {video && <video ref={ref} muted playsInline preload="none" disablePictureInPicture tabIndex={-1} />}
   </div>;
 }

@@ -87,12 +87,12 @@ export function SiteNavigation() {
           <div className="menu-overlay__utility">{utilities.map(([label, href]) => <Link href={href} key={label} onClick={close} onPointerEnter={showDefault} onFocus={showDefault}>{label}</Link>)}</div>
         </div>
         <article className={`menu-overlay__project${section ? "" : " is-visible"}`} aria-hidden={Boolean(section)} inert={section ? true : undefined}>
-          <div className="menu-overlay__project-media"><Image src="/assets/site/open-menu-project.png" alt="Benicio Homes project artwork" width={1442} height={812} priority /></div>
+          <div className="menu-overlay__project-media"><Image src="/assets/projects/benicio/cover.webp" alt="Benicio Homes project artwork" width={1920} height={1080} priority /></div>
           <div className="menu-overlay__project-copy">
-            <p>Latest Project · Real Estate · 2026</p>
+            <p>Latest Project · Real Estate</p>
             <h2>BENICIO HOMES</h2>
           </div>
-          <Link className="menu-overlay__project-cta" href="/projects/seraano" onClick={close}>View Project <span aria-hidden="true">→</span></Link>
+          <Link className="menu-overlay__project-cta" href="/projects/benicio" onClick={close}>View Project <span aria-hidden="true">→</span></Link>
         </article>
         {Object.entries(sections).map(([sectionName, sectionItems]) => <nav className={`menu-overlay__secondary${section === sectionName ? " is-visible" : ""}`} aria-label={`${sectionName} navigation`} aria-hidden={section !== sectionName} inert={section !== sectionName ? true : undefined} key={sectionName}>
           {sectionItems.map(item => <Link href={item.href} className={child === item.label ? "is-active" : ""} key={item.label} onClick={event => followSecondaryLink(event, item)} onPointerEnter={() => activateChild(item)} onFocus={() => activateChild(item)} aria-expanded={item.children ? child === item.label : undefined}><span>{item.label}</span>{item.children && <ArrowIcon />}</Link>)}

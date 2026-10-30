@@ -1,35 +1,67 @@
-# Connect Sanity
+# Run Sanity locally
 
-The front end currently uses local sample content whenever SANITY_PROJECT_ID is unset. Seraano demonstrates the media layout with 17 existing artwork panels downloaded from the public Izart case study. WG1 uses the same template with hero facts only. Both samples are noindex. The Seraano logo and approved font file have not been provided: the logo area stays empty and the hero uses a system sans-serif until they are supplied. Sample artwork descriptions need editorial review before indexing.
+## 1. Connect a Sanity project
 
-## Setup after creating your Sanity project
+Create or select your project at https://www.sanity.io/manage and note its project ID and dataset name. This repository does not create an account or dataset automatically.
 
-1. Copy `.env.example` to `.env.local`. Set SANITY_PROJECT_ID and SANITY_STUDIO_PROJECT_ID to your actual project ID, and set both dataset variables. If the dataset is private, supply a server-only read token through SANITY_API_READ_TOKEN.
-2. Restart Next.js with `npm run dev`. Run Studio with `npm run studio` in a separate terminal. Sanity Studio reads SANITY_STUDIO_* environment variables. For Studio CLI environments that do not read `.env.local`, set these variables in the shell or a local `.env` file (ignored by Git).
-3. Configure your Sanity project's allowed Studio origin (normally http://localhost:3333), then sign in to Studio yourself.
-4. Create a Case study document. Enter the hero content, upload the optional logo, and drag images/video into the ordered media field. The limit is 30 combined panels. Upload optional mobile compositions inside an image item; these do not increase the count.
-5. Publish and visit `/projects/<slug>`. Published content refreshes through Next's 60-second revalidation; the first request after expiry can receive the cached version while regeneration occurs. No automatic webhook or draft preview is configured in this iteration.
+In the repository root, create or update `.env.local` without replacing existing form credentials:
 
-When connected, Sanity is authoritative: a missing project returns 404 rather than silently serving a local sample. Drafts are not publicly exposed. Dataset/API failures surface as errors rather than disguised local content. Creating a document does not require adding a new route in code.
+```dotenv
+SANITY_PROJECT_ID=your_project_id
+SANITY_DATASET=production
+SANITY_STUDIO_PROJECT_ID=your_project_id
+SANITY_STUDIO_DATASET=production
+```
 
-## Assets
+Both applications must point at the same project and dataset. For a private dataset, also set a server-only `SANITY_API_READ_TOKEN` with read access. Never put a write token in a `NEXT_PUBLIC_` or `SANITY_STUDIO_` variable.
 
-Upload complete panel compositions individually. Use high-quality JPEG/PNG/WebP/AVIF sources, and keep their full aspect ratio. Sanity's image pipeline handles delivery sizes and format negotiation. Uploaded logo images are displayed with contain sizing. Mobile compositions can replace desktop panels below 600px without changing item order.
+## 2. Sign in and start Studio
 
-Videos currently use compressed MP4/WebM files uploaded to Sanity, with a required poster of the same aspect ratio. User-controlled videos use no preload. Muted loops play when visible unless reduced motion is requested; native controls provide pause/play. Include WebVTT captions for meaningful audio. Streaming can be added if the real assets require it. Do not upload 30 large uncompressed films.
+Use Node 22 or newer. From the project folder:
 
-## Publishing checklist
+```sh
+cd /Users/manyaagureja/Downloads/Izart-Redesign
+npx sanity login
+npm run studio
+```
 
-Review copy and informative alt text (the sample numbered descriptions are provisional), supply the genuine logo/font, verify desktop/mobile artwork, and test actual videos and captions. Set each finished project's indexing flag and SITE_INDEXABLE=true only on the final production deployment. The sitemap then includes eligible projects only. Preserve the remaining original site routes before replacing the full domain. Root currently redirects to Seraano for convenient local review; it is not the completed studio homepage.
+Open http://localhost:3333 and sign in. If prompted, add `http://localhost:3333` as an allowed Studio origin in your Sanity project settings.
 
-Form, footer, global navigation, streaming service, and draft visual editing remain outside this iteration. No account has been created or connected.
+Start the website in a separate terminal:
 
-## Dependency audit
+```sh
+cd /Users/manyaagureja/Downloads/Izart-Redesign
+npm run dev
+```
 
-On 17 September 2026, npm reported 13 transitive advisories (11 moderate, 2 high), in Sanity's CLI/tooling dependencies. Compatible `npm audit fix` did not resolve them; npm proposes a breaking Sanity downgrade. No forced downgrade was applied. Review these upstream dependencies before exposing/deploying Studio. Studio is not embedded into the public case-study page.
+Open http://localhost:3000/projects. Restart both processes after changing environment variables. Studio supports `SANITY_STUDIO_*` variables from `.env.local`; if your shell or CLI does not load them, export those two variables in that terminal before starting Studio.
 
-## Project details navigation
+## 3. Import the current portfolio and all its assets
 
-The optional Project details accordion array supplies headings and plain-text bodies for the slide-up view. It is separate from the 30-media limit. The bottom control appears when the media stream reaches 14% from the viewport top (with the services row still visible), stays available through the end of the page, and is omitted for projects without details or media. Desktop uses independent left/right scroll areas; mobile stacks those areas. The page and details workspace share a single mounted media stream. A transform animation expands the bottom control into the side panel while the gallery scales into the right column; closing preserves gallery reading position. Escape closes the details workspace; background scrolling is locked and focus returns to the trigger. Reduced motion disables the transitions. Local Seraano accordion copy is provisional, derived from the project description, and needs approval before launch.
+Once connected, run in a separate terminal:
 
-Animation timing: panel and gallery share an 820ms transform transition. Text fades in without movement at 520ms over 360ms, overlapping the final settling motion. The panel gradient stays constant; there is no separate glow, shading reveal, or gradient animation. Closing takes 620ms and cancels unfinished text reveals. Reduced motion skips delays and movement. The opaque workspace keeps the underlying hero hidden.
+```sh
+npm run sanity:import-projects
+```
+
+This uses your local CLI login and needs permission to write to the dataset. It uploads the optimized covers, homepage images, case-study image panels, and any configured videos/posters/captions. It creates the eight current case studies and the Portfolio page document. Shared images are uploaded once per run; Sanity identifies asset content on upload.
+
+The importer creates published documents. It does not overwrite existing published projects or settings when re-run. If a project with the same slug already exists, its current editor content is retained: edit that document in Studio to replace older media. Avoid importing while someone is editing an unpublished draft of the same project.
+
+The Portfolio page document is created with **Manage all projects in Sanity** enabled. In that mode, the website uses published CMS projects only. A deleted or unpublished project no longer reappears from local fallback content. If Portfolio page already existed, enable that setting yourself after confirming the import is complete.
+
+Without a configured CMS, the current local projects remain available. Before CMS-only mode, published projects override local projects with the same slug; hidden published projects also suppress their local counterparts. Drafts are not served publicly. WG1 and the old duplicate placeholder remain retired.
+
+## What you can edit
+
+**Portfolio page:** page heading, grid introduction, view labels, initial Gallery/Grid view, ordered project references, and the case-study link archive.
+
+**Case study:** client/name/year, introduction, services, cover and cover description, gallery summary, listing order/visibility, homepage image/video/order, optional logo, SEO/social image, and the details accordion. Drag image/video panels to reorder; up to 30 combined panels. Image panels support separate mobile artwork and alt text. Videos support posters, playback mode, and WebVTT captions.
+
+**Cover colors - optional overrides:** portfolio background, two blob colors, inner-page background, and preferred text color. Leave fields empty for automatic sampling from the actual project cover. Old hard-coded fixture colors are not treated as overrides. Clear an override to restore automatic colors. Text is corrected when necessary to maintain at least 4.5:1 contrast; blob colors can be toned down for legibility.
+
+Cover sampling runs server-side on a small image. Samples are bounded and cached; Sanity palette metadata is a fallback if its image CDN is unavailable. Local covers use the same extraction logic. Colors are included in server-rendered content, so a visitor does not need an extra full-cover download to discover the theme.
+
+## Publish changes
+
+Publish the edited document. Website data revalidates after approximately 60 seconds; the first request can receive the previous version while regeneration completes. No webhook or draft preview is configured. For production, set the same server-side Sanity environment variables on the host and deploy the updated code. Enabling project indexing still requires the deployment's `SITE_INDEXABLE` setting.

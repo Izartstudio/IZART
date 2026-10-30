@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectPageView } from "@/components/project/project-page";
 import { getProject, getProjectSlugs } from "@/sanity/projects";
-import { pageMetadata } from "@/lib/seo";
-import { site } from "@/lib/site";
+import { projectMetadata, projectStructuredData } from "@/lib/project-seo";
+import { JsonLd } from "@/components/seo/json-ld";
 export const revalidate = 60;
 type Props = { params: Promise<{ slug: string }> };
 export async function generateStaticParams() { return [...new Set([...(await getProjectSlugs()), ...preservedPages.filter(page => page.path.startsWith("/projects/")).map(page => page.path.split("/")[2])])].map(slug => ({ slug })); }
@@ -16,8 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!page) notFound();
     return preservedMetadata(page);
   }
-  const url = `/projects/${project.slug}`;
-  return { ...pageMetadata(url, { title: project.seoTitle, description: project.description, image: project.socialImage?.url }), robots: { index: site.indexable && project.indexable, follow: true } };
+  return projectMetadata(project);
 }
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
@@ -27,7 +26,5 @@ export default async function ProjectPage({ params }: Props) {
     if (!page) notFound();
     return <PreservedPage page={page} />;
   }
-  const data = { "@context": "https://schema.org", "@type": "CreativeWork", name: project.name, description: project.description,
-    url: new URL(`/projects/${project.slug}`, site.url).href, ...(project.socialImage?.url ? { image: new URL(project.socialImage.url, site.url).href } : {}) };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }} /><ProjectPageView project={project} /></>;
+  return <><JsonLd data={projectStructuredData(project)} /><ProjectPageView project={project} /></>;
 }
