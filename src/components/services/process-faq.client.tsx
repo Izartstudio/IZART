@@ -13,13 +13,13 @@ const items = [
   { question: "What do you look for in portfolios?", answer: "Details for this question are coming soon." },
 ];
 
-export function ProcessFaq() {
+export function ProcessFaq({ entries = items }: { entries?: { question: string; answer: string }[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return <section className="process-faq" aria-labelledby="process-faq-title">
     <h2 id="process-faq-title" className="process-faq__heading">Frequently Asked<br />Questions</h2>
     <div className="process-faq__items">
-      {items.map((item, index) => {
+      {entries.map((item, index) => {
         const open = openIndex === index;
         const answerId = `process-faq-answer-${index}`;
         return <div className="process-faq__item" key={item.question}>

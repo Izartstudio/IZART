@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getImageProps } from "next/image";
 import { createPaperRenderer, type PaperRenderer } from "../paper-renderer";
 import type { ListingProject } from "../project-types";
-import { DESKTOP_CARD_STEP, DESKTOP_EXIT_RUNWAY, MOBILE_CARD_STEP, MOBILE_EXIT_RUNWAY, MOBILE_QUERY } from "./constants";
+import { DESKTOP_CARD_STEP, MOBILE_CARD_STEP, MOBILE_QUERY } from "./constants";
 
 import { createProjectTheme, type ProjectTheme } from "@/lib/project-theme";
 type BackdropState = { current: number; themes: [ProjectTheme, ProjectTheme] };
@@ -18,6 +18,7 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean) 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<PaperRenderer | null>(null);
   const enabledRef = useRef(enabled);
+  const inViewRef = useRef(true);
   const activeRef = useRef(0);
   const targetProgress = useRef(0);
   const displayProgress = useRef(0);
@@ -51,10 +52,10 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean) 
   }, [projects]);
 
   const requestRender = useCallback(() => {
-    if (frameId.current || !enabledRef.current) return;
+    if (frameId.current || !enabledRef.current || !inViewRef.current || document.hidden) return;
     function tick(time: number) {
       frameId.current = 0;
-      if (!enabledRef.current) return;
+      if (!enabledRef.current || !inViewRef.current || document.hidden) return;
       const renderer = rendererRef.current;
       const dt = Math.min(48, Math.max(1, time - (lastTime.current || time - 16)));
       lastTime.current = time;
@@ -92,8 +93,9 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean) 
     const mobile = matchMedia(MOBILE_QUERY).matches;
     const cardStep = gallery.offsetHeight * (mobile ? MOBILE_CARD_STEP : DESKTOP_CARD_STEP);
     scrollDistance.current = Math.max(1, Math.max(0, projects.length - 1) * cardStep);
-    const exitRunway = gallery.offsetHeight * (mobile ? MOBILE_EXIT_RUNWAY : DESKTOP_EXIT_RUNWAY);
-    host.style.height = `${gallery.offsetHeight + scrollDistance.current + exitRunway}px`;
+    // End when the last card completes, reserving only the sticky top inset.
+    // Additional exit runway leaves a blank block before the following section.
+    host.style.height = `${offset + gallery.offsetHeight + scrollDistance.current}px`;
     rendererRef.current?.resize();
     updateTarget();
   }, [projects.length, updateTarget]);
@@ -135,6 +137,20 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean) 
     window.addEventListener("pageshow", resume);
     document.addEventListener("visibilitychange", resume);
     motion.addEventListener("change", start);
+    const visibility = new IntersectionObserver(([entry]) => {
+      inViewRef.current = entry.isIntersecting;
+      if (!entry.isIntersecting) {
+        stop();
+        canvas.dataset.painted = "false";
+        return;
+      }
+      // Browser compositors can discard offscreen canvas pixels. Explicitly
+      // repaint the current card when returning, even at unchanged progress.
+      stop();
+      measure();
+      requestRender();
+    });
+    visibility.observe(canvas);
     // Restore the original initialization order. Geometry is measured on the
     // following animation frame, after the sticky gallery has its layout.
     start();
@@ -146,6 +162,7 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean) 
       window.removeEventListener("pageshow", resume);
       document.removeEventListener("visibilitychange", resume);
       motion.removeEventListener("change", start);
+      visibility.disconnect();
       rendererRef.current?.dispose(); rendererRef.current = null;
       canvas.dataset.painted = "false";
     };

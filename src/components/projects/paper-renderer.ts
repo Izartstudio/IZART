@@ -61,9 +61,12 @@ export function createPaperRenderer(canvas: HTMLCanvasElement, imageSources: str
   });
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);
   let layout={width:1,height:1,top:0,viewport:innerHeight}, signature="";
-  const resize=()=>{const bounds=canvas.getBoundingClientRect();layout={width:Math.max(1,canvas.clientWidth),height:Math.max(1,canvas.clientHeight),top:bounds.top,viewport:innerHeight};mobile=matchMedia("(max-width:767px)").matches;const ratio=Math.min(devicePixelRatio||1,MAX_DPR),width=Math.max(1,Math.round(layout.width*ratio)),height=Math.max(1,Math.round(layout.height*ratio));if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;gl.viewport(0,0,width,height);}};
+  const resize=()=>{const bounds=canvas.getBoundingClientRect();const sticky=canvas.closest<HTMLElement>(".projects-gallery__sticky");const pinnedTop=sticky?Number.parseFloat(getComputedStyle(sticky).top):NaN;const top=Number.isFinite(pinnedTop)?pinnedTop+(canvas.parentElement?.offsetTop||0):bounds.top;layout={width:Math.max(1,canvas.clientWidth),height:Math.max(1,canvas.clientHeight),top,viewport:innerHeight};mobile=matchMedia("(max-width:767px)").matches;const ratio=Math.min(devicePixelRatio||1,MAX_DPR),width=Math.max(1,Math.round(layout.width*ratio)),height=Math.max(1,Math.round(layout.height*ratio));if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;gl.viewport(0,0,width,height);}};
   const render=(progress:number)=>{
     if (disposed || gl.isContextLost()) return false;
+    // Sticky bounds change when the gallery leaves/re-enters the viewport.
+    // Reusing an offscreen top value collapses the card's visible geometry.
+    resize();
     gl.useProgram(program);
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -75,8 +78,8 @@ export function createPaperRenderer(canvas: HTMLCanvasElement, imageSources: str
     });
     gl.activeTexture(gl.TEXTURE0);
     gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
-    const cardGap=mobile?.025:.035,center=mobile?.5:(layout.viewport*.5-layout.top)/layout.height,cardAspect=mobile?3/4:815/458.44;
-    const desiredHeight=layout.width*.92/cardAspect/layout.height,availableHeight=mobile?.86:Math.max(.02,2*Math.min(center,1-center)-.12),frontHeight=Math.min(desiredHeight,availableHeight),cardWidth=Math.min(.92,frontHeight*layout.height*cardAspect/layout.width);
+    const cardGap=mobile?.025:.035,center=mobile?.5:(layout.viewport*.5-layout.top)/layout.height,cardAspect=mobile?3/4:815/560;
+    const desiredHeight=layout.width*.92/cardAspect/layout.height,availableHeight=mobile?.86:Math.max(.02,2*Math.min(center,1-center)-.06),frontHeight=Math.min(desiredHeight,availableHeight),cardWidth=Math.min(.92,frontHeight*layout.height*cardAspect/layout.width);
     const nextSignature=`${cardWidth.toFixed(5)}:${frontHeight.toFixed(5)}:${center.toFixed(5)}`;if(signature!==nextSignature){signature=nextSignature;canvas.parentElement?.style.setProperty("--iz-card-width",`${cardWidth*100}%`);canvas.parentElement?.style.setProperty("--iz-card-height",`${frontHeight*100}%`);canvas.parentElement?.style.setProperty("--iz-card-center",`${center*100}%`);}
     gl.uniform1f(centerLocation,1-2*center);const topLine=center-frontHeight*.5,bottomLine=center+frontHeight*.5,radius=mobile?.034:.04,arcLength=Math.PI*radius*.5,planeGap=mobile?.065:.085,maxPlaneLength=mobile?.13:.17;
     for(let projectIndex=imageSources.length-1;projectIndex>=0;projectIndex-=1){

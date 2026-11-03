@@ -1,1 +1,1 @@
-export { default, metadata } from '../services/digital-ecosystem/page';
+export { default, generateMetadata } from '../services/digital-ecosystem/page';

@@ -1,33 +1,10 @@
-import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { ContactForm } from "@/components/home/contact-form.client";
-import { ServicesShowcase } from "@/components/services/services-showcase.client";
-import { OutcomeSection } from "@/components/services/outcome-section";
-import { ProcessFaq } from "@/components/services/process-faq.client";
-import { ServicesHero } from "@/components/services/services-hero";
-import { SiteFooter } from "@/components/site/site-footer";
-import { getServicesHeroImages } from "@/sanity/services";
-
-const title = "Digital Ecosystem | Izart Studio";
+import { getServiceDetailContent } from "@/sanity/services";
+import { ServiceDetailPage } from "@/components/services/service-detail-page";
+const title = "Digital Ecosystem";
 const description = "Digital experiences designed and built as one connected ecosystem.";
-
-export const metadata: Metadata = pageMetadata("/website-design-and-development", { title: title, description: description });
-
-export default async function DigitalEcosystemPage() {
-  const images = await getServicesHeroImages();
-
-  return <>
-    <main id="main">
-      <ServicesHero
-        images={images}
-        title="Digital Ecosystem"
-        description={description}
-      />
-      <ServicesShowcase />
-      <OutcomeSection />
-      <ProcessFaq />
-      <ContactForm />
-    </main>
-    <SiteFooter />
-  </>;
+export async function generateMetadata() {
+  const content = await getServiceDetailContent("digital-ecosystem");
+  return pageMetadata("/website-design-and-development", { title: `${content.title || title} | Izart Studio`, description: content.description || description });
 }
+export default function Page() { return <ServiceDetailPage slug="digital-ecosystem" title={title} description={description} />; }

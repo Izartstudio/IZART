@@ -15,7 +15,7 @@ export function ServicesHero({
   description,
   imageLayout = "fan",
 }: ServicesHeroProps) {
-  return <section className="services-hero" aria-labelledby="services-hero-title">
+  return <section className={`services-hero${imageLayout === "brand-identity" ? " services-hero--brand-identity" : ""}`} aria-labelledby="services-hero-title">
     <div className="services-hero__canvas">
       <div className="services-hero__radial" aria-hidden="true" />
       <h1 id="services-hero-title" className="services-hero__title">{title}</h1>

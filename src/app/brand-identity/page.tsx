@@ -1,1 +1,1 @@
-export { default, metadata } from '../services/brand-identity/page';
+export { default, generateMetadata } from '../services/brand-identity/page';

@@ -18,8 +18,8 @@ export function ProjectsGallery({ settings, projects, active, view, setView, hos
   const project = projects[active];
   return <section ref={hostRef} className="projects-gallery" aria-label="Project gallery">
     <div ref={galleryRef} className="projects-gallery__sticky">
-      <div className="projects-gallery__info">
         <nav className="projects-rail" aria-label="Choose project"><ProjectPagination projects={projects} active={active} choose={goTo} /></nav>
+      <div className="projects-gallery__info">
         <div className="projects-gallery__copy" aria-live="polite">
           <h2>{project.name}</h2>
           <p>{project.listingDescription || project.introduction}</p>

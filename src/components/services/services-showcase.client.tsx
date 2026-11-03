@@ -1,15 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { ScrollIndicator } from "@/components/site/scroll-indicator";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
-import { showcaseServices, serviceScrollState, type ShowcaseService } from "./service-showcase-data";
+import { showcaseServices as defaultShowcaseServices, serviceScrollState, type ShowcaseService } from "./service-showcase-data";
 import styles from "./services-showcase.module.css";
+import { ServiceCrt } from "./service-crt.client";
+import { ServiceSectionCursor } from "./service-section-cursor.client";
 
-export function ServicesShowcase() {
+export function ServicesShowcase({ scrollLed = false, circularCursor = false, stickyIntro = false, crtEffect = false, services, heading = "Our Services", introduction = "Strategic branding and digital design that drives measurable impact. We create cohesive brand identities and conversion-optimized interfaces that help businesses stand out, connect authentically, and grow consistently." }: { services?: ShowcaseService[]; heading?: string; introduction?: string; scrollLed?: boolean; circularCursor?: boolean; stickyIntro?: boolean; crtEffect?: boolean }) {
+  const showcaseServices = services?.length ? services : defaultShowcaseServices;
   const hostRef = useRef<HTMLElement>(null);
   const introRef = useRef<HTMLElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -19,15 +24,18 @@ export function ServicesShowcase() {
     let selected = -1;
     const update = () => {
       frame = 0;
-      host.style.setProperty("--services-intro-height", `${intro.offsetHeight}px`);
+      const introHeight = stickyIntro ? 0 : intro.offsetHeight;
+      host.style.setProperty("--services-intro-height", `${introHeight}px`);
+      host.style.setProperty("--services-heading-height", `${intro.offsetHeight}px`);
       const bounds = host.getBoundingClientRect();
-      const state = serviceScrollState(-bounds.top - intro.offsetHeight, host.offsetHeight - intro.offsetHeight - sticky.offsetHeight, showcaseServices.length);
+      const state = serviceScrollState(-bounds.top - introHeight, host.offsetHeight - introHeight - sticky.offsetHeight, showcaseServices.length);
       // The stylesheet owns direction (horizontal on desktop, vertical on mobile).
       // Clear transforms left by the earlier renderer or a preserved dev session.
       fill.style.removeProperty("transform");
+      if (scrollLed) fill.style.setProperty("--services-progress", String(state.progress));
       if (selected !== state.active) {
         selected = state.active;
-        fill.style.setProperty("--services-progress", "0");
+        if (!scrollLed) fill.style.setProperty("--services-progress", "0");
         setActive(state.active);
       }
     };
@@ -42,8 +50,9 @@ export function ServicesShowcase() {
     let touchY = 0;
     let touchConsumed = false;
     const geometry = () => {
-      const start = window.scrollY + host.getBoundingClientRect().top + intro.offsetHeight;
-      const travel = host.offsetHeight - intro.offsetHeight - sticky.offsetHeight;
+      const introHeight = stickyIntro ? 0 : intro.offsetHeight;
+      const start = window.scrollY + host.getBoundingClientRect().top + introHeight;
+      const travel = host.offsetHeight - introHeight - sticky.offsetHeight;
       return { start, end: start + travel, step: travel / showcaseServices.length };
     };
     const excluded = (target: EventTarget | null) => {
@@ -139,54 +148,65 @@ export function ServicesShowcase() {
       window.removeEventListener("pageshow", requestUpdate);
       document.removeEventListener("visibilitychange", requestUpdate);
     };
-  }, []);
+  }, [scrollLed, stickyIntro, showcaseServices]);
 
   const updatePlaybackProgress = useCallback((progress: number) => {
-    fillRef.current?.style.setProperty("--services-progress", String(progress));
-  }, []);
+    if (!scrollLed) fillRef.current?.style.setProperty("--services-progress", String(progress));
+  }, [scrollLed]);
   const advanceAfterPlayback = useCallback((index: number) => {
+    if (scrollLed) return;
     const host = hostRef.current, intro = introRef.current, sticky = stickyRef.current;
     if (!host || !intro || !sticky || document.hidden) return;
     const top = window.scrollY + host.getBoundingClientRect().top;
-    const travel = host.offsetHeight - intro.offsetHeight - sticky.offsetHeight;
+    const introHeight = stickyIntro ? 0 : intro.offsetHeight;
+    const travel = host.offsetHeight - introHeight - sticky.offsetHeight;
     const next = index + 1;
     const destination = next < showcaseServices.length
-      ? top + intro.offsetHeight + (next + 0.5) * travel / showcaseServices.length
+      ? top + introHeight + (next + 0.5) * travel / showcaseServices.length
       : top + host.offsetHeight;
     window.scrollTo({ top: destination, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
-  }, []);
+  }, [scrollLed, stickyIntro, showcaseServices]);
 
   const previous = showcaseServices[active - 1];
-  return <section ref={hostRef} className={styles.showcase} style={{ "--service-count": showcaseServices.length } as CSSProperties} aria-labelledby="services-showcase-title">
+  const introContent = <>
       <header ref={introRef} className={styles.intro}>
-        <h2 id="services-showcase-title" className={styles.label}>Our Services<i aria-hidden="true" /><i aria-hidden="true" /><i aria-hidden="true" /><i aria-hidden="true" /></h2>
-        <p>Strategic branding and digital design that drives measurable impact. We create cohesive brand identities and conversion-optimized interfaces that help businesses stand out, connect authentically, and grow consistently.</p>
+        <h2 id="services-showcase-title" className={styles.label}>{heading}<i aria-hidden="true" /><i aria-hidden="true" /><i aria-hidden="true" /><i aria-hidden="true" /></h2>
+        <p>{introduction}</p>
       </header>
+  </>;
+  return <section ref={hostRef} className={`${styles.showcase}${stickyIntro ? ` ${styles.pinnedIntro}` : ""}`} style={{ "--service-count": showcaseServices.length, ...(stickyIntro ? { "--services-intro-height": "0px" } : {}) } as CSSProperties} aria-labelledby="services-showcase-title">
+
+    {!stickyIntro && introContent}
     <div ref={stickyRef} className={styles.sticky}>
-      <div className={styles.stage}>
-        {showcaseServices.map((item, index) => <ServiceMedia key={item.slug} service={item} index={index} active={index === active} onProgress={updatePlaybackProgress} onComplete={advanceAfterPlayback} />)}
+      <div ref={stageRef} className={`${styles.stage}${circularCursor ? ` ${styles.hasCursor}` : ""}`}>
+        {circularCursor && <Link className={styles.stageLink} href={showcaseServices[active].href} aria-label={`Learn more about ${showcaseServices[active].title}`} />}
+        {showcaseServices.map((item, index) => <ServiceMedia key={item.slug} service={item} index={index} active={index === active} trackPlayback={!scrollLed} onProgress={updatePlaybackProgress} onComplete={advanceAfterPlayback} />)}
+        {crtEffect && <ServiceCrt stageRef={stageRef} active={active} poster={showcaseServices[active].image} mobilePoster={showcaseServices[active].mobileImage} />}
         <div className={styles.shade} />
         <div className={styles.entryFade} aria-hidden="true" />
+        {stickyIntro && introContent}
         <div className={styles.content}>
           {previous && <p className={styles.previous} aria-hidden="true">{String(active).padStart(2,"0")}{"//"} &nbsp; {previous.title}</p>}
           <div className={styles.timeline} aria-hidden="true"><span ref={fillRef} className={styles.fill} /></div>
           <div className={styles.copies}>
             {showcaseServices.map((service, index) => <div className={styles.copy} key={service.slug} data-active={active === index} aria-hidden={active !== index} inert={active !== index}>
               <h3><span>{String(index + 1).padStart(2,"0")}{"//"}</span><span>{service.title}</span></h3>
-              <div className={styles.details}><p className={styles.description}>{service.description}</p><Link className={styles.learn} href={service.href} aria-label={`Learn more about ${service.title}`}>Learn More <span aria-hidden="true">→</span></Link></div>
+              <div className={styles.details}><p className={styles.description}>{service.description}</p>{!circularCursor && <Link className={styles.learn} href={service.href} aria-label={`Learn more about ${service.title}`}>Learn More <span aria-hidden="true">→</span></Link>}</div>
             </div>)}
           </div>
         </div>
-        <Link className={styles.quote} href="#Get-Quote">Get Quote</Link>
+        <div className={styles.scrollCue}><ScrollIndicator /></div>
+        {circularCursor && <ServiceSectionCursor stageRef={stageRef} />}
       </div>
     </div>
   </section>;
 }
 
-function ServiceMedia({ service, index, active, onProgress, onComplete }: {
+function ServiceMedia({ service, index, active, trackPlayback, onProgress, onComplete }: {
   service: ShowcaseService;
   index: number;
   active: boolean;
+  trackPlayback: boolean;
   onProgress: (progress: number) => void;
   onComplete: (index: number) => void;
 }) {
@@ -225,7 +245,7 @@ function ServiceMedia({ service, index, active, onProgress, onComplete }: {
     };
     const reportProgress = () => {
       progressFrame = 0;
-      if (disposed) return;
+      if (disposed || !trackPlayback) return;
       const duration = element.duration;
       onProgress(Number.isFinite(duration) && duration > 0 ? Math.min(1, element.currentTime / duration) : 0);
       if (!element.paused && !element.ended && !document.hidden) progressFrame = window.requestAnimationFrame(reportProgress);
@@ -233,12 +253,12 @@ function ServiceMedia({ service, index, active, onProgress, onComplete }: {
     const stopProgress = () => { window.cancelAnimationFrame(progressFrame); progressFrame = 0; };
     const ended = () => {
       stopProgress();
-      if (disposed || completed) return;
+      if (!trackPlayback || disposed || completed) return;
       completed = true;
       onProgress(1);
       advance();
     };
-    // A fresh visit to a state starts a single playback, rather than a loop.
+    // Playback-led pages play once; scroll-led pages loop until the user leaves the state.
     element.currentTime = 0;
     onProgress(0);
 
@@ -296,7 +316,7 @@ function ServiceMedia({ service, index, active, onProgress, onComplete }: {
       element.removeEventListener("ended", ended);
       element.pause();
     };
-  }, [active, video, mobileVideo, index, onProgress, onComplete]);
+  }, [active, video, mobileVideo, index, trackPlayback, onProgress, onComplete]);
 
   useEffect(() => {
     const element = ref.current;
@@ -308,13 +328,13 @@ function ServiceMedia({ service, index, active, onProgress, onComplete }: {
     };
   }, []);
 
-  return <div className={styles.media} data-active={active} aria-hidden="true">
+  return <div className={styles.media} data-service-media={index} data-active={active} aria-hidden="true">
     <picture>
       {mobileImage && <source media="(max-width: 767px)" srcSet={mobileImage} />}
       {/* Native picture selects one already-compressed poster without fetching both variants. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={image} alt="" width={1440} height={810} loading="lazy" decoding="async" />
     </picture>
-    {video && <video ref={ref} muted playsInline preload="none" disablePictureInPicture tabIndex={-1} />}
+    {video && <video ref={ref} muted loop={!trackPlayback} playsInline preload="none" disablePictureInPicture tabIndex={-1} />}
   </div>;
 }

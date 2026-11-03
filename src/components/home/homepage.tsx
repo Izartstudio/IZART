@@ -1,3 +1,4 @@
+import { ScrollIndicator } from "@/components/site/scroll-indicator";
 import { SiteButton } from "@/components/site/site-button";
 import type { HomepageProject } from "@/sanity/projects";
 import { AboutStats } from "./about-stats.client";
@@ -17,15 +18,10 @@ export function Homepage({ projects }: { projects: HomepageProject[] }) {
         <h1 id="home-title">Creative solutions<br />for timeless brands</h1>
         <SiteButton className="home-view-work" href="/projects">View Work</SiteButton>
       </div>
-      <span className="home-hero__scroll" aria-hidden="true">
-        <i />
-        <svg viewBox="0 0 22 40" fill="none">
-          <path d="m14.091 30.534-3.29 3.3-3.301-3.3.474-.464 2.5 2.499v-6.064h.664v6.064l2.5-2.489.453.454Z" fill="currentColor" />
-        </svg>
-      </span>
+      <ScrollIndicator />
     </section>
     <Showcase projects={projects} />
-    <ServicesShowcase />
+    <ServicesShowcase scrollLed circularCursor stickyIntro crtEffect />
     <AboutStats><VideoExpansion /></AboutStats>
     <ContactForm />
   </main><SiteFooter /></>;

@@ -1,3 +1,4 @@
+import { serviceDetailPage } from "./src/sanity/schemaTypes/service-detail-page";
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { project, imagePanel, videoPanel } from "./src/sanity/schemaTypes/project";
@@ -8,4 +9,4 @@ import { blogPost } from "./src/sanity/schemaTypes/blog-post";
 import { portfolioPage } from "./src/sanity/schemaTypes/portfolio-page";
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID;
 if (!projectId) throw new Error("Set SANITY_STUDIO_PROJECT_ID before starting Studio. See docs/SANITY.md.");
-export default defineConfig({ name: "izart", title: "Izart Studio", projectId, dataset: process.env.SANITY_STUDIO_DATASET || "production", plugins: [structureTool({ structure: S => S.list().title("Content").items([S.listItem().title("Portfolio page").child(S.document().schemaType("portfolioPage").documentId("portfolio-page")), ...S.documentTypeListItems().filter(item => item.getId() !== "portfolioPage")]) })], schema: { types: [project, imagePanel, videoPanel, servicesPage, careersPage, playgroundPage, blogPost, portfolioPage] } });
+export default defineConfig({ name: "izart", title: "Izart Studio", projectId, dataset: process.env.SANITY_STUDIO_DATASET || "production", plugins: [structureTool({ structure: S => S.list().title("Content").items([S.listItem().title("Portfolio page").child(S.document().schemaType("portfolioPage").documentId("portfolio-page")), ...S.documentTypeListItems().filter(item => item.getId() !== "portfolioPage")]) })], schema: { types: [serviceDetailPage, project, imagePanel, videoPanel, servicesPage, careersPage, playgroundPage, blogPost, portfolioPage] } });

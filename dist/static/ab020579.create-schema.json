@@ -1,0 +1,1979 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "name"
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "client",
+        "type": "string"
+      },
+      {
+        "description": "Optional. For example: 2025-26. Leave blank when the year is unknown.",
+        "name": "year",
+        "type": "string"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "introduction",
+        "type": "text"
+      },
+      {
+        "description": "Transparent logo on the right side of the hero. No automatic crop.",
+        "name": "logo",
+        "type": "image",
+        "title": "Hero logo image"
+      },
+      {
+        "description": "Leave empty to sample the cover automatically. Text is corrected when needed to maintain at least 4.5:1 contrast. Blob colors may be toned down for readability.",
+        "fields": [
+          {
+            "validation": [
+              {
+                "level": "error",
+                "rules": [
+                  {
+                    "flag": "regex",
+                    "constraint": {
+                      "pattern": "/^#[\\da-fA-F]{6}$/",
+                      "invert": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "description": "Optional hex color, for example #182817. Clear to return to automatic colors.",
+            "name": "portfolioBackground",
+            "type": "string",
+            "title": "Portfolio background"
+          },
+          {
+            "validation": [
+              {
+                "level": "error",
+                "rules": [
+                  {
+                    "flag": "regex",
+                    "constraint": {
+                      "pattern": "/^#[\\da-fA-F]{6}$/",
+                      "invert": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "description": "Optional hex color, for example #182817. Clear to return to automatic colors.",
+            "name": "blobOne",
+            "type": "string",
+            "title": "First blob color"
+          },
+          {
+            "validation": [
+              {
+                "level": "error",
+                "rules": [
+                  {
+                    "flag": "regex",
+                    "constraint": {
+                      "pattern": "/^#[\\da-fA-F]{6}$/",
+                      "invert": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "description": "Optional hex color, for example #182817. Clear to return to automatic colors.",
+            "name": "blobTwo",
+            "type": "string",
+            "title": "Second blob color"
+          },
+          {
+            "validation": [
+              {
+                "level": "error",
+                "rules": [
+                  {
+                    "flag": "regex",
+                    "constraint": {
+                      "pattern": "/^#[\\da-fA-F]{6}$/",
+                      "invert": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "description": "Optional hex color, for example #182817. Clear to return to automatic colors.",
+            "name": "heroBackground",
+            "type": "string",
+            "title": "Inner-page background"
+          },
+          {
+            "validation": [
+              {
+                "level": "error",
+                "rules": [
+                  {
+                    "flag": "regex",
+                    "constraint": {
+                      "pattern": "/^#[\\da-fA-F]{6}$/",
+                      "invert": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "description": "Optional hex color, for example #182817. Clear to return to automatic colors.",
+            "name": "foreground",
+            "type": "string",
+            "title": "Preferred text color"
+          }
+        ],
+        "name": "colorOverrides",
+        "type": "object",
+        "title": "Cover colors - optional overrides"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 8
+              }
+            ]
+          }
+        ],
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "services",
+        "type": "array"
+      },
+      {
+        "initialValue": true,
+        "name": "showInProjects",
+        "type": "boolean",
+        "title": "Show on projects page"
+      },
+      {
+        "initialValue": 999,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ]
+          }
+        ],
+        "name": "listingOrder",
+        "type": "number",
+        "title": "Projects page order"
+      },
+      {
+        "options": {
+          "hotspot": true,
+          "metadata": [
+            "palette",
+            "lqip"
+          ]
+        },
+        "description": "Optional cover for Gallery and Grid views. The first case-study image is used when empty.",
+        "name": "listingImage",
+        "type": "image",
+        "title": "Projects page image"
+      },
+      {
+        "description": "Describe the cover artwork for accessibility.",
+        "name": "listingAlt",
+        "type": "string",
+        "title": "Cover image description"
+      },
+      {
+        "rows": 3,
+        "description": "Optional short gallery summary. The project introduction is used when empty.",
+        "name": "listingDescription",
+        "type": "text",
+        "title": "Projects page summary"
+      },
+      {
+        "initialValue": false,
+        "description": "Adds this project to the homepage showcase.",
+        "name": "featuredOnHomepage",
+        "type": "boolean",
+        "title": "Feature on homepage"
+      },
+      {
+        "initialValue": 999,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ]
+          }
+        ],
+        "hidden": "conditional",
+        "name": "homepageOrder",
+        "type": "number",
+        "title": "Homepage showcase order"
+      },
+      {
+        "description": "Portrait artwork for the homepage card. The projects-page image is used when empty.",
+        "hidden": "conditional",
+        "name": "homepageImage",
+        "type": "image",
+        "title": "Homepage showcase image"
+      },
+      {
+        "options": {
+          "accept": "video/mp4,video/webm"
+        },
+        "description": "Optional muted video displayed while the showcase card is hovered or keyboard-focused.",
+        "hidden": "conditional",
+        "name": "homepageHoverVideo",
+        "type": "file",
+        "title": "Homepage hover video"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 30
+              }
+            ]
+          }
+        ],
+        "description": "Drag to reorder. One full-width image or video per item; maximum 30 combined.",
+        "of": [
+          {
+            "type": "imagePanel",
+            "title": "Image"
+          },
+          {
+            "type": "videoPanel",
+            "title": "Video"
+          }
+        ],
+        "name": "media",
+        "type": "array",
+        "title": "Case-study media"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 12
+              }
+            ]
+          }
+        ],
+        "description": "Editorial content for the slide-up project details view. Drag to reorder.",
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "rows": 6,
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "body",
+                "type": "text"
+              }
+            ],
+            "type": "object",
+            "name": "projectDetail",
+            "title": "Accordion item"
+          }
+        ],
+        "name": "details",
+        "type": "array",
+        "title": "Project details accordion"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "seoTitle",
+        "type": "string"
+      },
+      {
+        "rows": 3,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "SEO description"
+      },
+      {
+        "name": "socialImage",
+        "type": "image"
+      },
+      {
+        "description": "Accurate description of the sharing image. No visible design changes.",
+        "name": "socialImageAlt",
+        "type": "string",
+        "title": "Social preview image description"
+      },
+      {
+        "description": "Optional actual publication date. Leave empty if unknown; never substitute the import date.",
+        "name": "publishedAt",
+        "type": "datetime",
+        "title": "Case-study first publication date"
+      },
+      {
+        "initialValue": false,
+        "description": "Enable after copy, alt text, assets, and SEO review. The deployment must also allow indexing.",
+        "name": "indexable",
+        "type": "boolean",
+        "title": "Ready for search indexing"
+      }
+    ],
+    "name": "project",
+    "type": "document",
+    "title": "Case study"
+  },
+  {
+    "fields": [
+      {
+        "name": "label",
+        "type": "string",
+        "title": "Editor label"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Complete composition. Displayed in full, without cropping.",
+        "name": "image",
+        "type": "image"
+      },
+      {
+        "name": "mobileImage",
+        "type": "image",
+        "title": "Optional mobile composition"
+      },
+      {
+        "initialValue": false,
+        "name": "decorative",
+        "type": "boolean"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "name": "alt",
+        "type": "string",
+        "title": "Image description"
+      },
+      {
+        "description": "Short, accurate name for this visual. Does not add a heading to the design.",
+        "name": "imageTitle",
+        "type": "string",
+        "title": "Image title (metadata)"
+      },
+      {
+        "description": "Describe what the artwork depicts or says. Not displayed as an extra caption; do not add unrelated keywords.",
+        "name": "caption",
+        "type": "string",
+        "title": "Artwork caption (metadata)"
+      },
+      {
+        "description": "Only supply an accurate, approved credit.",
+        "name": "creditText",
+        "type": "string",
+        "title": "Image credit"
+      },
+      {
+        "description": "Actual creator's name; leave blank when unknown.",
+        "name": "creatorName",
+        "type": "string",
+        "title": "Image creator"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "description": "Optional real license page for this image. Do not use the project URL as a placeholder.",
+        "name": "licenseUrl",
+        "type": "url",
+        "title": "License information URL"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "name": "rightsUrl",
+        "type": "url",
+        "title": "Licensing enquiry URL"
+      }
+    ],
+    "name": "imagePanel",
+    "type": "object",
+    "title": "Image"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "accept": "video/mp4,video/webm"
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Use compressed MP4 or WebM. Streaming integration can be added for longer films.",
+        "name": "video",
+        "type": "file"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Match the video's aspect ratio.",
+        "name": "poster",
+        "type": "image"
+      },
+      {
+        "initialValue": "controls",
+        "options": {
+          "list": [
+            {
+              "title": "Play on click",
+              "value": "controls"
+            },
+            {
+              "title": "Muted loop when visible",
+              "value": "loop"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "controls",
+                  "loop"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "mode",
+        "type": "string"
+      },
+      {
+        "options": {
+          "accept": ".vtt"
+        },
+        "description": "English WebVTT captions for speech or meaningful audio.",
+        "name": "captions",
+        "type": "file"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "description": "Only enable for a prominent project film, not a decorative loop. These fields add metadata without changing the video design.",
+        "fields": [
+          {
+            "initialValue": false,
+            "name": "enabled",
+            "type": "boolean",
+            "title": "Include VideoObject structured data"
+          },
+          {
+            "rows": 3,
+            "name": "description",
+            "type": "text"
+          },
+          {
+            "name": "uploadDate",
+            "type": "datetime",
+            "title": "Actual first publication date"
+          },
+          {
+            "validation": [
+              {
+                "level": "error",
+                "rules": [
+                  {
+                    "flag": "min",
+                    "constraint": 0
+                  }
+                ]
+              }
+            ],
+            "name": "durationSeconds",
+            "type": "number",
+            "title": "Duration in seconds"
+          }
+        ],
+        "name": "seo",
+        "type": "object",
+        "title": "Video search metadata"
+      }
+    ],
+    "name": "videoPanel",
+    "type": "object",
+    "title": "Video"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "length",
+                "constraint": 7
+              }
+            ]
+          }
+        ],
+        "description": "Seven images fill the fixed perspective layout. Drag to reorder; crops adapt to any source aspect ratio.",
+        "of": [
+          {
+            "fields": [
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "image",
+                "type": "image"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "alt",
+                "type": "string"
+              }
+            ],
+            "type": "object",
+            "name": "heroImage"
+          }
+        ],
+        "name": "heroImages",
+        "type": "array",
+        "title": "Hero images — left to right"
+      }
+    ],
+    "name": "servicesPage",
+    "type": "document",
+    "title": "Services page"
+  },
+  {
+    "fields": [
+      {
+        "rows": 2,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "heroTitle",
+        "type": "text",
+        "title": "Hero title"
+      },
+      {
+        "rows": 2,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "heroIntroduction",
+        "type": "text",
+        "title": "Hero introduction"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 5
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ]
+          }
+        ],
+        "description": "The first five images fill the fixed staggered composition. Hotspots control responsive crops.",
+        "of": [
+          {
+            "fields": [
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "image",
+                "type": "image"
+              },
+              {
+                "description": "Leave empty only when the image is decorative.",
+                "name": "alt",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "label",
+                "type": "string"
+              }
+            ],
+            "type": "object",
+            "name": "archiveImage"
+          }
+        ],
+        "name": "archiveImages",
+        "type": "array",
+        "title": "Archive images"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "workTitle",
+        "type": "string",
+        "title": "Work heading"
+      },
+      {
+        "rows": 9,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "workCopy",
+        "type": "text",
+        "title": "Work copy"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "disciplineTitle",
+        "type": "string",
+        "title": "Discipline heading"
+      },
+      {
+        "rows": 6,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "disciplineCopy",
+        "type": "text",
+        "title": "Discipline copy"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "fields": [
+          {
+            "options": {
+              "hotspot": true
+            },
+            "validation": [
+              {
+                "level": "error",
+                "rules": [
+                  {
+                    "flag": "presence",
+                    "constraint": "required"
+                  }
+                ]
+              }
+            ],
+            "name": "image",
+            "type": "image"
+          },
+          {
+            "name": "alt",
+            "type": "string"
+          }
+        ],
+        "name": "teamImage",
+        "type": "object",
+        "title": "We are image"
+      },
+      {
+        "description": "Add, remove, and reorder roles. The careers table expands automatically.",
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "role",
+                "type": "string"
+              },
+              {
+                "options": {
+                  "source": "role"
+                },
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "custom"
+                      },
+                      {
+                        "flag": "custom"
+                      },
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "slug",
+                "type": "slug"
+              },
+              {
+                "description": "Defaults visually to the role, but can be written separately for the inner page.",
+                "name": "heroTitle",
+                "type": "string",
+                "title": "Hero title"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "workType",
+                "type": "string",
+                "title": "Work type"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "experience",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "location",
+                "type": "string"
+              },
+              {
+                "rows": 3,
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "summary",
+                "type": "text"
+              },
+              {
+                "initialValue": "Apply Now",
+                "name": "applyLabel",
+                "type": "string",
+                "title": "Apply button label"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "uri",
+                        "constraint": {
+                          "options": {
+                            "scheme": [
+                              "/^http$/",
+                              "/^https$/",
+                              "/^mailto$/"
+                            ],
+                            "allowRelative": true,
+                            "relativeOnly": false,
+                            "allowCredentials": false
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "name": "applyUrl",
+                "type": "url",
+                "title": "Application URL"
+              },
+              {
+                "initialValue": "ABOUT US",
+                "name": "aboutTitle",
+                "type": "string",
+                "title": "About heading"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 1
+                      }
+                    ]
+                  }
+                ],
+                "of": [
+                  {
+                    "rows": 3,
+                    "type": "text"
+                  }
+                ],
+                "name": "aboutCopy",
+                "type": "array",
+                "title": "About paragraphs"
+              },
+              {
+                "initialValue": "THE TEAM",
+                "name": "teamTitle",
+                "type": "string",
+                "title": "Team heading"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 1
+                      }
+                    ]
+                  }
+                ],
+                "of": [
+                  {
+                    "rows": 3,
+                    "type": "text"
+                  }
+                ],
+                "name": "teamCopy",
+                "type": "array",
+                "title": "Team paragraphs"
+              },
+              {
+                "initialValue": "WHAT YOU’LL DO",
+                "name": "responsibilitiesTitle",
+                "type": "string",
+                "title": "Responsibilities heading"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 1
+                      }
+                    ]
+                  }
+                ],
+                "of": [
+                  {
+                    "type": "string"
+                  }
+                ],
+                "name": "responsibilities",
+                "type": "array"
+              },
+              {
+                "initialValue": "JOB REQUIREMENTS",
+                "name": "requirementsTitle",
+                "type": "string",
+                "title": "Requirements heading"
+              },
+              {
+                "of": [
+                  {
+                    "type": "string"
+                  }
+                ],
+                "name": "requirements",
+                "type": "array"
+              }
+            ],
+            "type": "object",
+            "name": "job"
+          }
+        ],
+        "name": "jobs",
+        "type": "array",
+        "title": "Job postings"
+      }
+    ],
+    "name": "careersPage",
+    "type": "document",
+    "title": "Careers page"
+  },
+  {
+    "fields": [
+      {
+        "initialValue": "Playground",
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ]
+          }
+        ],
+        "description": "Drag to set scroll order. Each genre is one future audio state; audio is intentionally not modelled yet.",
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "custom"
+                      },
+                      {
+                        "flag": "custom"
+                      },
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "slug",
+                "type": "slug"
+              },
+              {
+                "initialValue": "#a61b0b",
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "regex",
+                        "constraint": {
+                          "pattern": "/^#[\\da-fA-F]{6}$/",
+                          "invert": false
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "name": "accent",
+                "type": "string",
+                "title": "Scene glow"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "min",
+                        "constraint": 8
+                      },
+                      {
+                        "flag": "max",
+                        "constraint": 10
+                      }
+                    ]
+                  }
+                ],
+                "description": "Eight to ten cards. Drag to change their place in the cyclic scene.",
+                "of": [
+                  {
+                    "fields": [
+                      {
+                        "validation": [
+                          {
+                            "level": "error",
+                            "rules": [
+                              {
+                                "flag": "presence",
+                                "constraint": "required"
+                              }
+                            ]
+                          }
+                        ],
+                        "name": "title",
+                        "type": "string"
+                      },
+                      {
+                        "initialValue": "2026",
+                        "validation": [
+                          {
+                            "level": "error",
+                            "rules": [
+                              {
+                                "flag": "regex",
+                                "constraint": {
+                                  "pattern": "/^\\d{4}$/",
+                                  "invert": false
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "name": "year",
+                        "type": "string"
+                      },
+                      {
+                        "initialValue": "Case study",
+                        "name": "eyebrow",
+                        "type": "string",
+                        "title": "Small label"
+                      },
+                      {
+                        "description": "Optional. Clicking the arrow in the active card opens this project.",
+                        "to": [
+                          {
+                            "type": "project"
+                          }
+                        ],
+                        "name": "project",
+                        "type": "reference",
+                        "title": "Case-study link"
+                      },
+                      {
+                        "options": {
+                          "hotspot": true
+                        },
+                        "validation": [
+                          {
+                            "level": "error",
+                            "rules": [
+                              {
+                                "flag": "presence",
+                                "constraint": "required"
+                              }
+                            ]
+                          }
+                        ],
+                        "name": "image",
+                        "type": "image"
+                      },
+                      {
+                        "validation": [
+                          {
+                            "level": "error",
+                            "rules": [
+                              {
+                                "flag": "presence",
+                                "constraint": "required"
+                              }
+                            ]
+                          }
+                        ],
+                        "name": "alt",
+                        "type": "string",
+                        "title": "Image description"
+                      }
+                    ],
+                    "type": "object",
+                    "name": "playgroundCard",
+                    "title": "Project card"
+                  }
+                ],
+                "name": "cards",
+                "type": "array"
+              }
+            ],
+            "type": "object",
+            "name": "playgroundGenre",
+            "title": "Genre"
+          }
+        ],
+        "name": "genres",
+        "type": "array"
+      },
+      {
+        "initialValue": "Playground — Experimental Work",
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "seoTitle",
+        "type": "string"
+      },
+      {
+        "rows": 3,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "SEO description"
+      },
+      {
+        "initialValue": false,
+        "name": "indexable",
+        "type": "boolean",
+        "title": "Ready for search indexing"
+      }
+    ],
+    "name": "playgroundPage",
+    "type": "document",
+    "title": "Playground page"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title"
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "description": "Optional. Preserve the established title when updating an existing article.",
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO title override"
+      },
+      {
+        "rows": 3,
+        "name": "seoDescription",
+        "type": "text",
+        "title": "SEO description override"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "author",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            "News",
+            "Op-Ed"
+          ]
+        },
+        "initialValue": "Op-Ed",
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "News",
+                  "Op-Ed"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "name": "topic",
+        "type": "string"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "excerpt",
+        "type": "text"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string"
+          }
+        ],
+        "name": "cover",
+        "type": "image"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "publishedAt",
+        "type": "datetime"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ]
+          }
+        ],
+        "of": [
+          {
+            "fields": [
+              {
+                "options": {
+                  "list": [
+                    "paragraph",
+                    "heading",
+                    "quote",
+                    "image",
+                    "list"
+                  ]
+                },
+                "initialValue": "paragraph",
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "valid",
+                        "constraint": [
+                          "paragraph",
+                          "heading",
+                          "quote",
+                          "image",
+                          "list"
+                        ]
+                      },
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "kind",
+                "type": "string"
+              },
+              {
+                "rows": 5,
+                "name": "text",
+                "type": "text",
+                "title": "Text / image alt text"
+              },
+              {
+                "options": {
+                  "list": [
+                    2,
+                    3,
+                    4
+                  ]
+                },
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "valid",
+                        "constraint": [
+                          2,
+                          3,
+                          4
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "hidden": "conditional",
+                "name": "level",
+                "type": "number",
+                "title": "Heading level"
+              },
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "hidden": "conditional",
+                "name": "image",
+                "type": "image"
+              },
+              {
+                "of": [
+                  {
+                    "type": "string"
+                  }
+                ],
+                "hidden": "conditional",
+                "name": "items",
+                "type": "array"
+              }
+            ],
+            "type": "object",
+            "name": "contentBlock"
+          }
+        ],
+        "name": "body",
+        "type": "array"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "question",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "answer",
+                "type": "text"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "faqs",
+        "type": "array",
+        "title": "Frequently asked questions"
+      }
+    ],
+    "name": "blogPost",
+    "type": "document",
+    "title": "Blog articles"
+  },
+  {
+    "fields": [
+      {
+        "initialValue": "Projects by Izart Studio",
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "heading",
+        "type": "string",
+        "title": "Page heading"
+      },
+      {
+        "rows": 4,
+        "initialValue": "Brand strategy and identity design, built from the inside out. Every project begins with a point of view and becomes a system the world remembers.",
+        "name": "gridIntroduction",
+        "type": "text",
+        "title": "Grid introduction"
+      },
+      {
+        "initialValue": "Gallery View",
+        "name": "galleryLabel",
+        "type": "string"
+      },
+      {
+        "initialValue": "Grid View",
+        "name": "gridLabel",
+        "type": "string"
+      },
+      {
+        "initialValue": "gallery",
+        "options": {
+          "list": [
+            "gallery",
+            "grid"
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "gallery",
+                  "grid"
+                ]
+              }
+            ]
+          }
+        ],
+        "name": "defaultView",
+        "type": "string"
+      },
+      {
+        "initialValue": true,
+        "name": "showArchive",
+        "type": "boolean",
+        "title": "Show case-study link archive"
+      },
+      {
+        "initialValue": "Explore our case studies",
+        "name": "archiveHeading",
+        "type": "string"
+      },
+      {
+        "description": "Drag projects into order. Other visible projects follow their own order setting.",
+        "of": [
+          {
+            "to": [
+              {
+                "type": "project"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to case study"
+          }
+        ],
+        "name": "projects",
+        "type": "array",
+        "title": "Optional portfolio order"
+      },
+      {
+        "initialValue": false,
+        "description": "Enable after importing. Local fallback projects then disappear, so unpublishing and deleting in Sanity also removes them from the website.",
+        "name": "useCmsProjects",
+        "type": "boolean",
+        "title": "Manage all projects in Sanity"
+      }
+    ],
+    "name": "portfolioPage",
+    "type": "document",
+    "title": "Portfolio page"
+  }
+]
