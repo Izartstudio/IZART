@@ -8,7 +8,7 @@ import styles from "./services-showcase.module.css";
 import { ServiceCrt } from "./service-crt.client";
 import { ServiceSectionCursor } from "./service-section-cursor.client";
 
-export function ServicesShowcase({ scrollLed = false, circularCursor = false, stickyIntro: pinIntro = false, crtEffect = false, services, heading = "Our Services", introduction = "Strategic branding and digital design that drives measurable impact. We create cohesive brand identities and conversion-optimized interfaces that help businesses stand out, connect authentically, and grow consistently." }: { services?: ShowcaseService[]; heading?: string; introduction?: string; scrollLed?: boolean; circularCursor?: boolean; stickyIntro?: boolean; crtEffect?: boolean }) {
+export function ServicesShowcase({ scrollLed = true, circularCursor = true, stickyIntro: pinIntro = true, crtEffect = true, services, heading = "Our Services", introduction = "Strategic branding and digital design that drives measurable impact. We create cohesive brand identities and conversion-optimized interfaces that help businesses stand out, connect authentically, and grow consistently." }: { services?: ShowcaseService[]; heading?: string; introduction?: string; scrollLed?: boolean; circularCursor?: boolean; stickyIntro?: boolean; crtEffect?: boolean }) {
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
     const query = window.matchMedia("(max-width: 767px)");

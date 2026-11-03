@@ -21,7 +21,7 @@ export function Homepage({ projects }: { projects: HomepageProject[] }) {
       <ScrollIndicator />
     </section>
     <Showcase projects={projects} />
-    <ServicesShowcase scrollLed circularCursor stickyIntro crtEffect />
+    <ServicesShowcase />
     <AboutStats><VideoExpansion /></AboutStats>
     <ContactForm />
   </main><SiteFooter /></>;

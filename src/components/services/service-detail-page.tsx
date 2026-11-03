@@ -12,7 +12,7 @@ export async function ServiceDetailPage({ slug, title, description }: { slug: st
   return <><main id="main">
     <ServicesHero images={content.heroImages || fallbackImages} title={content.title || title} description={content.description || description} imageLayout="brand-identity" />
     {slug === "digital-ecosystem" || slug === "spatial-design"
-      ? <ServicesShowcase scrollLed circularCursor stickyIntro crtEffect services={content.showcase?.states} heading={content.showcase?.heading} introduction={content.showcase?.description} />
+      ? <ServicesShowcase services={content.showcase?.states} heading={content.showcase?.heading} introduction={content.showcase?.description} />
       : <BrandProcess steps={content.processSteps} />}
     <OutcomeSection content={content.outcome} />
     <ProcessFaq entries={content.faqs} />
