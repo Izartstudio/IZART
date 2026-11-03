@@ -3,7 +3,7 @@ export const serviceCrtSettings = {
   mask: 0, maskSize: 6, curvature: -.45, clipToCurve: false,
   scanlines: .10, scanlineSize: 2.5, dispersion: .60,
   flicker: 0, static: 0, staticSize: 1, rollSpeed: 1.03,
-  jitter: 0, vignette: .62, brightness: .4, speed: 1, backgroundBlur: 8,
+  jitter: 0, vignette: .62, brightness: .4, speed: 1, backgroundBlur: 8, mobileBackgroundBlur: 2,
 } as const;
 
 const vertex = `attribute vec2 a_position; varying vec2 v_uv;
@@ -130,7 +130,7 @@ export function createServiceCrt(canvas: HTMLCanvasElement) {
     // A dense +/-3 sigma Gaussian. Convert the configured CSS-pixel blur through
     // object-fit:cover; a lower-resolution blur buffer keeps this inexpensive.
     const viewAspect=bounds.width/bounds.height,sourceAspect=sourceWidth/sourceHeight;
-    const radius=serviceCrtSettings.backgroundBlur/4;
+    const radius=(window.matchMedia("(max-width: 767px)").matches ? serviceCrtSettings.mobileBackgroundBlur : serviceCrtSettings.backgroundBlur)/4;
     const stepX=radius/bounds.width*Math.min(1,viewAspect/sourceAspect);
     const stepY=radius/bounds.height*Math.min(1,sourceAspect/viewAspect);
     gl.useProgram(blurProgram);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);

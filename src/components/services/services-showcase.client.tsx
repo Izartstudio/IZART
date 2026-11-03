@@ -8,7 +8,16 @@ import styles from "./services-showcase.module.css";
 import { ServiceCrt } from "./service-crt.client";
 import { ServiceSectionCursor } from "./service-section-cursor.client";
 
-export function ServicesShowcase({ scrollLed = false, circularCursor = false, stickyIntro = false, crtEffect = false, services, heading = "Our Services", introduction = "Strategic branding and digital design that drives measurable impact. We create cohesive brand identities and conversion-optimized interfaces that help businesses stand out, connect authentically, and grow consistently." }: { services?: ShowcaseService[]; heading?: string; introduction?: string; scrollLed?: boolean; circularCursor?: boolean; stickyIntro?: boolean; crtEffect?: boolean }) {
+export function ServicesShowcase({ scrollLed = false, circularCursor = false, stickyIntro: pinIntro = false, crtEffect = false, services, heading = "Our Services", introduction = "Strategic branding and digital design that drives measurable impact. We create cohesive brand identities and conversion-optimized interfaces that help businesses stand out, connect authentically, and grow consistently." }: { services?: ShowcaseService[]; heading?: string; introduction?: string; scrollLed?: boolean; circularCursor?: boolean; stickyIntro?: boolean; crtEffect?: boolean }) {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => setMobile(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  const stickyIntro = pinIntro && !mobile;
   const showcaseServices = services?.length ? services : defaultShowcaseServices;
   const hostRef = useRef<HTMLElement>(null);
   const introRef = useRef<HTMLElement>(null);
@@ -191,7 +200,7 @@ export function ServicesShowcase({ scrollLed = false, circularCursor = false, st
           <div className={styles.copies}>
             {showcaseServices.map((service, index) => <div className={styles.copy} key={service.slug} data-active={active === index} aria-hidden={active !== index} inert={active !== index}>
               <h3><span>{String(index + 1).padStart(2,"0")}{"//"}</span><span>{service.title}</span></h3>
-              <div className={styles.details}><p className={styles.description}>{service.description}</p>{!circularCursor && <Link className={styles.learn} href={service.href} aria-label={`Learn more about ${service.title}`}>Learn More <span aria-hidden="true">→</span></Link>}</div>
+              <div className={styles.details}><p className={styles.description}>{service.description}</p>{(!circularCursor || mobile) && <Link className={styles.learn} href={service.href} aria-label={`Learn more about ${service.title}`}>Learn More <span aria-hidden="true">→</span></Link>}</div>
             </div>)}
           </div>
         </div>

@@ -23,8 +23,11 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   const origin = useRef({ button: { left: 0, top: 0, width: 0, height: 0 }, media: { left: 0, top: 0, width: 0, height: 0 }, documentTop: 0, scrollY: 0 });
   const animations = useRef<Animation[]>([]);
   const busy = useRef(false);
+  const mobileDrawer = useRef(false);
+  const scrim = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const [drawerClosing, setDrawerClosing] = useState(false);
   const [settling, setSettling] = useState(false);
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [expanded, setExpanded] = useState<string | null>(project.details?.[0]?._key || null);
@@ -55,6 +58,23 @@ export function ProjectDetails({ project, children }: { project: Project; childr
     const hero = document.querySelector<HTMLElement>(".project-hero");
     const previousInert = hero?.inert;
     if (hero) hero.inert = true;
+    mobileDrawer.current = window.matchMedia("(max-width: 767px)").matches;
+    if (mobileDrawer.current) {
+      const drawer = panel.parentElement!;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const animation = drawer.animate([{ transform: "translateY(100%)" }, { transform: "translateY(0)" }], { duration: reduced ? 0 : 480, easing });
+      const fade = scrim.current?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 480, easing });
+      animations.current = fade ? [animation, fade] : [animation];
+      content.inert = false;
+      workspace.current?.focus({ preventScroll: true });
+      animation.finished.then(() => { busy.current = false; closeButton.current?.focus({ preventScroll: true }); }).catch(() => {});
+      return () => {
+        animations.current.forEach(item => item.cancel());
+        drawer.removeAttribute("style");
+        document.body.style.overflow = previousOverflow;
+        if (hero) hero.inert = previousInert || false;
+      };
+    }
     const target = media.getBoundingClientRect();
     const panelRect = panel.getBoundingClientRect();
     const scale = target.width / old.media.width;
@@ -92,6 +112,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   const show = () => {
     if (busy.current || !gallery.current || !trigger.current) return;
     busy.current = true;
+    setDrawerClosing(false);
     const media = gallery.current.getBoundingClientRect();
     origin.current = { button: trigger.current.getBoundingClientRect(), media, documentTop: media.top + window.scrollY, scrollY: window.scrollY };
     setPlaceholderHeight(media.height);
@@ -100,6 +121,30 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   const close = async () => {
     if (busy.current) return;
     busy.current = true;
+    if (mobileDrawer.current) {
+      const drawer = surface.current!.parentElement!;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      animations.current.forEach(animation => animation.cancel());
+      const options = { duration: reduced ? 0 : 480, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" as FillMode };
+      const bounds = drawer.getBoundingClientRect();
+      const button = trigger.current!.getBoundingClientRect();
+      // Lock the source rectangle: dynamic viewport units must not change mid-morph.
+      Object.assign(drawer.style, { left: `${bounds.left}px`, top: `${bounds.top}px`, bottom: "auto", width: `${bounds.width}px`, height: `${bounds.height}px` });
+      setDrawerClosing(true);
+      copy.current!.inert = true;
+      workspace.current?.focus({ preventScroll: true });
+      origin.current.button = button;
+      const animation = drawer.animate([
+        { transformOrigin: "top left", transform: "translate3d(0,0,0) scale(1,1)", borderRadius: "0px" },
+        { transformOrigin: "top left", transform: `translate3d(${button.left - bounds.left}px,${button.top - bounds.top}px,0) scale(${button.width / bounds.width},${button.height / bounds.height})`, borderRadius: "0px" },
+      ], options);
+      const hideCopy = copy.current!.animate([{ opacity: 1 }, { opacity: 0 }], { ...options, duration: reduced ? 0 : 160 });
+      const fade = scrim.current?.animate([{ opacity: 1 }, { opacity: 0 }], options);
+      animations.current = fade ? [animation, fade, hideCopy] : [animation, hideCopy];
+      try { await Promise.all(animations.current.map(item => item.finished)); } catch { return; }
+      setSettling(true); setOpen(false);
+      return;
+    }
     const media = gallery.current!;
     const target = media.getBoundingClientRect();
     const panelRect = surface.current!.getBoundingClientRect();
@@ -166,8 +211,11 @@ export function ProjectDetails({ project, children }: { project: Project; childr
             else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
           }
         }}>
+        {open && <button ref={scrim} className="project-details-scrim" tabIndex={-1} aria-label="Close project details" onClick={() => void close()} />}
+        {drawerClosing && open && <div className="project-details-trigger is-visible project-details-morph-label" aria-hidden="true" style={{ left: origin.current.button.left, top: origin.current.button.top, width: origin.current.button.width, height: origin.current.button.height }}><span>Project Details</span><span>[ + ]</span></div>}
         {enabled && <div className="project-details-panel" inert={!open} aria-hidden={!open}>
-          <div ref={surface} className="project-details-surface" />
+          <div ref={surface} className={`project-details-surface${drawerClosing ? " is-morphing-to-trigger" : ""}`} />
+
           <div ref={copy} className="project-details-copy" tabIndex={open ? 0 : -1} role="region" aria-label="Project description">
             <button ref={closeButton} className="project-details-close" aria-label="Close project details" onClick={() => void close()}><span aria-hidden="true">[ − ]</span></button>
           <div className="project-details-brand">{project.logo ? <ProjectImageView image={project.logo} alt={`${project.client} logo`} sizes="180px" /> : <p>{project.name}</p>}</div>
@@ -181,7 +229,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
           })}</div>
           </div>
         </div>}
-        <div ref={gallery} id="case-study-media" className="project-media project-details-gallery" tabIndex={open ? 0 : undefined} role={open ? "region" : undefined} aria-label={open ? "Case-study images and videos" : undefined}>{children}</div>
+        <div ref={gallery} id="case-study-media" className="project-media project-details-gallery" inert={open && mobileDrawer.current} tabIndex={open ? 0 : undefined} role={open ? "region" : undefined} aria-label={open ? "Case-study images and videos" : undefined}>{children}</div>
       </div>
     </div>
     {enabled && <button ref={trigger} className={`project-details-trigger${visible ? " is-visible" : ""}${open ? " is-expanded" : ""}${settling ? " is-settling" : ""}`} aria-haspopup="dialog" aria-expanded={open} tabIndex={visible && !open ? 0 : -1} onClick={show}><span>Project Details</span><span aria-hidden="true">[ + ]</span></button>}
