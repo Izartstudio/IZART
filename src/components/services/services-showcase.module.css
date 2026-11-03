@@ -92,3 +92,13 @@
   .pinnedIntro .content { top: calc(28px + var(--services-heading-height,130px) + 28px); }
 }
 @media(prefers-reduced-motion:reduce) { .crtCanvas { transition: none; } }
+
+@media(max-width:474px) {
+  .intro { gap: 16px; padding-inline: 20px; }
+  .pinnedIntro .intro { inset-inline: 20px; gap: 14px; }
+  .pinnedIntro .intro p { width: 100%; max-width: 330px; }
+  .content { inset-inline: 20px; }
+  .copy h3 { font-size: clamp(19px,5.8vw,25px); overflow-wrap: anywhere; }
+  .description { font-size: 14px; max-width: 100%; }
+  .copies { right: 20px; }
+}

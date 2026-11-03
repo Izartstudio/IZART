@@ -15,8 +15,8 @@ export function Homepage({ projects }: { projects: HomepageProject[] }) {
       <HeroTunnel />
       <div className="home-hero__shade" aria-hidden="true" />
       <div className="home-hero__content">
-        <h1 id="home-title">Creative solutions<br />for timeless brands</h1>
-        <SiteButton className="home-view-work" href="/projects">View Work</SiteButton>
+        <h1 id="home-title"><span className="home-hero__desktop-title">Creative solutions<br />for timeless brands</span><span className="home-hero__mobile-title">Creative<br />solutions for<br />timeless brands</span></h1>
+        <SiteButton className="home-view-work" href="/projects"><span className="home-hero__desktop-title">View Work</span><span className="home-hero__mobile-title">Explore</span></SiteButton>
       </div>
       <ScrollIndicator />
     </section>
