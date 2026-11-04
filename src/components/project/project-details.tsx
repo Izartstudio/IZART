@@ -36,10 +36,10 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   useEffect(() => {
     const update = () => {
       if (open || !gallery.current) return;
-      const { top } = gallery.current.getBoundingClientRect();
-      // Match the reference: media starts below the remaining services row.
-      // No end boundary: keep the control available through the rest of the page.
-      setVisible(top <= window.innerHeight * 0.14);
+      const { top, bottom } = gallery.current.getBoundingClientRect();
+      // Show only while the viewport is within the case-study media.
+      // Hide as soon as Latest Work starts entering the screen.
+      setVisible(top <= window.innerHeight * 0.14 && bottom >= window.innerHeight - 1);
     };
     update();
     window.addEventListener("scroll", update, { passive: true });
@@ -54,7 +54,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
     const content = copy.current!;
     const old = origin.current;
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (window.matchMedia("(max-width: 767px)").matches) document.body.style.overflow = "hidden";
     const hero = document.querySelector<HTMLElement>(".project-hero");
     const previousInert = hero?.inert;
     if (hero) hero.inert = true;
@@ -76,34 +76,15 @@ export function ProjectDetails({ project, children }: { project: Project; childr
       };
     }
     const target = media.getBoundingClientRect();
-    const panelRect = panel.getBoundingClientRect();
     const scale = target.width / old.media.width;
-    media.scrollTop = Math.max(0, -old.media.top) * scale;
-    const mediaStart = `translate(${-target.left}px, ${Math.max(0, old.media.top) - target.top}px) scale(${1 / scale})`;
-    const panelStart = { left: `${old.button.left - panelRect.left}px`, top: `${old.button.top - panelRect.top}px`, width: `${old.button.width}px`, height: `${old.button.height}px`, boxShadow: "15px 15px 15px #0004" };
-    const panelEnd = { left: "0px", top: "0px", width: `${panelRect.width}px`, height: `${panelRect.height}px`, boxShadow: "0px 0px 0px #0000" };
+    window.scrollTo({ top: target.top + window.scrollY + Math.max(0, -old.media.top) * scale, behavior: "instant" });
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const options = { duration: reduced ? 0 : motion.expand, easing };
-    const revealOptions = { duration: reduced ? 0 : motion.reveal, delay: reduced ? 0 : motion.revealDelay, easing, fill: "both" as FillMode };
-    content.inert = true;
-    const movement = [
-      media.animate([{ transform: mediaStart }, { transform: "none" }], options),
-      panel.animate([panelStart, panelEnd], options),
-    ];
-    const reveal = content.animate([
-      { opacity: 0 },
-      { opacity: 1 },
-    ], revealOptions);
-    animations.current = [...movement, reveal];
-    // Focus the workspace while the panel is blank; no premature close-button outline.
-    workspace.current?.focus({ preventScroll: true });
-    Promise.all(movement.map(animation => animation.finished)).then(() => { busy.current = false; }).catch(() => {});
-    reveal.finished.then(() => {
-      content.inert = false;
-    }).catch(() => {});
+    const animation = content.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 360, easing });
+    animations.current = [animation];
+    content.inert = false;
+    animation.finished.then(() => { busy.current = false; }).catch(() => {});
     return () => {
-      animations.current.forEach(animation => animation.cancel());
-      content.inert = false;
+      animations.current.forEach(item => item.cancel());
       document.body.style.overflow = previousOverflow;
       if (hero) hero.inert = previousInert || false;
     };
@@ -113,6 +94,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
     if (busy.current || !gallery.current || !trigger.current) return;
     busy.current = true;
     setDrawerClosing(false);
+    mobileDrawer.current = window.matchMedia("(max-width: 767px)").matches;
     const media = gallery.current.getBoundingClientRect();
     origin.current = { button: trigger.current.getBoundingClientRect(), media, documentTop: media.top + window.scrollY, scrollY: window.scrollY };
     setPlaceholderHeight(media.height);
@@ -151,7 +133,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
     const old = origin.current;
     const fullWidth = shell.current!.getBoundingClientRect().width;
     const scale = fullWidth / target.width;
-    const scrollY = media.scrollTop > 0 ? old.documentTop + media.scrollTop * scale : Math.min(old.scrollY, old.documentTop);
+    const scrollY = old.documentTop + Math.max(0, -target.top) * scale;
     const button = trigger.current!.getBoundingClientRect();
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const contentOpacity = getComputedStyle(copy.current!).opacity;
@@ -198,12 +180,12 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   }, [open, settling]);
 
   return <>
-    <div ref={shell} className={`project-details-shell${open ? " is-open" : ""}`} style={open ? { height: placeholderHeight } : undefined}>
-      <div ref={workspace} className="project-details-workspace" tabIndex={-1} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-label={open ? `${project.name} project details` : undefined}
+    <div ref={shell} className={`project-details-shell${open ? " is-open" : ""}`} style={open && mobileDrawer.current ? { height: placeholderHeight } : undefined}>
+      <div ref={workspace} className="project-details-workspace" tabIndex={-1} role={open ? "dialog" : undefined} aria-modal={open && mobileDrawer.current || undefined} aria-label={open ? `${project.name} project details` : undefined}
         onKeyDown={event => {
           if (!open) return;
           if (event.key === "Escape") { event.preventDefault(); void close(); }
-          if (event.key === "Tab") {
+          if (event.key === "Tab" && mobileDrawer.current) {
             const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(focusable)).filter(item => !item.closest('[inert]') && item.getClientRects().length);
             const first = items[0]; const last = items[items.length - 1];
             if (document.activeElement === workspace.current) { event.preventDefault(); (event.shiftKey ? last : first)?.focus(); }

@@ -53,11 +53,17 @@ export const project = defineType({
     defineField({ name: "listingImage", title: "Projects page image", type: "image", options: { hotspot: true, metadata: ["palette", "lqip"] }, description: "Optional cover for Gallery and Grid views. The first case-study image is used when empty." }),
     defineField({ name: "listingAlt", title: "Cover image description", type: "string", description: "Describe the cover artwork for accessibility." }),
     defineField({ name: "listingDescription", title: "Projects page summary", type: "text", rows: 3, description: "Optional short gallery summary. The project introduction is used when empty." }),
+    defineField({ name: "industries", title: "Industries", type: "array", of: [defineArrayMember({ type: "string" })], options: { layout: "tags" }, description: "Portfolio Industry filter labels, for example Real Estate, Food & Beverage, or Beauty & Wellness.", validation: r => r.unique() }),
     defineField({ name: "featuredOnHomepage", title: "Feature on homepage", type: "boolean", initialValue: false, description: "Adds this project to the homepage showcase." }),
     defineField({ name: "homepageOrder", title: "Homepage showcase order", type: "number", initialValue: 999, hidden: ({ parent }) => !parent?.featuredOnHomepage, validation: r => r.integer().min(0) }),
     defineField({ name: "homepageImage", title: "Homepage showcase image", type: "image", hidden: ({ parent }) => !parent?.featuredOnHomepage, description: "Portrait artwork for the homepage card. The projects-page image is used when empty." }),
     defineField({ name: "homepageHoverVideo", title: "Homepage hover video", type: "file", options: { accept: "video/mp4,video/webm" }, hidden: ({ parent }) => !parent?.featuredOnHomepage, description: "Optional muted video displayed while the showcase card is hovered or keyboard-focused." }),
     defineField({ name: "media", title: "Case-study media", type: "array", of: [defineArrayMember({ type: "imagePanel" }), defineArrayMember({ type: "videoPanel" })], validation: r => r.required().min(1).max(30), description: "Drag to reorder. One full-width image or video per item; maximum 30 combined." }),
+    defineField({ name: "latestWork", title: "Latest Work after this case study", type: "object", fields: [
+      defineField({ name: "heading", type: "string", initialValue: "Latest Work" }),
+      defineField({ name: "introduction", type: "text", rows: 3 }),
+      defineField({ name: "projects", title: "Next case studies", type: "array", description: "Drag to reorder. Leave empty to automatically show the next projects in portfolio order, excluding this project.", of: [defineArrayMember({ type: "reference", to: [{ type: "project" }] })], validation: r => r.unique() }),
+    ] }),
     defineField({ name: "details", title: "Project details accordion", type: "array", description: "Editorial content for the slide-up project details view. Drag to reorder.", of: [defineArrayMember({ name: "projectDetail", title: "Accordion item", type: "object", fields: [
       defineField({ name: "title", type: "string", validation: r => r.required() }),
       defineField({ name: "body", type: "text", rows: 6, validation: r => r.required() }),

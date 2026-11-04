@@ -2,7 +2,7 @@ import { preservedPages, preservedMetadata, PreservedPage } from "@/components/s
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectPageView } from "@/components/project/project-page";
-import { getProject, getProjectSlugs } from "@/sanity/projects";
+import { getProject, getProjectSlugs, getProjects } from "@/sanity/projects";
 import { projectMetadata, projectStructuredData } from "@/lib/project-seo";
 import { JsonLd } from "@/components/seo/json-ld";
 export const revalidate = 60;
@@ -26,5 +26,13 @@ export default async function ProjectPage({ params }: Props) {
     if (!page) notFound();
     return <PreservedPage page={page} />;
   }
-  return <><JsonLd data={projectStructuredData(project)} /><ProjectPageView project={project} /></>;
+  const projects = await getProjects();
+  const selected = project.latestWork?.projectSlugs?.filter(slug => slug !== project.slug);
+  const current = projects.findIndex(item => item.slug === project.slug);
+  const ordered = [...projects.slice(current + 1), ...projects.slice(0, Math.max(0, current))].filter(item => item.slug !== project.slug);
+  const nextProjects = selected?.length
+    ? selected.map(slug => projects.find(item => item.slug === slug)).filter((item): item is (typeof projects)[number] => Boolean(item))
+    : ordered.slice(0, 4);
+  const latestProjects = nextProjects.map(item => ({ ...item, homepageImage: item.homepageImage || item.listingImage, listingDescription: item.listingDescription || item.introduction }));
+  return <><JsonLd data={projectStructuredData(project)} /><ProjectPageView project={project} latestProjects={latestProjects} /></>;
 }

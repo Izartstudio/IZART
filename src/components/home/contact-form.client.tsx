@@ -1,4 +1,5 @@
 "use client";
+import { ButtonBorder } from "@/components/site/button-border";
 
 import type { CSSProperties, FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -121,6 +122,7 @@ export function ContactForm() {
 
         <div className="contact-form__actions contact-form__animate" style={revealStyle(9)}>
           <button className="site-button contact-form__submit" type="submit" disabled={status === "sending"}>
+            <ButtonBorder />
             <span className="site-button__label">{status === "sending" ? "Sending…" : "Submit Form →"}</span>
           </button>
           <p className={`contact-form__status${status === "error" ? " is-error" : ""}`} aria-live="polite">{message}</p>

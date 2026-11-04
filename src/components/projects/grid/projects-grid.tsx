@@ -2,14 +2,14 @@
 
 import Image, { type ImageLoaderProps } from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { ListingProject, ProjectsView } from "../project-types";
 import type { PortfolioSettings } from "@/content/portfolio-page";
 import { ViewToggle } from "../gallery/view-toggle";
 
 const imageLoader = ({ src }: ImageLoaderProps) => src;
 
-export function ProjectsGrid({ settings, projects, view, setView, onActiveChange }: { settings: PortfolioSettings; projects: ListingProject[]; view: ProjectsView; setView: (view: ProjectsView) => void; onActiveChange: (index: number) => void }) {
+export function ProjectsGrid({ filters, settings, projects, view, setView, onActiveChange }: { filters?: ReactNode; settings: PortfolioSettings; projects: ListingProject[]; view: ProjectsView; setView: (view: ProjectsView) => void; onActiveChange: (index: number) => void }) {
   const [active, setActive] = useState(0);
   const itemsRef = useRef<(HTMLLIElement | null)[]>([]);
   useEffect(() => {
@@ -33,6 +33,7 @@ export function ProjectsGrid({ settings, projects, view, setView, onActiveChange
   }, [view, onActiveChange]);
   return <section className="projects-grid-section" aria-label="All projects">
     <aside className="projects-grid__aside">
+      {filters}
       <p>{settings.gridIntroduction}</p>
       <nav className="projects-grid__pagination" aria-label="Project rows">
         {projects.filter((_, index) => index % 2 === 0).map((project, row) => <button

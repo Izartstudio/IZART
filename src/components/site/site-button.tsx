@@ -1,3 +1,4 @@
+import { ButtonBorder } from "./button-border";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -10,6 +11,7 @@ type SiteButtonProps = {
 
 export function SiteButton({ children, className, href, icon }: SiteButtonProps) {
   return <Link className={`site-button${className ? ` ${className}` : ""}`} href={href}>
+    <ButtonBorder />
     <span className="site-button__label">{children}</span>
     {icon ? <span className="site-button__icon" aria-hidden="true">{icon}</span> : null}
   </Link>;

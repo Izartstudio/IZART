@@ -2,7 +2,7 @@
 
 import Image, { type ImageLoaderProps } from "next/image";
 import Link from "next/link";
-import type { RefObject } from "react";
+import type { RefObject, ReactNode } from "react";
 import type { ListingProject, ProjectsView } from "../project-types";
 import { ProjectPagination } from "./project-pagination";
 import type { PortfolioSettings } from "@/content/portfolio-page";
@@ -10,8 +10,8 @@ import { ViewToggle } from "./view-toggle";
 
 const imageLoader = ({ src }: ImageLoaderProps) => src;
 
-export function ProjectsGallery({ settings, projects, active, view, setView, hostRef, galleryRef, canvasRef, goTo }: {
-  settings: PortfolioSettings; projects: ListingProject[]; active: number; view: ProjectsView; setView: (view: ProjectsView) => void;
+export function ProjectsGallery({ filters, settings, projects, active, view, setView, hostRef, galleryRef, canvasRef, goTo }: {
+  filters?: ReactNode; settings: PortfolioSettings; projects: ListingProject[]; active: number; view: ProjectsView; setView: (view: ProjectsView) => void;
   hostRef: RefObject<HTMLElement | null>; galleryRef: RefObject<HTMLDivElement | null>; canvasRef: RefObject<HTMLCanvasElement | null>;
   goTo: (index: number) => void;
 }) {
@@ -21,6 +21,7 @@ export function ProjectsGallery({ settings, projects, active, view, setView, hos
         <nav className="projects-rail" aria-label="Choose project"><ProjectPagination projects={projects} active={active} choose={goTo} /></nav>
       <div className="projects-gallery__info">
         <div className="projects-gallery__copy" aria-live="polite">
+          {filters}
           <h2>{project.name}</h2>
           <p>{project.listingDescription || project.introduction}</p>
           <ul>{project.services.map(service => <li key={service}>{service}</li>)}</ul>

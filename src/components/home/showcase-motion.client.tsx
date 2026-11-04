@@ -11,7 +11,7 @@ const subscribeCompact = (notify: () => void) => {
 const getCompactSnapshot = () => window.matchMedia(compactQuery).matches;
 const getServerSnapshot = () => false;
 
-export function ShowcaseMotion({ children, projectCount, bridge }: { children: ReactNode; projectCount: number; bridge?: ReactNode }) {
+export function ShowcaseMotion({ children, projectCount, bridge, latestWork = false }: { children: ReactNode; projectCount: number; bridge?: ReactNode; latestWork?: boolean }) {
   const compact = useSyncExternalStore(subscribeCompact, getCompactSnapshot, getServerSnapshot);
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -28,6 +28,12 @@ export function ShowcaseMotion({ children, projectCount, bridge }: { children: R
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const cards = Array.from(track.querySelectorAll<HTMLElement>(".showcase-card"));
     const bridge = track.querySelector<HTMLElement>(".point-to-pixel");
+    const gallery = section.closest<HTMLElement>(".project-details-gallery");
+    const shell = section.closest<HTMLElement>(".project-details-shell");
+    let scrollRoot: HTMLElement | null = null;
+    let viewportWidth = window.innerWidth;
+    let viewportHeight = window.innerHeight;
+    const scrollPosition = () => scrollRoot ? scrollRoot.scrollTop : window.scrollY;
     let projectOffsets: number[] = [];
     let frame = 0;
     let travel = 0;
@@ -57,11 +63,11 @@ export function ShowcaseMotion({ children, projectCount, bridge }: { children: R
 
       if (bridge) {
         const bridgeLeft = bridge.offsetLeft - currentOffset;
-        const fadeProgress = 1 - Math.min(1, Math.max(0, (bridgeLeft - window.innerWidth * .5) / (window.innerWidth * .5)));
+        const fadeProgress = 1 - Math.min(1, Math.max(0, (bridgeLeft - viewportWidth * .5) / (viewportWidth * .5)));
         if (indicator.parentElement) indicator.parentElement.style.opacity = String(1 - fadeProgress);
         if (intro) intro.style.opacity = String(1 - fadeProgress);
         if (projectList) projectList.style.opacity = String(1 - fadeProgress);
-        const bridgeProgress = Math.min(1, Math.max(0, (window.innerWidth * .82 - bridgeLeft) / window.innerWidth));
+        const bridgeProgress = Math.min(1, Math.max(0, (viewportWidth * .82 - bridgeLeft) / window.innerWidth));
         bridge.querySelectorAll<HTMLElement>("[data-bridge-step]").forEach((step) => {
           const activationPoint = Number(step.dataset.bridgeAt || 0);
           step.classList.toggle("is-active", bridgeProgress >= activationPoint);
@@ -71,17 +77,22 @@ export function ShowcaseMotion({ children, projectCount, bridge }: { children: R
     };
 
     const updateTarget = () => {
-      targetOffset = motionQuery.matches ? 0 : Math.min(travel, Math.max(0, window.scrollY - sectionTop));
+      targetOffset = motionQuery.matches ? 0 : Math.min(travel, Math.max(0, scrollPosition() - sectionTop));
       if (!frame) frame = requestAnimationFrame(render);
     };
     const measure = () => {
-      travel = Math.max(0, track.scrollWidth - window.innerWidth);
+      scrollRoot = gallery && shell?.classList.contains("is-open") && getComputedStyle(gallery).overflowY === "auto" ? gallery : null;
+      viewportWidth = scrollRoot?.clientWidth || window.innerWidth;
+      viewportHeight = scrollRoot?.clientHeight || window.innerHeight;
+      section.style.setProperty("--showcase-viewport-width", `${viewportWidth}px`);
+      section.style.setProperty("--showcase-viewport-height", `${viewportHeight}px`);
+      travel = Math.max(0, track.scrollWidth - viewportWidth);
       section.style.setProperty("--showcase-travel", `${travel}px`);
-      sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      sectionTop = section.getBoundingClientRect().top - (scrollRoot?.getBoundingClientRect().top || 0) + scrollPosition();
       const trackLeft = track.getBoundingClientRect().left;
       projectOffsets = cards.map(card => {
         const rect = card.getBoundingClientRect();
-        return rect.left - trackLeft + rect.width / 2 - window.innerWidth / 2;
+        return rect.left - trackLeft + rect.width / 2 - viewportWidth / 2;
       });
       currentOffset = Math.min(travel, currentOffset);
       updateTarget();
@@ -100,6 +111,10 @@ export function ShowcaseMotion({ children, projectCount, bridge }: { children: R
     observer.observe(track);
     observer.observe(section);
     observer.observe(document.body);
+    if (gallery) observer.observe(gallery);
+    const modeObserver = new MutationObserver(measure);
+    if (shell) modeObserver.observe(shell, { attributes: true, attributeFilter: ["class"] });
+    gallery?.addEventListener("scroll", updateTarget, { passive: true });
     motionQuery.addEventListener("change", measure);
     window.addEventListener("scroll", updateTarget, { passive: true });
     window.addEventListener("resize", measure, { passive: true });
@@ -112,6 +127,8 @@ export function ShowcaseMotion({ children, projectCount, bridge }: { children: R
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      modeObserver.disconnect();
+      gallery?.removeEventListener("scroll", updateTarget);
       motionQuery.removeEventListener("change", measure);
       window.removeEventListener("scroll", updateTarget);
       window.removeEventListener("resize", measure);
@@ -124,7 +141,7 @@ export function ShowcaseMotion({ children, projectCount, bridge }: { children: R
     };
   }, [children, projectCount, compact]);
 
-  return <><section ref={sectionRef} className="showcase" aria-labelledby="showcase-title">
+  return <><section ref={sectionRef} className={`showcase${latestWork ? " showcase--latest" : ""}`} aria-labelledby="showcase-title">
     <div className="showcase__sticky">
       <div ref={trackRef} className="showcase__track">{children}{!compact && bridge}</div>
       <div className="showcase-progress" aria-hidden="true">

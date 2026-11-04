@@ -4,13 +4,13 @@ import type { HomepageProject } from "@/sanity/projects";
 import { PointToPixel } from "./point-to-pixel";
 import { ShowcaseMotion } from "./showcase-motion.client";
 
-export function Showcase({ projects }: { projects: HomepageProject[] }) {
+export function Showcase({ projects, latestWork }: { projects: HomepageProject[]; latestWork?: { heading?: string; introduction?: string } }) {
   if (!projects.length) return null;
 
-  return <ShowcaseMotion projectCount={projects.length} bridge={<PointToPixel />}>
+  return <ShowcaseMotion projectCount={projects.length} bridge={latestWork ? undefined : <PointToPixel />} latestWork={Boolean(latestWork)}>
     <header className="showcase__intro">
-      <h2 id="showcase-title" className="sr-only">Selected work</h2>
-      <p>Here is a compilation of some recent standout projects we shipped.</p>
+      <h2 id="showcase-title" className={latestWork ? "showcase__heading" : "sr-only"}>{latestWork?.heading || "Selected work"}</h2>
+      <p>{latestWork?.introduction || (latestWork ? "Every project is a chance to try something new. Look at something with a fresh perspective. Do something for the first time." : "Here is a compilation of some recent standout projects we shipped.")}</p>
       <Link className="showcase__all" href="/projects">View All Work <span aria-hidden="true">→</span></Link>
     </header>
     <ol className="showcase__list">
@@ -22,6 +22,7 @@ export function Showcase({ projects }: { projects: HomepageProject[] }) {
           </span>
           <span className="showcase-card__overlay">
             <strong>{project.name}</strong>
+            {latestWork && <span className="showcase-card__summary">{project.listingDescription}<span>{project.year}</span></span>}
             <span className="showcase-card__services">{project.services.slice(0, 2).map(service => <span key={service}>{service}</span>)}</span>
           </span>
         </Link>

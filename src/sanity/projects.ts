@@ -9,13 +9,14 @@ export const sanityConfigured = Boolean(process.env.SANITY_PROJECT_ID);
 const client = sanityConfigured ? createClient({ projectId: process.env.SANITY_PROJECT_ID!, dataset: process.env.SANITY_DATASET || "production", apiVersion: "2026-09-17", useCdn: false, perspective: "published", token: process.env.SANITY_API_READ_TOKEN }) : null;
 const image = '{"url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}';
 const projection = `{
-  "slug": slug.current, name, client, "year": coalesce(year, ""), introduction, services,
+  "slug": slug.current, name, client, "year": coalesce(year, ""), introduction, services, industries,
   "background": coalesce(background, "#000000"), "foreground": coalesce(foreground, "#ffffff"), colorOverrides,
   "listingImage": listingImage${image}, listingDescription, listingAlt,
   "listingPalette": coalesce(listingImage.asset->metadata.palette, media[_type == "imagePanel"][0].image.asset->metadata.palette),
   "listingOrder": coalesce(listingOrder, 999), "showInProjects": coalesce(showInProjects, true),
   "featuredOnHomepage": coalesce(featuredOnHomepage, false), "homepageOrder": coalesce(homepageOrder, 999),
   "homepageImage": homepageImage${image}, "homepageHoverVideo": homepageHoverVideo.asset->url,
+  "latestWork": latestWork{heading, introduction, "projectSlugs": projects[]->slug.current},
   "details": coalesce(details[]{_key, title, body}, []),
   "logo": logo${image}, seoTitle, description, socialImageAlt, publishedAt, "socialImage": socialImage${image},
   "indexable": coalesce(indexable, false), "updatedAt": _updatedAt,
@@ -63,10 +64,10 @@ export const getProjects = cache(async (): Promise<(Project & { listingImage: No
     .map(async project => ({ ...await withProjectTheme(project), listingImage: project.listingImage })));
   return resolved.sort((a, b) => (positions.get(a.slug) ?? Infinity) - (positions.get(b.slug) ?? Infinity) || (a.listingOrder ?? 999) - (b.listingOrder ?? 999) || a.name.localeCompare(b.name));
 });
-export type HomepageProject = Pick<Project, "slug" | "name" | "services" | "homepageHoverVideo"> & { homepageImage: NonNullable<Project["homepageImage"]> };
+export type HomepageProject = Pick<Project, "slug" | "name" | "services" | "homepageHoverVideo" | "year" | "listingDescription"> & { homepageImage: NonNullable<Project["homepageImage"]> };
 export const getHomepageProjects = cache(async (): Promise<HomepageProject[]> => {
   const projects = await getProjects();
   return projects.filter(project => project.featuredOnHomepage === true)
     .sort((a, b) => (a.homepageOrder ?? a.listingOrder ?? 999) - (b.homepageOrder ?? b.listingOrder ?? 999))
-    .map(project => ({ slug: project.slug, name: project.name, services: project.services, homepageImage: project.homepageImage || project.listingImage, homepageHoverVideo: project.homepageHoverVideo }));
+    .map(project => ({ slug: project.slug, name: project.name, year: project.year, listingDescription: project.listingDescription, services: project.services, homepageImage: project.homepageImage || project.listingImage, homepageHoverVideo: project.homepageHoverVideo }));
 });
