@@ -9,8 +9,8 @@ import { ArrowIcon, SiteButton } from "./site-button";
 type Item = { label: string; href: string; children?: Item[] };
 const sections: Record<string, Item[]> = {
   Services: [
-    { label: "Branding", href: "/brand-identity", children: [{ label: "Brand Strategy", href: "/brand-identity/brand-strategy" }, { label: "Visual Identity", href: "/brand-identity" }] },
-    { label: "Digital Ecosystem", href: "/website-design-and-development", children: [{ label: "Website Design", href: "/website-design-and-development" }, { label: "Webflow Development", href: "/website-design-and-development/webflow-development" }, { label: "App Development", href: "/website-design-and-development/app-development" }] },
+    { label: "Branding", href: "/brand-identity", children: [{ label: "Brand Strategy", href: "/brand-identity/brand-strategy" }, { label: "Visual Identity", href: "/brand-identity/visual-identity" }] },
+    { label: "Digital Ecosystem", href: "/website-design-and-development", children: [{ label: "Website Design", href: "/website-design-and-development/website-design" }, { label: "Webflow Development", href: "/website-design-and-development/webflow-development" }, { label: "App Development", href: "/website-design-and-development/app-development" }] },
     { label: "Brand Growth", href: "/services/brand-growth", children: [{ label: "Campaign Strategy", href: "/services/brand-growth/campaign-strategy" }, { label: "Social Media", href: "/services/brand-growth/social-media" }, { label: "Content Systems", href: "/services/brand-growth/content-systems" }] },
     { label: "Brand Launch & Campaign Planning", href: "/services/brand-launch", children: [{ label: "Launch Strategy", href: "/services/brand-launch/launch-strategy" }, { label: "Creative Campaigns", href: "/services/brand-launch/creative-campaigns" }] },
     { label: "Spatial Design", href: "/services/spatial-design", children: [{ label: "Retail Design", href: "/services/spatial-design/retail-design" }, { label: "Exhibition Design", href: "/services/spatial-design/exhibition-design" }] },

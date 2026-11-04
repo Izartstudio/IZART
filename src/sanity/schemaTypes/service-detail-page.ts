@@ -1,3 +1,4 @@
+import { serviceSubpages } from "../../content/service-subpages";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 const image = () => defineArrayMember({ type: "image", options: { hotspot: true }, fields: [defineField({ name: "alt", type: "string", title: "Alternative text" })] });
@@ -8,6 +9,7 @@ export const serviceDetailPage = defineType({
       { title: "Branding", value: "brand-identity" }, { title: "Digital Ecosystem", value: "digital-ecosystem" },
       { title: "Brand Growth", value: "brand-growth" }, { title: "Brand Launch & Campaign Planning", value: "brand-launch" },
       { title: "Spatial Design", value: "spatial-design" },
+      ...serviceSubpages.map(page => ({ title: page.title, value: page.slug })),
     ] }, validation: rule => rule.required().custom(async (value, context) => {
       if (!value) return true;
       const id = context.document?._id.replace(/^drafts\./, "");
