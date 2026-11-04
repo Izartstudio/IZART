@@ -87,13 +87,16 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
       section.style.setProperty("--showcase-viewport-width", `${viewportWidth}px`);
       section.style.setProperty("--showcase-viewport-height", `${viewportHeight}px`);
       travel = Math.max(0, track.scrollWidth - viewportWidth);
-      section.style.setProperty("--showcase-travel", `${travel}px`);
       sectionTop = section.getBoundingClientRect().top - (scrollRoot?.getBoundingClientRect().top || 0) + scrollPosition();
       const trackLeft = track.getBoundingClientRect().left;
       projectOffsets = cards.map(card => {
         const rect = card.getBoundingClientRect();
         return rect.left - trackLeft + rect.width / 2 - viewportWidth / 2;
       });
+      // Latest Work ends when its final card reaches the same viewport anchor
+      // as every preceding card, rather than at arbitrary list padding.
+      if (latestWork && projectOffsets.length) travel = Math.max(0, projectOffsets[projectOffsets.length - 1]);
+      section.style.setProperty("--showcase-travel", `${travel}px`);
       currentOffset = Math.min(travel, currentOffset);
       updateTarget();
     };
@@ -139,7 +142,7 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
         card.removeEventListener("blur", pauseVideo);
       });
     };
-  }, [children, projectCount, compact]);
+  }, [children, projectCount, compact, latestWork]);
 
   return <><section ref={sectionRef} className={`showcase${latestWork ? " showcase--latest" : ""}`} aria-labelledby="showcase-title">
     <div className="showcase__sticky">
