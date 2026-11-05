@@ -129,7 +129,6 @@ export function usePlaygroundAudio(url?: string | null, nextUrl?: string | null)
   }, [playing, url]);
 
   useEffect(() => {
-    // Keep just one upcoming track warm and prioritize the track being played.
     if (!playing || !url || !nextUrl || url === nextUrl) {
       if (buffered.current) releaseAudio(buffered.current.element);
       buffered.current = null;
