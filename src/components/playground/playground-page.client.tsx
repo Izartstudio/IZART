@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PlaygroundPageData } from "@/content/playground";
+import { usePlaygroundAudio } from "./use-playground-audio";
 import { projectCard, worldPosition, wrap } from "./depth-stream";
 
 type CardSelection = { genre: number; index: number };
@@ -21,6 +22,11 @@ export function PlaygroundPageView({ page }: { page: PlaygroundPageData }) {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [switchDirection, setSwitchDirection] = useState<-1 | 1>(1);
   const genre = page.genres[activeGenre];
+  const nextGenre = page.genres[(activeGenre + 1) % page.genres.length];
+  const trackUrl = (item: typeof genre) => item.track?.url
+    ? `/api/playground-audio?genre=${encodeURIComponent(item._key)}`
+    : null;
+  const audio = usePlaygroundAudio(trackUrl(genre), trackUrl(nextGenre));
   const overlayOpen = useRef(false);
   const navigateGenre = useRef<(index: number) => void>(() => undefined);
 
@@ -108,7 +114,10 @@ export function PlaygroundPageView({ page }: { page: PlaygroundPageData }) {
       width = container.clientWidth;
       height = container.clientHeight;
       top = scrollHost.getBoundingClientRect().top + window.scrollY;
-      distance = Math.max(1, scrollHost.offsetHeight - window.innerHeight);
+      const scroller = document.scrollingElement ?? document.documentElement;
+      const hostEnd = top + scrollHost.getBoundingClientRect().height;
+      const scrollEnd = Math.min(hostEnd, scroller.scrollHeight) - scroller.clientHeight;
+      distance = Math.max(1, scrollEnd - top);
       dirty = true;
       scrollDirty = true;
       schedule();
@@ -145,7 +154,8 @@ export function PlaygroundPageView({ page }: { page: PlaygroundPageData }) {
       lastTime = time;
       if (scrollDirty) {
         scrollDirty = false;
-        const local = Math.max(0, Math.min(1, (window.scrollY - top) / distance));
+        const offset = window.scrollY - top;
+        const local = offset >= distance - 0.5 ? 1 : Math.max(0, offset / distance);
         target = .85 + cycle + local * count;
         if (local >= 1) {
           // Recenter the physical scrollbar without resetting the virtual camera.
@@ -184,6 +194,9 @@ export function PlaygroundPageView({ page }: { page: PlaygroundPageData }) {
     // Closing the dialog can leave a pending scroll target: resume without a new scroll.
     const observer = new MutationObserver(resume);
     observer.observe(container.querySelector(".playground-active")!, { attributes: true, attributeFilter: ["class"] });
+    const layoutObserver = new ResizeObserver(measure);
+    layoutObserver.observe(scrollHost);
+    layoutObserver.observe(container);
     measure();
     render();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -195,6 +208,7 @@ export function PlaygroundPageView({ page }: { page: PlaygroundPageData }) {
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      layoutObserver.disconnect();
       navigateGenre.current = () => undefined;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", measure);
@@ -282,10 +296,15 @@ export function PlaygroundPageView({ page }: { page: PlaygroundPageData }) {
           </div>}
         </div>
 
-        <div className="playground-player" aria-label="Future genre player">
+        <div className="playground-player" role="region" aria-label="Genre soundtrack">
           <div className="playground-player__art"><Image src={genre.cards[0].image.url} width={genre.cards[0].image.width} height={genre.cards[0].image.height} alt="" /></div>
-          <div className="playground-player__label"><span>Now exploring</span><strong>{genre.name}</strong></div>
-          <span className="playground-player__wave" aria-hidden="true">{Array.from({ length: 15 }, (_, index) => <i key={index} />)}</span>
+          <div className="playground-player__label"><span>Now exploring</span><strong>{genre.name}</strong>
+            {genre.track?.title && <span>{genre.track.title}{genre.track.artist && ` · ${genre.track.artist}`}</span>}
+            {audio.status && <span role="status">{audio.status}</span>}
+          </div>
+          {(genre.track?.url || audio.playing) && <button type="button" className="playground-player__toggle playground-player__wave" data-audible={audio.audible} aria-label={audio.audible ? "Pause soundtrack" : "Play soundtrack"} onClick={() => void audio.toggle()}>
+            {Array.from({ length: 15 }, (_, index) => <i key={index} aria-hidden="true" />)}
+          </button>}
           <span className="playground-player__brand">PLAY.<em>GROUND</em></span>
         </div>
       </div>

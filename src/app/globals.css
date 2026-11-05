@@ -483,7 +483,6 @@ canvas, [aria-hidden="true"]:not(.menu-overlay__project-media) { pointer-events:
 .playground-rail { position: absolute; z-index: 8; left: 50px; top: 50%; width: 18px; display: flex; flex-direction: column; gap: 16px; transform: translateY(-50%); }
 .playground-rail button { position: relative; width: 15px; height: 15px; padding: 0; border: 0; background: transparent; }
 .playground-rail button::before { content: ""; position: absolute; left: 0; top: 7px; width: 7px; height: 1px; background: #fff; opacity: .26; transition: width .25s ease,opacity .25s ease; }
-.playground-rail button:nth-child(4n+1)::before { width: 15px; opacity: .8; }
 .playground-rail button[aria-current="true"]::before { opacity: 0; }
 .playground-rail__marker { position: absolute; left: 0; top: 2px; width: 11px; height: 11px; border: 1px solid #fff; border-radius: 4px; transform: translate3d(0,calc(var(--genre-index) * 31px),0); transition: transform .58s cubic-bezier(.22,1,.36,1); will-change: transform; pointer-events: none; }
 .playground-genre { position: absolute; left: 25px; top: 0; width: max-content; margin: 0; display: flex; align-items: center; height: 15px; font-size: 14px; line-height: 1; text-transform: uppercase; white-space: nowrap; transform: translate3d(0,calc(var(--genre-index) * 31px),0); transition: transform .58s cubic-bezier(.22,1,.36,1),opacity .25s ease; will-change: transform; }
@@ -561,8 +560,12 @@ canvas, [aria-hidden="true"]:not(.menu-overlay__project-media) { pointer-events:
   .playground-rail { left: 17px; gap: 16px; }
   .playground-genre { left: 25px; top: 0; font-size: 11px; }
   .playground-card { width: 9.375rem; height: 9.375rem; }
-  .playground-player { left: 12px; right: 12px; bottom: 18px; height: 68px; padding: 11px; grid-template-columns: 42px 1fr auto; gap: 12px; }
-  .playground-player__art { width: 42px; height: 42px; }.playground-player__wave { display: none; }.playground-player__brand { padding: 0; font-size: 17px; }
+  .playground-player { left: 12px; right: 12px; bottom: max(18px, env(safe-area-inset-bottom)); height: auto; min-height: 68px; padding: 11px; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(6px, 2vw, 12px); }
+  .playground-player__art { width: clamp(32px, 11vw, 42px); height: auto; aspect-ratio: 1; }
+  .playground-player__label { min-width: 0; overflow-wrap: anywhere; }
+  .playground-player__label strong { font-size: clamp(12px, 4vw, 15px); }
+  .playground-player__wave { display: none; }
+  .playground-player__brand { padding: 0; font-size: clamp(11px, 4vw, 17px); }
   .playground-active__primary { width: min(68vw,23.5rem); gap: 1.5rem; }.playground-active__primary h2 { font-size: clamp(1.75rem,8vw,3rem); }.playground-active__media { height: auto; }.playground-active__side { width: 9.375rem; height: 9.375rem; }.playground-active__side--previous { left: -6.5rem; }.playground-active__side--next { right: -6.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1265,3 +1268,22 @@ html:has(.career-detail) { scroll-behavior: smooth; }
 .project-filter__menu button[aria-checked="true"] { background: #ffffff12; }
 .project-filter__menu button > span:last-child { font-family: monospace; white-space: pre; }
 @media(max-width:991px) { .project-filter { max-width: none; } }
+
+ .playground-player .playground-player__toggle { display: flex; justify-content: center; justify-self: start; width: 52px; height: 44px; padding: 0; border: 0; background: transparent; opacity: 1; }
+.playground-player__toggle i { transition: height .3s ease; }
+.playground-player__toggle[data-audible="false"] i { height: 1px; }
+@media (prefers-reduced-motion: no-preference) {
+  .playground-player__toggle[data-audible="true"] i { animation: playground-wave-pulse .68s ease-in-out infinite alternate; }
+  .playground-player__toggle[data-audible="true"] i:nth-child(3n) { animation-duration: .49s; animation-delay: -.2s; }
+  .playground-player__toggle[data-audible="true"] i:nth-child(3n + 1) { animation-duration: .83s; animation-delay: -.41s; }
+  .playground-player__toggle[data-audible="true"] i:nth-child(4n) { animation-delay: -.32s; }
+}
+@keyframes playground-wave-pulse {
+  from { transform: scaleY(.28); }
+  to { transform: scaleY(1); }
+}
+@media (max-width: 767px) {
+  .playground-player:has(.playground-player__toggle) { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+  .playground-player .playground-player__toggle { width: 44px; gap: 1px; }
+}
+.playground-player:not(:has(.playground-player__toggle)) .playground-player__brand { grid-column: -2; }

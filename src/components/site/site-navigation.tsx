@@ -18,7 +18,7 @@ const sections: Record<string, Item[]> = {
   Industries: [{ label: "Consumer Brands", href: "/industries/consumer-brands" }, { label: "Technology", href: "/industries/technology" }, { label: "Real Estate", href: "/industries/real-estate" }, { label: "Hospitality", href: "/industries/hospitality" }],
   Resources: [{ label: "Insights", href: "/blogs" }, { label: "Case Studies", href: "/projects" }, { label: "Brand Masterclass", href: "/brand-masterclass" }],
 };
-const utilities = [["Careers", "/careers"], ["Manifesto", "/manifesto"], ["About Us", "/about-us"], ["Brand Masterclass", "/brand-masterclass"], ["Store", "/store"]] as const;
+const utilities = [["Careers", "/careers"], ["Manifesto", "/manifesto"], ["About Us", "/about-us"], ["Brand Masterclass", "/brand-masterclass"], ["Store", "/store"], ["Playground", "/playground"]] as const;
 const socials = [["Instagram", "https://www.instagram.com/izart_studio/", "ig"], ["Behance", "https://www.behance.net/izartstudio_", "Bē"], ["Pinterest", "https://in.pinterest.com/izartstudio/", "p"], ["LinkedIn", "https://www.linkedin.com/company/izart-media", "in"]] as const;
 
 export function SiteNavigation() {
@@ -38,7 +38,7 @@ export function SiteNavigation() {
   const [child, setChild] = useState<string | null>(null);
   const close = () => setOpen(false);
   useEffect(() => {
-    if (!present) return;
+    if (!open) return;
     const old = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const escape = (event: KeyboardEvent) => {
@@ -51,7 +51,7 @@ export function SiteNavigation() {
     };
     addEventListener("keydown", escape);
     return () => { document.body.style.overflow = old; removeEventListener("keydown", escape); };
-  }, [present]);
+  }, [open]);
   useEffect(() => {
     if (open) { setPresent(true); return; }
     const resetTimer = window.setTimeout(() => {

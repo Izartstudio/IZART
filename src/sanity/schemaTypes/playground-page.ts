@@ -24,7 +24,7 @@ export const playgroundPage = defineType({
     defineField({
       name: "genres",
       type: "array",
-      description: "Drag to set scroll order. Each genre is one future audio state; audio is intentionally not modelled yet.",
+      description: "Drag to set scroll order. Each genre can have its own looping soundtrack.",
       of: [defineArrayMember({
         name: "playgroundGenre",
         title: "Genre",
@@ -33,6 +33,14 @@ export const playgroundPage = defineType({
           defineField({ name: "name", type: "string", validation: rule => rule.required() }),
           defineField({ name: "slug", type: "slug", options: { source: (_, context) => (context.parent as { name?: string })?.name || "genre" }, validation: rule => rule.required() }),
           defineField({ name: "accent", title: "Scene glow", type: "string", initialValue: "#a61b0b", validation: rule => rule.required().regex(/^#[\da-fA-F]{6}$/) }),
+          defineField({
+            name: "track", title: "Soundtrack", type: "object",
+            fields: [
+              defineField({ name: "audio", title: "MP3 file", type: "file", options: { accept: "audio/mpeg,.mp3" }, validation: rule => rule.required() }),
+              defineField({ name: "title", title: "Track title", type: "string" }),
+              defineField({ name: "artist", title: "Artist credit", type: "string" }),
+            ],
+          }),
           defineField({ name: "cards", type: "array", of: [card], validation: rule => rule.required().min(8).max(10), description: "Eight to ten cards. Drag to change their place in the cyclic scene." }),
         ],
         preview: { select: { title: "name", subtitle: "slug.current", media: "cards.0.image" } },

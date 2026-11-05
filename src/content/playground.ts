@@ -19,6 +19,7 @@ export type PlaygroundGenre = {
   name: string;
   slug: string;
   accent: string;
+  track?: { url: string | null; title?: string; artist?: string } | null;
   cards: PlaygroundCard[];
 };
 
