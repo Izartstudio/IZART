@@ -6,6 +6,11 @@ import type { Project } from "@/content/project";
 import { createProjectTheme, isHex, paletteFromPixels } from "./project-theme";
 
 const palettes = new Map<string, { expires: number; promise: Promise<string[]> }>();
+const featuredCoverBlobs: Record<string, { swatches: [string, string]; fallback: [string, string] }> = {
+  "soak-studio": { swatches: ["vibrant", "muted"], fallback: ["#9f6e4b", "#997f60"] },
+  ritva: { swatches: ["vibrant", "dominant"], fallback: ["#e88b0f", "#ceab71"] },
+  "dogs-and-cats": { swatches: ["dominant", "vibrant"], fallback: ["#77b5f4", "#1a74d5"] },
+};
 async function getPalette(url: string): Promise<string[]> {
   const cached = palettes.get(url);
   if (cached && cached.expires > Date.now()) return cached.promise;
@@ -38,5 +43,14 @@ export async function withProjectTheme(project: Project): Promise<Project> {
   // Sanity's stored metadata is a no-download fallback if its image CDN is unavailable.
   const fallback = Object.values(project.listingPalette || {}).map(item => item?.background).filter(isHex);
   const theme = createProjectTheme(palette.length ? palette : fallback, project.colorOverrides);
+  const featuredBlobs = featuredCoverBlobs[project.slug];
+  if (featuredBlobs) {
+    const [first, second] = featuredBlobs.swatches.map((key, index) => {
+      const color = project.listingPalette?.[key]?.background;
+      return isHex(color) ? color : featuredBlobs.fallback[index];
+    });
+    if (!isHex(project.colorOverrides?.blobOne)) theme.blobOne = first;
+    if (!isHex(project.colorOverrides?.blobTwo)) theme.blobTwo = second;
+  }
   return { ...project, theme, background: theme.heroBackground, foreground: theme.heroForeground, listingColor: theme.background };
 }

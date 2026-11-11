@@ -2,7 +2,6 @@ import { ContactForm } from "@/components/home/contact-form.client";
 import { SiteFooter } from "@/components/site/site-footer";
 import { Showcase } from "@/components/home/showcase";
 import type { HomepageProject } from "@/sanity/projects";
-import type { CSSProperties } from "react";
 import { ProjectNavigationTheme } from "@/components/projects/project-navigation-theme.client";
 import type { Project } from "@/content/project";
 import { ProjectHero } from "./project-hero";
@@ -17,7 +16,7 @@ function MediaStream({ project, eager = false }: { project: Project; eager?: boo
 }
 
 export function ProjectPageView({ project, latestProjects = [] }: { project: Project; latestProjects?: HomepageProject[] }) {
-  return <><main id="main" className="project" style={{ "--hero-bg": project.background, "--hero-fg": project.foreground, "--hero-muted": project.theme?.heroMuted || project.foreground } as CSSProperties}><ProjectNavigationTheme foreground={project.foreground} /><article>
+  return <><main id="main" className="project"><ProjectNavigationTheme foreground="#fff" /><article>
     <ProjectHero project={project} />
     <ProjectDetails project={project}><MediaStream project={project} eager /></ProjectDetails>
     <div data-project-latest-work><Showcase projects={latestProjects} latestWork={{ heading: project.latestWork?.heading || "Latest Work", introduction: project.latestWork?.introduction }} /></div>

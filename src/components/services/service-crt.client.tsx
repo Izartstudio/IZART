@@ -19,7 +19,7 @@ export function ServiceCrt({ stageRef, active, poster, mobilePoster }: {
     const source=()=>{
       const data=sourceRef.current;
       const video=stage.querySelector<HTMLVideoElement>(`[data-service-media="${data.active}"] video`);
-      rendererRef.current?.setSource(video,mobile.matches?data.mobilePoster||data.poster:data.poster);
+      rendererRef.current?.setSource(video,mobile.matches?data.mobilePoster||data.poster:data.poster,stage.dataset.paperDirection === "down");
     };
     const sync=()=>rendererRef.current?.setRunning(visible&&!document.hidden,motion.matches);
     const start=()=>{

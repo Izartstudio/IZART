@@ -2,6 +2,422 @@
   {
     "fields": [
       {
+        "options": {
+          "list": [
+            {
+              "title": "Branding",
+              "value": "brand-identity"
+            },
+            {
+              "title": "Digital Ecosystem",
+              "value": "digital-ecosystem"
+            },
+            {
+              "title": "Brand Growth",
+              "value": "brand-growth"
+            },
+            {
+              "title": "Brand Launch & Campaign Planning",
+              "value": "brand-launch"
+            },
+            {
+              "title": "Spatial Design",
+              "value": "spatial-design"
+            },
+            {
+              "title": "Brand Strategy",
+              "value": "brand-strategy"
+            },
+            {
+              "title": "Visual Identity",
+              "value": "visual-identity"
+            },
+            {
+              "title": "Website Design",
+              "value": "website-design"
+            },
+            {
+              "title": "Webflow Development",
+              "value": "webflow-development"
+            },
+            {
+              "title": "App Development",
+              "value": "app-development"
+            },
+            {
+              "title": "Campaign Strategy",
+              "value": "campaign-strategy"
+            },
+            {
+              "title": "Social Media",
+              "value": "social-media"
+            },
+            {
+              "title": "Content Systems",
+              "value": "content-systems"
+            },
+            {
+              "title": "Launch Strategy",
+              "value": "launch-strategy"
+            },
+            {
+              "title": "Creative Campaigns",
+              "value": "creative-campaigns"
+            },
+            {
+              "title": "Retail Design",
+              "value": "retail-design"
+            },
+            {
+              "title": "Exhibition Design",
+              "value": "exhibition-design"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "brand-identity",
+                  "digital-ecosystem",
+                  "brand-growth",
+                  "brand-launch",
+                  "spatial-design",
+                  "brand-strategy",
+                  "visual-identity",
+                  "website-design",
+                  "webflow-development",
+                  "app-development",
+                  "campaign-strategy",
+                  "social-media",
+                  "content-systems",
+                  "launch-strategy",
+                  "creative-campaigns",
+                  "retail-design",
+                  "exhibition-design"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "name": "service",
+        "type": "string"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "title": "Hero heading"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text",
+        "title": "Hero description"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "description": "Leave empty to use the shared service images. Provide exactly seven to replace them.",
+        "of": [
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "name": "alt",
+                "type": "string",
+                "title": "Alternative text"
+              }
+            ],
+            "type": "image"
+          }
+        ],
+        "name": "heroImages",
+        "type": "array",
+        "title": "Hero images — left to right"
+      },
+      {
+        "description": "Independent content for Digital Ecosystem or Spatial Design. Empty fields use the homepage defaults.",
+        "fields": [
+          {
+            "name": "heading",
+            "type": "string",
+            "title": "Section heading"
+          },
+          {
+            "name": "description",
+            "type": "text",
+            "title": "Introduction"
+          },
+          {
+            "of": [
+              {
+                "fields": [
+                  {
+                    "validation": [
+                      {
+                        "level": "error",
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          }
+                        ]
+                      }
+                    ],
+                    "name": "title",
+                    "type": "string"
+                  },
+                  {
+                    "validation": [
+                      {
+                        "level": "error",
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          }
+                        ]
+                      }
+                    ],
+                    "name": "description",
+                    "type": "text"
+                  },
+                  {
+                    "validation": [
+                      {
+                        "level": "error",
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          },
+                          {
+                            "flag": "custom"
+                          }
+                        ]
+                      }
+                    ],
+                    "name": "href",
+                    "type": "string",
+                    "title": "Learn more destination"
+                  },
+                  {
+                    "options": {
+                      "hotspot": true
+                    },
+                    "validation": [
+                      {
+                        "level": "error",
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          }
+                        ]
+                      }
+                    ],
+                    "name": "image",
+                    "type": "image",
+                    "title": "Desktop poster / fallback"
+                  },
+                  {
+                    "options": {
+                      "hotspot": true
+                    },
+                    "name": "mobileImage",
+                    "type": "image",
+                    "title": "Mobile poster / fallback"
+                  },
+                  {
+                    "options": {
+                      "accept": "video/mp4,video/webm"
+                    },
+                    "name": "video",
+                    "type": "file",
+                    "title": "Desktop video"
+                  },
+                  {
+                    "options": {
+                      "accept": "video/mp4,video/webm"
+                    },
+                    "name": "mobileVideo",
+                    "type": "file",
+                    "title": "Mobile video"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "name": "states",
+            "type": "array",
+            "title": "Service states — drag to reorder"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "showcase",
+        "type": "object",
+        "title": "Our Services showcase"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "weekStart",
+                "type": "string"
+              },
+              {
+                "name": "weekEnd",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "rows": 3,
+                "name": "description",
+                "type": "text"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "max",
+                        "constraint": 9
+                      }
+                    ]
+                  }
+                ],
+                "of": [
+                  {
+                    "options": {
+                      "hotspot": true
+                    },
+                    "fields": [
+                      {
+                        "name": "alt",
+                        "type": "string",
+                        "title": "Alternative text"
+                      }
+                    ],
+                    "type": "image"
+                  }
+                ],
+                "name": "images",
+                "type": "array"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "processSteps",
+        "type": "array",
+        "title": "Our Process"
+      },
+      {
+        "fields": [
+          {
+            "name": "summary",
+            "type": "text"
+          },
+          {
+            "name": "benefit",
+            "type": "text"
+          },
+          {
+            "name": "why",
+            "type": "text",
+            "title": "Why Izart"
+          }
+        ],
+        "name": "outcome",
+        "type": "object",
+        "title": "The Outcome"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "question",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "answer",
+                "type": "text"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "faqs",
+        "type": "array",
+        "title": "Frequently Asked Questions"
+      }
+    ],
+    "name": "serviceDetailPage",
+    "type": "document",
+    "title": "Service detail pages"
+  },
+  {
+    "fields": [
+      {
         "validation": [
           {
             "level": "error",
@@ -268,6 +684,19 @@
         "title": "Projects page summary"
       },
       {
+        "options": {
+          "layout": "tags"
+        },
+        "description": "Portfolio Industry filter labels, for example Real Estate, Food & Beverage, or Beauty & Wellness.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "industries",
+        "type": "array"
+      },
+      {
         "initialValue": false,
         "description": "Adds this project to the homepage showcase.",
         "name": "featuredOnHomepage",
@@ -343,6 +772,40 @@
         "name": "media",
         "type": "array",
         "title": "Case-study media"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "Latest Work",
+            "name": "heading",
+            "type": "string"
+          },
+          {
+            "rows": 3,
+            "name": "introduction",
+            "type": "text"
+          },
+          {
+            "description": "Drag to reorder. Leave empty to automatically show the next projects in portfolio order, excluding this project.",
+            "of": [
+              {
+                "to": [
+                  {
+                    "type": "project"
+                  }
+                ],
+                "type": "reference",
+                "title": "Reference to case study"
+              }
+            ],
+            "name": "projects",
+            "type": "array",
+            "title": "Next case studies"
+          }
+        ],
+        "name": "latestWork",
+        "type": "object",
+        "title": "Latest Work after this case study"
       },
       {
         "validation": [
@@ -1323,7 +1786,7 @@
             ]
           }
         ],
-        "description": "Drag to set scroll order. Each genre is one future audio state; audio is intentionally not modelled yet.",
+        "description": "Drag to set scroll order. Each genre can have its own looping soundtrack.",
         "of": [
           {
             "fields": [
@@ -1386,6 +1849,42 @@
                 "name": "accent",
                 "type": "string",
                 "title": "Scene glow"
+              },
+              {
+                "fields": [
+                  {
+                    "options": {
+                      "accept": "audio/mpeg,.mp3"
+                    },
+                    "validation": [
+                      {
+                        "level": "error",
+                        "rules": [
+                          {
+                            "flag": "presence",
+                            "constraint": "required"
+                          }
+                        ]
+                      }
+                    ],
+                    "name": "audio",
+                    "type": "file",
+                    "title": "MP3 file"
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "title": "Track title"
+                  },
+                  {
+                    "name": "artist",
+                    "type": "string",
+                    "title": "Artist credit"
+                  }
+                ],
+                "name": "track",
+                "type": "object",
+                "title": "Soundtrack"
               },
               {
                 "validation": [

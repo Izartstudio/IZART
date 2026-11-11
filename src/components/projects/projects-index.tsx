@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, type ReactNode, type CSSProperties } from "react";
+import { useState, type ReactNode, type CSSProperties } from "react";
 import { ProjectFilter } from "./project-filter";
 import { ProjectBackdrop } from "./gallery/project-backdrop";
 import { ProjectsGallery } from "./gallery/projects-gallery";
@@ -20,12 +20,15 @@ export function ProjectsIndex({ projects, settings }: { projects: ListingProject
   const [service, setService] = useState("");
   const [industry, setIndustry] = useState("");
   const industryLabels = (project: ListingProject) => project.industries?.length ? project.industries : industriesBySlug[project.slug] || [];
-  const serviceOptions = [...new Set(projects.flatMap(project => project.services))].sort();
-  const industryOptions = [...new Set(projects.flatMap(industryLabels))].sort();
-  const filtered = useMemo(() => projects.filter(project => (!service || project.services.includes(service)) && (!industry || (project.industries?.length ? project.industries : industriesBySlug[project.slug] || []).includes(industry))), [projects, service, industry]);
+  const serviceMatches = (project: ListingProject) => !service || project.services.includes(service);
+  const industryMatches = (project: ListingProject) => !industry || industryLabels(project).includes(industry);
+  const serviceOptions = [...new Set(projects.filter(industryMatches).flatMap(project => project.services))].sort();
+  const industryOptions = [...new Set(projects.filter(serviceMatches).flatMap(industryLabels))].sort();
+  const filtered = projects.filter(project => serviceMatches(project) && industryMatches(project));
+
   const filters = <div className="projects-filters" aria-label="Filter projects">
-    <ProjectFilter label="Services" allLabel="All services" value={service} options={serviceOptions} onChange={setService} />
-    <ProjectFilter label="Industry" allLabel="All industries" value={industry} options={industryOptions} onChange={setIndustry} />
+    <ProjectFilter label="Services" allLabel="All Services" value={service} options={serviceOptions} onChange={setService} />
+    <ProjectFilter label="Industry" allLabel="All Industries" value={industry} options={industryOptions} onChange={setIndustry} />
     {(service || industry) && <button type="button" onClick={() => { setService(""); setIndustry(""); }}>Clear ×</button>}
     <span className="sr-only" role="status">{filtered.length} projects found</span>
   </div>;
@@ -37,10 +40,10 @@ function ProjectsResults({ projects, settings, view, setView, filters }: { proje
   const gallery = useProjectGallery(projects, view === "gallery");
   const theme = projects[view === "gallery" ? gallery.active : gridActive]?.theme || createProjectTheme([]);
   const backdrop = view === "gallery" ? gallery.backdrop : { current: 0, themes: [theme, theme] as [typeof theme, typeof theme] };
-  const style = { "--project-bg": theme.background, "--project-fg": theme.foreground, "--project-muted": theme.muted } as CSSProperties;
+  const style = { "--project-bg": "#000", "--project-fg": "#fff", "--project-muted": "#d6d6d6" } as CSSProperties;
   if (!projects.length) return <main id="main" className="projects-index" style={style}>{filters}<h1>{settings.heading}</h1><p>No projects match these filters. Try another selection or clear the filters.</p></main>;
   return <main id="main" className="projects-index" data-view={view} style={style}>
-    <ProjectNavigationTheme foreground={theme.foreground} />
+    <ProjectNavigationTheme foreground="#fff" />
     <h1 className="sr-only">{settings.heading}</h1>
     <ProjectBackdrop {...backdrop} />
     <ProjectsGallery filters={filters} settings={settings} projects={projects} active={gallery.active} view={view} setView={setView} hostRef={gallery.hostRef} galleryRef={gallery.galleryRef} canvasRef={gallery.canvasRef} goTo={gallery.goTo} />

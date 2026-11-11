@@ -1,7 +1,20 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { vimeoEmbedUrl } from "@/lib/vimeo-embed";
 import type { VideoPanel } from "@/content/project";
 export function ProjectVideo({ panel }: { panel: VideoPanel }) {
+  const embed = vimeoEmbedUrl(panel.vimeoEmbed);
+  if (embed) {
+    const aspectRatio = panel.poster?.width && panel.poster?.height
+      ? `${panel.poster.width} / ${panel.poster.height}`
+      : "16 / 9";
+    return <iframe className="project-video__embed" src={embed} style={{ aspectRatio }}
+      title={panel.title || "Case study video"} loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />;
+  }
+  return panel.url ? <UploadedVideo panel={panel} url={panel.url} /> : null;
+}
+
+function UploadedVideo({ panel, url }: { panel: VideoPanel; url: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -30,10 +43,10 @@ export function ProjectVideo({ panel }: { panel: VideoPanel }) {
   return <div className="project-video">
     <video ref={ref} controls playsInline preload="none" muted={panel.mode === "loop"} loop={panel.mode === "loop"}
       poster={panel.poster.url} width={panel.poster.width} height={panel.poster.height} aria-label={panel.title} onError={() => setFailed(true)}>
-      <source src={panel.url} />
+      <source src={url} />
       {panel.captionsUrl && <track kind="captions" src={panel.captionsUrl} srcLang="en" label="English" default />}
-      <a href={panel.url}>Watch {panel.title}</a>
+      <a href={url}>Watch {panel.title}</a>
     </video>
-    {failed && <p className="video-error">This video could not load. <a href={panel.url}>Open video</a></p>}
+    {failed && <p className="video-error">This video could not load. <a href={url}>Open video</a></p>}
   </div>;
 }

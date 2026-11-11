@@ -37,7 +37,7 @@ async function main() {
       for (const panel of project.media) {
         media.push(panel._type === "imagePanel"
           ? { _key: panel._key, _type: "imagePanel", image: await image(panel.image), mobileImage: await image(panel.mobileImage), alt: panel.alt, decorative: panel.decorative || false, imageTitle: panel.imageTitle, caption: panel.caption, creditText: panel.creditText, creatorName: panel.creatorName, licenseUrl: panel.licenseUrl, rightsUrl: panel.rightsUrl }
-          : { _key: panel._key, _type: "videoPanel", video: await file(panel.url), poster: await image(panel.poster), title: panel.title, mode: panel.mode, captions: await file(panel.captionsUrl), seo: panel.seo });
+          : { _key: panel._key, _type: "videoPanel", video: await file(panel.url ?? undefined), vimeoEmbed: panel.vimeoEmbed, poster: await image(panel.poster), title: panel.title, mode: panel.mode, captions: await file(panel.captionsUrl), seo: panel.seo });
       }
       await client.createIfNotExists({
         _id: id, _type: "project", slug: { _type: "slug", current: project.slug },

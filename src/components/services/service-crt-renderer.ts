@@ -24,7 +24,7 @@ const fragment = `precision mediump float;
 varying vec2 v_uv;
 uniform sampler2D u_image; uniform sampler2D u_previous;
 uniform vec2 u_resolution; uniform vec2 u_source; uniform vec2 u_previousSource;
-uniform float u_time; uniform float u_blend;
+uniform float u_time; uniform float u_blend; uniform float u_flipDirection;
 uniform float u_curvature; uniform float u_scanlines; uniform float u_scanlineSize;
 uniform float u_dispersion; uniform float u_rollSpeed; uniform float u_vignette; uniform float u_brightness;
 vec2 cover(vec2 uv,vec2 source){
@@ -42,7 +42,27 @@ vec3 sampleFrame(sampler2D tex,vec2 dimensions,vec2 uv){
 void main(){
  vec2 p=v_uv*2.-1.;
  vec2 warped=(p*(1.+u_curvature*.16*dot(p,p)))*.5+.5;
- vec3 c=mix(sampleFrame(u_previous,u_previousSource,warped),sampleFrame(u_image,u_source,warped),u_blend);
+ vec3 c=sampleFrame(u_image,u_source,warped);
+ if (u_blend < 1.) {
+   // Reveal the incoming frame below a rising fold. Sample the outgoing
+   // frame in reverse along the fold to give it a visible paper back.
+   float progress=smoothstep(0.,1.,u_blend);
+   float edge=mix(-.15,1.15,progress)+.07*p.x*p.x*sin(progress*3.14159);
+   float distanceToEdge=(u_flipDirection>0. ? v_uv.y : 1.-v_uv.y)-edge;
+   float foldWidth=.13*sin(progress*3.14159)+.006;
+   if (distanceToEdge>0.) {
+     c=sampleFrame(u_previous,u_previousSource,warped);
+     c*=.84+.16*smoothstep(0.,.06,distanceToEdge);
+   } else if (distanceToEdge>-foldWidth) {
+     vec2 folded=warped;
+     folded.y-=distanceToEdge*2.*u_flipDirection;
+     vec3 back=sampleFrame(u_previous,u_previousSource,folded);
+     float curve=1.+distanceToEdge/foldWidth;
+     c=mix(back,vec3(.76),.32)*(.42+.55*sin(curve*3.14159));
+   } else {
+     c*=1.-.32*smoothstep(-foldWidth-.075,-foldWidth,distanceToEdge);
+   }
+ }
  // Fine scanlines plus the visible, soft curved roll from the reference.
  float line=.5+.5*sin((v_uv.y*u_resolution.y/u_scanlineSize+u_time*u_rollSpeed*3.)*6.2831853);
  c*=1.-u_scanlines*line;
@@ -92,7 +112,7 @@ export function createServiceCrt(canvas: HTMLCanvasElement) {
   const buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
   const position = gl.getAttribLocation(program,"a_position");
-  const uniforms = Object.fromEntries(["image","previous","resolution","source","previousSource","time","blend","curvature","scanlines","scanlineSize","dispersion","rollSpeed","vignette","brightness"].map(name => [name,gl.getUniformLocation(program,`u_${name}`)]));
+  const uniforms = Object.fromEntries(["image","previous","resolution","source","previousSource","time","blend","flipDirection","curvature","scanlines","scanlineSize","dispersion","rollSpeed","vignette","brightness"].map(name => [name,gl.getUniformLocation(program,`u_${name}`)]));
   const makeTexture = () => {
     const texture = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,texture);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
@@ -108,6 +128,7 @@ export function createServiceCrt(canvas: HTMLCanvasElement) {
   let video: HTMLVideoElement | null = null;
   let poster: HTMLImageElement | null = null;
   let videoTime = -1, generation = 0, frame = 0, last = 0, drawTime = 0, elapsed = 0, blendStart = 0;
+  let flipDirection = 1;
   let running = false, disposed = false, ready = false, first = true, reduce = false;
   const upload = (source: HTMLVideoElement | HTMLImageElement) => {
     const sourceWidth=source instanceof HTMLVideoElement?source.videoWidth:source.naturalWidth;
@@ -141,6 +162,7 @@ export function createServiceCrt(canvas: HTMLCanvasElement) {
     gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,current.texture,0);
     gl.bindTexture(gl.TEXTURE_2D,scratchTexture);gl.uniform2f(blurStep,0,stepY);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
     gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+    if (!ready) blendStart=elapsed;
     current.width=sourceWidth;current.height=sourceHeight;ready=true;
   };
   const paint = (timestamp: number) => {
@@ -165,6 +187,7 @@ export function createServiceCrt(canvas: HTMLCanvasElement) {
           gl.uniform2f(uniforms.resolution,bounds.width,bounds.height);
           gl.uniform2f(uniforms.source,current.width,current.height);gl.uniform2f(uniforms.previousSource,previous.width,previous.height);
           gl.uniform1f(uniforms.time,elapsed*serviceCrtSettings.speed);
+          gl.uniform1f(uniforms.flipDirection,flipDirection);
           gl.uniform1f(uniforms.blend,first || reduce ? 1 : Math.min(1,(elapsed-blendStart)/.85));
           for (const key of ["curvature","scanlines","scanlineSize","dispersion","rollSpeed","vignette","brightness"] as const) gl.uniform1f(uniforms[key],serviceCrtSettings[key]);
           gl.drawArrays(gl.TRIANGLE_STRIP,0,4);canvas.dataset.ready="true";
@@ -175,10 +198,11 @@ export function createServiceCrt(canvas: HTMLCanvasElement) {
   };
   const request = () => { if (!frame && !disposed) frame=requestAnimationFrame(paint); };
   return {
-    setSource(element: HTMLVideoElement | null, imageUrl: string) {
+    setSource(element: HTMLVideoElement | null, imageUrl: string, fromTop: boolean) {
+      flipDirection = fromTop ? -1 : 1;
       generation++; const sourceGeneration=generation;
       if (poster) poster.onload=null;
-      if (ready) { const swap=previous;previous=current;current=swap;first=false; } else first=true;
+      if (ready) { const swap=previous;previous=current;current=swap;first=false; }
       video=element;videoTime=-1;ready=false;blendStart=elapsed;
       poster=new Image();poster.crossOrigin="anonymous";
       poster.onload=()=>{ if(disposed || sourceGeneration!==generation) return;try{upload(poster!);request();}catch{canvas.dataset.ready="false";} };

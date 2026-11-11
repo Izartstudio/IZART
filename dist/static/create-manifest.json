@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-11-01T12:01:29.780Z",
+  "createdAt": "2026-11-05T14:35:23.949Z",
   "studioVersion": "6.15.0",
   "version": 3,
   "workspaces": [
@@ -13,7 +13,7 @@
       },
       "name": "izart",
       "projectId": "3u90gyl9",
-      "schema": "ab020579.create-schema.json",
+      "schema": "6688817a.create-schema.json",
       "title": "Izart Studio",
       "tools": "a1fd46b5.create-tools.json"
     }

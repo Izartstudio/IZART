@@ -1,7 +1,7 @@
 import type { ProjectColorOverrides, ProjectTheme } from "@/lib/project-theme";
 export type ProjectImage = { url: string; width: number; height: number };
 export type ImagePanel = { _key: string; _type: "imagePanel"; image: ProjectImage; mobileImage?: ProjectImage; alt: string; decorative?: boolean; imageTitle?: string; caption?: string; creditText?: string; creatorName?: string; licenseUrl?: string; rightsUrl?: string };
-export type VideoPanel = { _key: string; _type: "videoPanel"; url: string; poster: ProjectImage; title: string; mode: "controls" | "loop"; captionsUrl?: string; seo?: { enabled?: boolean; description?: string; uploadDate?: string; durationSeconds?: number } | null };
+export type VideoPanel = { _key: string; _type: "videoPanel"; url?: string | null; vimeoEmbed?: string | null; poster: ProjectImage; title: string; mode: "controls" | "loop"; captionsUrl?: string; seo?: { enabled?: boolean; description?: string; uploadDate?: string; durationSeconds?: number } | null };
 export type Project = {
   slug: string; name: string; client: string; year: string; introduction: string;
   industries?: string[];

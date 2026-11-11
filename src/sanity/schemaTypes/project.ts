@@ -1,3 +1,4 @@
+import { vimeoEmbedUrl } from "../../lib/vimeo-embed";
 import { defineArrayMember, defineField, defineType } from "sanity";
 export const imagePanel = defineType({
   name: "imagePanel", title: "Image", type: "object",
@@ -19,7 +20,11 @@ export const videoPanel = defineType({
   name: "videoPanel", title: "Video", type: "object",
   fields: [
     defineField({ name: "title", type: "string", validation: r => r.required() }),
-    defineField({ name: "video", type: "file", options: { accept: "video/mp4,video/webm" }, validation: r => r.required(), description: "Use compressed MP4 or WebM. Streaming integration can be added for longer films." }),
+    defineField({ name: "video", type: "file", options: { accept: "video/mp4,video/webm" }, validation: r => r.custom((value, context) => value?.asset?._ref || vimeoEmbedUrl((context.parent as { vimeoEmbed?: string })?.vimeoEmbed) ? true : "Upload a video or paste Vimeo embed code."), description: "Use compressed MP4 or WebM for uploaded videos." }),
+    defineField({ name: "vimeoEmbed", title: "Vimeo embed code", type: "text", rows: 4,
+      description: "Paste Vimeo’s Share → Embed code or player URL. Vimeo takes precedence over an uploaded file. Set Vimeo playback and captions in Vimeo.",
+      validation: r => r.custom(value => !value?.trim() || vimeoEmbedUrl(value) ? true : "Paste a Vimeo iframe or an HTTPS player.vimeo.com/video URL."),
+    }),
     defineField({ name: "poster", type: "image", validation: r => r.required(), description: "Match the video's aspect ratio." }),
     defineField({ name: "mode", type: "string", initialValue: "controls", options: { list: [{ title: "Play on click", value: "controls" }, { title: "Muted loop when visible", value: "loop" }] }, validation: r => r.required() }),
     defineField({ name: "captions", type: "file", options: { accept: ".vtt" }, description: "English WebVTT captions for speech or meaningful audio." }),

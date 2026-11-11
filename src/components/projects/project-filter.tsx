@@ -28,7 +28,7 @@ export function ProjectFilter({ label, allLabel, value, options, onChange }: { l
     <span className="project-filter__label" id={`${id}-label`}>{label}</span>
     <button ref={trigger} className="project-filter__trigger" type="button" aria-haspopup="menu" aria-expanded={open} aria-controls={`${id}-menu`} aria-labelledby={`${id}-label ${id}-value`} onClick={() => setOpen(!open)} onKeyDown={event => {
       if (!open && (event.key === "ArrowDown" || event.key === "ArrowUp")) { event.preventDefault(); setOpen(true); focusOption(event.key === "ArrowDown" ? 0 : options.length); }
-    }}><span id={`${id}-value`}>{value || allLabel}</span><span aria-hidden="true">{open ? "−" : "+"}</span></button>
+    }}><span id={`${id}-value`}>{value || allLabel}</span><span aria-hidden="true">[+]</span></button>
     {open && <div className="project-filter__menu" id={`${id}-menu`} role="menu" aria-labelledby={`${id}-label`}>
       {["", ...options].map(option => <button type="button" role="menuitemradio" aria-checked={value === option} key={option} onClick={() => { setOpen(false); trigger.current?.focus(); onChange(option); }}><span>{option || allLabel}</span><span aria-hidden="true">{value === option ? "[ × ]" : "[   ]"}</span></button>)}
     </div>}

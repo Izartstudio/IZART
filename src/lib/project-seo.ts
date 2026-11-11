@@ -1,5 +1,6 @@
 import type { Metadata, MetadataRoute } from "next";
 import type { Project, VideoPanel } from "@/content/project";
+import { vimeoEmbedUrl } from "./vimeo-embed";
 import { site } from "./site";
 
 const absolute = (url: string) => new URL(url, site.url).href;
@@ -15,7 +16,12 @@ export function projectImages(project: Project): string[] {
 }
 export function projectVideos(project: Project): VideoPanel[] {
   return project.media.filter((panel): panel is VideoPanel => panel._type === "videoPanel" &&
-    panel.seo?.enabled === true && Boolean(panel.title?.trim() && panel.seo.description?.trim() && date(panel.seo.uploadDate) && panel.poster?.url && panel.url));
+    panel.seo?.enabled === true && Boolean(panel.title?.trim() && panel.seo.description?.trim() && date(panel.seo.uploadDate) && panel.poster?.url && (vimeoEmbedUrl(panel.vimeoEmbed) || panel.url)));
+}
+function videoSource(panel: VideoPanel, embedKey: string, fileKey: string) {
+  const embed = vimeoEmbedUrl(panel.vimeoEmbed);
+  if (embed) return { [embedKey]: embed };
+  return panel.url ? { [fileKey]: absolute(panel.url) } : {};
 }
 export function projectMetadata(project: Project): Metadata {
   const url = absolute(`/projects/${project.slug}`);
@@ -64,7 +70,8 @@ export function projectStructuredData(project: Project): Record<string, unknown>
   const videos = projectVideos(project).map(panel => ({
     "@type": "VideoObject", "@id": `${url}#video-${encodeURIComponent(panel._key)}`,
     name: panel.title, description: panel.seo!.description,
-    thumbnailUrl: absolute(panel.poster.url), contentUrl: absolute(panel.url),
+    thumbnailUrl: absolute(panel.poster.url),
+    ...videoSource(panel, "embedUrl", "contentUrl"),
     uploadDate: date(panel.seo!.uploadDate),
     ...(panel.seo!.durationSeconds && panel.seo!.durationSeconds > 0 ? { duration: `PT${panel.seo!.durationSeconds}S` } : {}),
   }));
@@ -97,7 +104,7 @@ export function projectStructuredData(project: Project): Record<string, unknown>
 export function projectSitemapEntry(project: Project): MetadataRoute.Sitemap[number] {
   const videos = projectVideos(project).map(panel => ({
     title: panel.title, description: panel.seo!.description!, thumbnail_loc: absolute(panel.poster.url),
-    content_loc: absolute(panel.url), publication_date: date(panel.seo!.uploadDate),
+    ...videoSource(panel, "player_loc", "content_loc"), publication_date: date(panel.seo!.uploadDate),
     ...(panel.seo!.durationSeconds ? { duration: Math.round(panel.seo!.durationSeconds) } : {}),
   }));
   return {

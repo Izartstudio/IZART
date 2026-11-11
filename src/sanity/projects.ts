@@ -22,7 +22,7 @@ const projection = `{
   "indexable": coalesce(indexable, false), "updatedAt": _updatedAt,
   "media": coalesce(media[]{_key, _type, alt, decorative, imageTitle, caption, creditText, creatorName, licenseUrl, rightsUrl, title, mode, seo,
     "image": image${image}, "mobileImage": mobileImage${image},
-    "poster": poster${image}, "url": video.asset->url, "captionsUrl": captions.asset->url}, [])
+    "poster": poster${image}, vimeoEmbed, "url": video.asset->url, "captionsUrl": captions.asset->url}, [])
 }`;
 export const getPortfolioSettings = cache(async (): Promise<PortfolioSettings> => {
   if (!client) return defaultPortfolioSettings;
@@ -40,7 +40,7 @@ export const getProject = cache(async (slug: string): Promise<Project | null> =>
   const project = remote || (!settings.useCmsProjects ? local : null);
   if (!project) return null;
   if (project.media.length > 30) throw new Error("A case study cannot contain more than 30 media items.");
-  return withProjectTheme(project);
+  return withProjectTheme({ ...project, year: project.year.trim() || local?.year || "" });
 });
 export async function getProjectSlugs(): Promise<string[]> {
   const [remote, settings] = await Promise.all([

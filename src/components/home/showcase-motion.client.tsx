@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 
+import { ProjectProgress, projectProgressLeft } from "@/components/site/project-progress";
+
 const compactQuery = "(max-width: 991px)";
 const subscribeCompact = (notify: () => void) => {
   const query = window.matchMedia(compactQuery);
@@ -59,7 +61,8 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
       }
       const progress = projectOffsets.length > 1 ? projectPosition / (projectOffsets.length - 1) : .5;
       track.style.transform = `translate3d(${-currentOffset}px,0,0)`;
-      indicator.style.left = `${progress * 100}%`;
+      // The flex rail positions the end ticks half a tick-width inside its edges.
+      indicator.style.left = projectProgressLeft(progress);
 
       if (bridge) {
         const bridgeLeft = bridge.offsetLeft - currentOffset;
@@ -82,7 +85,7 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
     };
     const measure = () => {
       scrollRoot = gallery && shell?.classList.contains("is-open") && getComputedStyle(gallery).overflowY === "auto" ? gallery : null;
-      viewportWidth = scrollRoot?.clientWidth || window.innerWidth;
+      viewportWidth = section.clientWidth;
       viewportHeight = scrollRoot?.clientHeight || window.innerHeight;
       section.style.setProperty("--showcase-viewport-width", `${viewportWidth}px`);
       section.style.setProperty("--showcase-viewport-height", `${viewportHeight}px`);
@@ -93,9 +96,10 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
         const rect = card.getBoundingClientRect();
         return rect.left - trackLeft + rect.width / 2 - viewportWidth / 2;
       });
-      // Latest Work ends when its final card reaches the same viewport anchor
-      // as every preceding card, rather than at arbitrary list padding.
-      if (latestWork && projectOffsets.length) travel = Math.max(0, projectOffsets[projectOffsets.length - 1]);
+      const lastProjectOffset = Math.max(0, projectOffsets.at(-1) ?? 0);
+      // A standalone rail ends at the last card center. When Point to Pixel
+      // follows the cards, allow the track to continue into that animation.
+      travel = bridge ? Math.max(travel, lastProjectOffset) : lastProjectOffset;
       section.style.setProperty("--showcase-travel", `${travel}px`);
       currentOffset = Math.min(travel, currentOffset);
       updateTarget();
@@ -147,10 +151,7 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
   return <><section ref={sectionRef} className={`showcase${latestWork ? " showcase--latest" : ""}`} aria-labelledby="showcase-title">
     <div className="showcase__sticky">
       <div ref={trackRef} className="showcase__track">{children}{!compact && bridge}</div>
-      <div className="showcase-progress" aria-hidden="true">
-        <div className="showcase-progress__ticks">{Array.from({ length: Math.max(1, (projectCount - 1) * 4 + 1) }, (_, index) => <i className={index % 4 === 0 ? "is-major" : ""} key={index} />)}</div>
-        <span ref={progressRef} className="showcase-progress__marker" />
-      </div>
+      <ProjectProgress count={projectCount} className="showcase-progress" markerRef={progressRef} />
     </div>
   </section>{compact && bridge}</>;
 }
