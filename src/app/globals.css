@@ -212,11 +212,16 @@ canvas, [aria-hidden="true"]:not(.menu-overlay__project-media) { pointer-events:
 .projects-gallery__copy h2 { margin: -5px 0 10px; font-size: clamp(30px,3.8vw,60px); line-height: 1.08; letter-spacing: -.055em; font-weight: 400; overflow-wrap: anywhere; }
 .projects-gallery__copy p { max-width: 25rem; margin: 0 0 12px; color: var(--project-muted,#c4c6b8); font-size: clamp(13px, 1vw, 16px); line-height: 1.5; text-wrap: pretty; }
 .projects-gallery__copy ul { display: flex; flex-wrap: wrap; gap: 6px 12px; margin: 0; padding: 0; list-style: none; color: var(--project-muted,#c4c6b8); font-size: 13px; }
-.projects-rail { position: absolute; z-index: 4; left: 0; right: 24px; bottom: 64px; }
+.projects-rail { position: absolute; z-index: 4; left: -12px; top: calc(50svh - var(--projects-nav-offset,119px)); transform: translateY(-50%); }
 .project-progress { position: relative; height: 18px; }
 .project-pagination { width: min(200px, calc(100% - 24px)); margin-inline: 12px; }
 .project-pagination__stop { appearance: none; position: absolute; z-index: 3; top: -8px; height: 36px; padding: 0; border: 0; background: transparent; cursor: pointer; transform: translateX(-50%); }
 .project-pagination__stop:focus-visible { outline: 1px solid #fff; outline-offset: -2px; }
+@media (min-width: 768px) {
+  :is(.projects-rail, .projects-grid__pagination) .project-pagination { width: 24px; height: 200px; margin-inline: 0; }
+  :is(.projects-rail, .projects-grid__pagination) .project-progress { position: absolute; top: 50%; left: 12px; width: 200px; transform: translate(-50%, -50%) rotate(90deg); }
+}
+
 .projects-gallery__info > .projects-toggle { position: absolute; left: 0; bottom: 0; }
 .projects-toggle { display: flex; width: max-content; gap: 10px; padding: 7px 8px; border: 1px solid #e8e9d433; background: #080b039e; backdrop-filter: blur(8px); }
 .projects-toggle button { appearance: none; padding: 10px; border: 0; border-radius: 0; background: #e2e7bd1a; color: #f5f5ec; font: inherit; font-size: 14px; line-height: 1.4; cursor: pointer; }
@@ -233,7 +238,7 @@ canvas, [aria-hidden="true"]:not(.menu-overlay__project-media) { pointer-events:
 .projects-grid-section { --grid-top: max(120px,13.88058vw); display: grid; grid-template-columns: 32% minmax(0,1fr); min-height: 100svh; padding: 0 3.47015vw; background: transparent; color: var(--project-fg,#f5f5f5); font-family: "Izart Grid Text",Arial,sans-serif; }
 .projects-grid__aside { position: sticky; top: var(--grid-top); padding: 0 3vw 32px 0; display: flex; flex-direction: column; align-self: start; margin-top: var(--grid-top); }
 .projects-grid__aside > p { margin: 16px 0 0; font-size: 1.38806vw; line-height: 1.5; font-weight: 400; letter-spacing: 0; }
-.projects-grid__pagination { margin: 24px 0; }
+.projects-grid__pagination { position: relative; margin: 4.72vw 0 32px; }
 .projects-grid__column { min-width: 0; padding: var(--grid-top) 5vw 8.88vw 4.789vw; border-left: 1px solid #ffffff1f; }
 .projects-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9.0227vw 1.3187vw; margin: 0; padding: 0; list-style: none; }
 .projects-grid > li { min-width: 0; scroll-margin-top: 120px; }
@@ -278,9 +283,10 @@ canvas, [aria-hidden="true"]:not(.menu-overlay__project-media) { pointer-events:
 }
 @media (max-width: 767px) {
   .projects-gallery { padding-inline: 6.4vw; }
-  .projects-gallery__sticky { height: calc(100svh - var(--projects-nav-offset,119px) - 12px); grid-template-columns: 1fr; grid-template-rows: auto minmax(0,1fr); gap: 12px; min-height: calc(140px + min(116vw,520px)); padding: 0; align-content: start; align-items: stretch; }
+  .projects-gallery__sticky { height: calc(100svh - var(--projects-nav-offset,119px) - 12px); grid-template-columns: 1fr; grid-template-rows: auto auto minmax(0,1fr); gap: 12px; min-height: calc(170px + min(116vw,520px)); padding: 0; align-content: start; align-items: stretch; }
   .projects-gallery__sticky::after { display: none; }
-  .projects-rail { position: static; margin: 6px 0; }
+  .projects-rail { position: static; grid-row: 2; margin: 6px 0; transform: none; }
+  .projects-grid__pagination { margin: 24px 0; }
   .projects-gallery__info { --info-shift: 0; height: auto; min-height: 110px; padding: 8px 8px 0 0; display: grid; grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto; row-gap: 8px; }
   .projects-gallery__copy { padding-top: 0; }
   .projects-gallery__copy h2 { font-size: 32px; }
@@ -289,7 +295,7 @@ canvas, [aria-hidden="true"]:not(.menu-overlay__project-media) { pointer-events:
   .projects-gallery__info > .projects-toggle { position: static; grid-row: 2; margin: 0; justify-self: start; }
   .projects-toggle { gap: 3px; padding: 3px; }
   .projects-toggle button { padding: 6px 8px; font-size: 10px; }
-  .projects-gallery__stage { min-height: 0; }
+  .projects-gallery__stage { grid-row: 3; min-height: 0; }
   .projects-grid-section { display: block; padding: 110px 6.4vw 52px; }
   .projects-grid__aside { position: relative; top: auto; height: auto; padding: 0; margin-bottom: 48px; }
   .projects-grid__aside > p { max-width: 100%; font-size: 16px; }
@@ -1336,6 +1342,7 @@ html:has(.career-detail) { scroll-behavior: smooth; }
     padding-top: var(--card-top);
   }
   .projects-gallery__sticky::after { display: none; }
+  .projects-rail { left: 0; top: calc(var(--card-top) + min(20.29vw,var(--card-height-limit) / 2)); }
   .projects-gallery__info { align-self: stretch; display: block; height: auto; padding: 0 7.1vw 0 0; }
   .projects-gallery__copy { position: absolute; top: 50%; left: 4.51vw; right: 7.1vw; padding: 0; transform: translateY(-50%); }
   .projects-gallery__copy h2 { font-size: clamp(28px,3.33vw,58px); text-transform: uppercase; margin: 0 0 8px; }
@@ -1355,8 +1362,8 @@ html:has(.career-detail) { scroll-behavior: smooth; }
   .projects-paper-canvas { inset: -32px 0; height: calc(100% + 64px); }
 }
 @media (max-width: 767px) {
-  .projects-gallery__info { grid-template-rows: auto auto auto auto; }
-  .projects-gallery__info > .projects-toggle { grid-row: 4; }
+  .projects-gallery__info { grid-row: 1; grid-template-rows: auto auto auto; }
+  .projects-gallery__info > .projects-toggle { grid-row: 3; }
   .projects-gallery__copy ul { margin-bottom: 8px; }
   :is(.projects-gallery__info, .projects-grid__aside) .project-filter__trigger { font-size: 12px; }
 }

@@ -18,6 +18,7 @@ export function ProjectsGallery({ filters, settings, projects, active, view, set
   const project = projects[active];
   return <section ref={hostRef} className="projects-gallery" aria-label="Project gallery">
     <div ref={galleryRef} className="projects-gallery__sticky">
+      <nav className="projects-rail" aria-label="Choose project"><ProjectPagination projects={projects} active={active} choose={goTo} /></nav>
       <div className="projects-gallery__info">
         {filters}
         <div className="projects-gallery__copy" aria-live="polite">
@@ -25,7 +26,6 @@ export function ProjectsGallery({ filters, settings, projects, active, view, set
           <ul>{project.services.map(service => <li key={service}>{service}</li>)}</ul>
           <p>{project.listingDescription || project.introduction}</p>
         </div>
-        <nav className="projects-rail" aria-label="Choose project"><ProjectPagination projects={projects} active={active} choose={goTo} /></nav>
         <ViewToggle view={view} setView={setView} labels={settings} />
       </div>
       <div className="projects-gallery__stage">
