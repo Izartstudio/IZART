@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useRef, useSyncExternalStore, type PointerEvent, type ReactNode } from "react";
 
 import { ProjectProgress, projectProgressLeft } from "@/components/site/project-progress";
 
@@ -18,6 +18,21 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
+  const cursorRef = useRef<HTMLSpanElement>(null);
+
+  const hideCursor = () => cursorRef.current?.classList.remove("is-visible");
+  const moveCursor = (event: PointerEvent<HTMLDivElement>) => {
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+    if (event.pointerType !== "mouse" || !(event.target instanceof Element) || !event.target.closest(".showcase-card")) {
+      hideCursor();
+      return;
+    }
+    const bounds = event.currentTarget.getBoundingClientRect();
+    cursor.style.left = `${event.clientX - bounds.left + event.currentTarget.scrollLeft}px`;
+    cursor.style.top = `${event.clientY - bounds.top + event.currentTarget.scrollTop}px`;
+    cursor.classList.add("is-visible");
+  };
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -42,6 +57,7 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
     let sectionTop = 0;
     let currentOffset = 0;
     let targetOffset = 0;
+    let activeProject = 0;
 
     const render = () => {
       frame = 0;
@@ -63,6 +79,13 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
       track.style.transform = `translate3d(${-currentOffset}px,0,0)`;
       // The flex rail positions the end ticks half a tick-width inside its edges.
       indicator.style.left = projectProgressLeft(progress);
+
+      const nextActiveProject = Math.round(projectPosition);
+      if (!latestWork && activeProject !== nextActiveProject) {
+        cards[activeProject]?.classList.remove("is-active");
+        cards[nextActiveProject]?.classList.add("is-active");
+        activeProject = nextActiveProject;
+      }
 
       if (bridge) {
         const bridgeLeft = bridge.offsetLeft - currentOffset;
@@ -135,6 +158,10 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
       cancelAnimationFrame(frame);
       observer.disconnect();
       modeObserver.disconnect();
+      if (!latestWork && activeProject !== 0) {
+        cards[activeProject]?.classList.remove("is-active");
+        cards[0]?.classList.add("is-active");
+      }
       gallery?.removeEventListener("scroll", updateTarget);
       motionQuery.removeEventListener("change", measure);
       window.removeEventListener("scroll", updateTarget);
@@ -149,9 +176,10 @@ export function ShowcaseMotion({ children, projectCount, bridge, latestWork = fa
   }, [children, projectCount, compact, latestWork]);
 
   return <><section ref={sectionRef} className={`showcase${latestWork ? " showcase--latest" : ""}`} aria-labelledby="showcase-title">
-    <div className="showcase__sticky">
+    <div className="showcase__sticky" onPointerOver={moveCursor} onPointerMove={moveCursor} onPointerLeave={hideCursor} onPointerCancel={hideCursor}>
       <div ref={trackRef} className="showcase__track">{children}{!compact && bridge}</div>
       <ProjectProgress count={projectCount} className="showcase-progress" markerRef={progressRef} />
+      {!latestWork && <span ref={cursorRef} className="showcase__cursor" aria-hidden="true">View case<br />study →</span>}
     </div>
   </section>{compact && bridge}</>;
 }

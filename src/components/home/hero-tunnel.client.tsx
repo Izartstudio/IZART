@@ -27,6 +27,59 @@ const CAMERA_CHASE = 0.085;
 const SCROLL_TO_Z = 0.05;
 const IMAGE_FADE_DURATION = 0.7;
 
+function loadCardMark() {
+  const mark = new Image();
+  mark.src = "/assets/home/services/card-mark.svg";
+  return mark.decode().then(() => mark, () => null);
+}
+
+function frameArtwork(image: HTMLImageElement, mark: HTMLImageElement | null, aspect: number) {
+  const card = document.createElement("canvas");
+  const width = card.width = 512;
+  const height = card.height = Math.round(width / aspect);
+  const ctx = card.getContext("2d");
+  if (!ctx) return null;
+
+  const header = Math.round(height * 0.1);
+  const footer = Math.round(height * 0.05);
+  const artworkHeight = height - header - footer;
+  const scale = Math.max(width / image.width, artworkHeight / image.height);
+  const cropWidth = width / scale;
+  const cropHeight = artworkHeight / scale;
+
+  ctx.fillStyle = "#0b0a08";
+  ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(image, (image.width - cropWidth) / 2, (image.height - cropHeight) / 2,
+    cropWidth, cropHeight, 0, header, width, artworkHeight);
+
+  ctx.fillStyle = "#35de12";
+  ctx.textBaseline = "middle";
+  ctx.font = "13px Arial, sans-serif";
+  const center = header / 2;
+  if (mark) {
+    ctx.shadowColor = ctx.fillStyle;
+    ctx.shadowBlur = 3;
+    ctx.drawImage(mark, 19, center - 6, 60, 12);
+    ctx.shadowBlur = 0;
+  }
+
+  ctx.textAlign = "right";
+  ctx.fillText("2026", width - 17, center);
+  const yearStart = width - 17 - ctx.measureText("2026").width;
+  ctx.beginPath();
+  ctx.moveTo(yearStart - 23, center - 5);
+  ctx.lineTo(yearStart - 9, center);
+  ctx.lineTo(yearStart - 23, center + 5);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.textAlign = "left";
+  for (const [index, letter] of ["I", "Z", "R"].entries()) {
+    ctx.fillText(letter, 10 + index * 61, height - footer / 2);
+  }
+  return card;
+}
+
 export function HeroTunnel() {
   const frameRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +90,7 @@ export function HeroTunnel() {
     let disposed = false;
     let cleanup = () => { disposed = true; };
 
-    void import("three").then((THREE) => {
+    void Promise.all([import("three"), loadCardMark()]).then(([THREE, mark]) => {
       if (disposed) return;
 
       const scene = new THREE.Scene();
@@ -61,24 +114,17 @@ export function HeroTunnel() {
 
       const makeMaterials = (urls: string[]) => urls.map((url) => {
         const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, side: THREE.DoubleSide });
-        loader.load(url, (texture) => {
-          if (disposed) { texture.dispose(); return; }
+        loader.load(url, (artwork) => {
+          if (disposed) { artwork.dispose(); return; }
+          const card = frameArtwork(artwork.image, mark, SEGMENT_DEPTH / rowHeight);
+          const texture = card ? new THREE.CanvasTexture(card) : artwork;
+          if (card) artwork.dispose();
           texture.minFilter = THREE.LinearFilter;
           texture.magFilter = THREE.LinearFilter;
           texture.generateMipmaps = false;
           texture.colorSpace = THREE.SRGBColorSpace;
           texture.wrapS = THREE.ClampToEdgeWrapping;
           texture.wrapT = THREE.ClampToEdgeWrapping;
-          const image = texture.image as { width: number; height: number };
-          const imageAspect = image.width / image.height;
-          const cellAspect = SEGMENT_DEPTH / rowHeight;
-          if (imageAspect > cellAspect) {
-            texture.repeat.x = cellAspect / imageAspect;
-            texture.offset.x = (1 - texture.repeat.x) / 2;
-          } else {
-            texture.repeat.y = imageAspect / cellAspect;
-            texture.offset.y = (1 - texture.repeat.y) / 2;
-          }
           material.map = texture;
           material.needsUpdate = true;
           textures.add(texture);

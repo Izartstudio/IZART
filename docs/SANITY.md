@@ -56,7 +56,7 @@ Without a configured CMS, the current local projects remain available. Before CM
 
 **Portfolio page:** page heading, grid introduction, view labels, initial Gallery/Grid view, ordered project references, and the case-study link archive.
 
-**Case study:** client/name/year, introduction, services, cover and cover description, gallery summary, listing order/visibility, homepage image/video/order, optional logo, SEO/social image, and the details accordion. Drag image/video panels to reorder; up to 30 combined panels. Image panels support separate mobile artwork and alt text. Videos support posters, playback mode, and WebVTT captions.
+**Case study:** client/name/year, introduction, services, cover and cover description, gallery summary, listing order/visibility, homepage image/video/order, optional logo, SEO/social image, and the details accordion. Drag image/video panels to reorder; up to 35 combined panels. Image panels support separate mobile artwork and alt text. Videos support posters, playback mode, and WebVTT captions.
 
 **Cover colors - optional overrides:** portfolio background, two blob colors, inner-page background, and preferred text color. Leave fields empty for automatic sampling from the actual project cover. Old hard-coded fixture colors are not treated as overrides. Clear an override to restore automatic colors. Text is corrected when necessary to maintain at least 4.5:1 contrast; blob colors can be toned down for legibility.
 

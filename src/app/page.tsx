@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { Homepage } from "@/components/home/homepage";
 import { site } from "@/lib/site";
+import { getHomeServices } from "@/sanity/home-services";
 import { getHomepageProjects } from "@/sanity/projects";
 
 const title = "Izart Studio | A Multi Disciplinary Design Agency | Branding, Web Design, Content IPs";
@@ -10,7 +11,7 @@ const description = "Izart is a creative studio helping consumer and enterprise 
 export const metadata: Metadata = pageMetadata("/", { title: title, description: description });
 
 export default async function Home() {
-  const projects = await getHomepageProjects();
+  const [projects, services] = await Promise.all([getHomepageProjects(), getHomeServices()]);
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -21,6 +22,6 @@ export default async function Home() {
 
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
-    <Homepage projects={projects} />
+    <Homepage projects={projects} services={services} />
   </>;
 }

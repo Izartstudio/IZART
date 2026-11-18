@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArtworkStrip } from "./artwork-strip";
 
 const quickLinks = [
   ["Work", "/projects"],
@@ -17,11 +18,20 @@ const socialLinks = [
   ["Pinterest", "https://in.pinterest.com/izartstudio/", "p"],
 ] as const;
 
+function MarqueeFeature() {
+  return <div className="site-footer__marquee-feature">
+    <Image src="/assets/footer/marquee-feature.png" alt="" width={270} height={270} />
+    <ArtworkStrip />
+    <ArtworkStrip edge="bottom" />
+  </div>;
+}
+
 function MarqueeGroup({ duplicate = false }: { duplicate?: boolean }) {
   return <div className="site-footer__marquee-group" aria-hidden={duplicate || undefined}>
     <Image className="site-footer__wordmark" src="/assets/footer/footerlogo.svg" alt="" width={788} height={100} unoptimized />
-    <Image className="site-footer__marquee-feature" src="/assets/footer/marquee-feature.png" alt="" width={270} height={270} />
+    <MarqueeFeature />
     <Image className="site-footer__wordmark" src="/assets/footer/footerlogo.svg" alt="" width={788} height={100} unoptimized />
+    <MarqueeFeature />
   </div>;
 }
 

@@ -60,7 +60,6 @@ function BridgePhrase({ leading, selected, leadingAt, selectedAt, borderAt, pixe
     <span className={`point-to-pixel__selection${pixel ? " is-pixel" : ""}`} data-bridge-step data-bridge-at={borderAt}>
       <span className="point-to-pixel__word" data-bridge-step data-bridge-at={selectedAt}>{selected}</span>
       <i className="selection-border selection-border--top" /><i className="selection-border selection-border--right" /><i className="selection-border selection-border--bottom" /><i className="selection-border selection-border--left" />
-      <i className="corner corner--tl" /><i className="corner corner--tr" /><i className="corner corner--bl" /><i className="corner corner--br" />
     </span>
   </p>;
 }

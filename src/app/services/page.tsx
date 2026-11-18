@@ -6,16 +6,16 @@ import { OutcomeSection } from "@/components/services/outcome-section";
 import { ProcessFaq } from "@/components/services/process-faq.client";
 import { ContactForm } from "@/components/home/contact-form.client";
 import { SiteFooter } from "@/components/site/site-footer";
-import { getServicesHeroImages } from "@/sanity/services";
+import { getServicesHeroData } from "@/sanity/services";
 
 const title = "Brand & Digital Services | Izart Studio";
 const description = "Brand and digital, built to perform. Explore Izart Studio's branding, digital ecosystem, brand growth, campaign planning, and spatial design services.";
 export const metadata: Metadata = pageMetadata("/services", { title: title, description: description });
 
 export default async function ServicesPage() {
-  const images = await getServicesHeroImages();
+  const { images, labels } = await getServicesHeroData();
   return <><main id="main">
-    <ServicesHero images={images} />
+    <ServicesHero images={images} labels={labels} animation />
     <ServicesShowcase />
     <OutcomeSection />
     <ProcessFaq />

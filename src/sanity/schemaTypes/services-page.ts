@@ -7,9 +7,9 @@ export const servicesPage = defineType({
   fields: [
     defineField({
       name: "heroImages",
-      title: "Hero images — left to right",
+      title: "Hero images",
       type: "array",
-      description: "Seven images fill the fixed perspective layout. Drag to reorder; crops adapt to any source aspect ratio.",
+      description: "Add at least 32 product images for the full perspective sequence. Every image is used; order controls its place around the rotating globe.",
       of: [defineArrayMember({
         name: "heroImage",
         type: "object",
@@ -19,7 +19,16 @@ export const servicesPage = defineType({
         ],
         preview: { select: { title: "alt", media: "image" } },
       })],
-      validation: rule => rule.required().length(7),
+      validation: rule => rule.required().min(32),
+    }),
+    defineField({
+      name: "heroLabels",
+      title: "Hero category labels",
+      type: "array",
+      description: "Five floating industry labels shown between the images. They disappear as the globe forms.",
+      of: [defineArrayMember({ type: "string" })],
+      validation: rule => rule.required().length(5),
+      initialValue: ["Beauty & Personal Care", "Food & Beverage", "Fashion & Lifestyle", "Property & Living", "Technology & Education"],
     }),
   ],
   preview: { prepare: () => ({ title: "Services page" }) },

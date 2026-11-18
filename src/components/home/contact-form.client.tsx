@@ -1,5 +1,7 @@
 "use client";
+import { ContactShader } from "./contact-shader.client";
 import { ButtonBorder } from "@/components/site/button-border";
+import { ArtworkStrip } from "@/components/site/artwork-strip";
 
 import type { CSSProperties, FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -17,7 +19,7 @@ const referrals = ["Behance", "LinkedIn", "Instagram", "Google Search", "X / Twi
 
 const revealStyle = (order: number) => ({ "--reveal-order": order } as CSSProperties);
 
-export function ContactForm() {
+export function ContactForm({ animatedBackground = false }: { animatedBackground?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -73,7 +75,11 @@ export function ContactForm() {
     }
   }
 
-  return <section ref={sectionRef} id="Get-Quote" className="contact-form" aria-labelledby="contact-form-title">
+  return <section ref={sectionRef} id="Get-Quote" className={`contact-form${animatedBackground ? " contact-form--shader" : ""}`} aria-labelledby="contact-form-title">
+    {animatedBackground && <>
+      <ContactShader />
+      <div className="contact-form__header"><ArtworkStrip /></div>
+    </>}
     <div className="contact-form__panel">
       <h2 id="contact-form-title" className="contact-form__title contact-form__animate" style={revealStyle(0)}>
         Have a cool idea?<br />Let’s collaborate

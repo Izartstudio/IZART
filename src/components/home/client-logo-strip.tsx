@@ -15,10 +15,12 @@ const logos = [
 ] as const;
 
 export function ClientLogoStrip() {
-  return <div className="about-stats__logos" aria-label="Selected clients">
-    <div className="about-stats__logo-track">
-      <LogoGroup />
-      <LogoGroup duplicate />
+  return <div className="about-stats__logo-frame">
+    <div className="about-stats__logos" role="region" aria-label="Selected clients" tabIndex={0}>
+      <div className="about-stats__logo-track">
+        <LogoGroup />
+        <LogoGroup duplicate />
+      </div>
     </div>
   </div>;
 }

@@ -1,3 +1,4 @@
+import { maxProjectMedia } from "../../content/project";
 import { vimeoEmbedUrl } from "../../lib/vimeo-embed";
 import { defineArrayMember, defineField, defineType } from "sanity";
 export const imagePanel = defineType({
@@ -63,7 +64,7 @@ export const project = defineType({
     defineField({ name: "homepageOrder", title: "Homepage showcase order", type: "number", initialValue: 999, hidden: ({ parent }) => !parent?.featuredOnHomepage, validation: r => r.integer().min(0) }),
     defineField({ name: "homepageImage", title: "Homepage showcase image", type: "image", hidden: ({ parent }) => !parent?.featuredOnHomepage, description: "Portrait artwork for the homepage card. The projects-page image is used when empty." }),
     defineField({ name: "homepageHoverVideo", title: "Homepage hover video", type: "file", options: { accept: "video/mp4,video/webm" }, hidden: ({ parent }) => !parent?.featuredOnHomepage, description: "Optional muted video displayed while the showcase card is hovered or keyboard-focused." }),
-    defineField({ name: "media", title: "Case-study media", type: "array", of: [defineArrayMember({ type: "imagePanel" }), defineArrayMember({ type: "videoPanel" })], validation: r => r.required().min(1).max(30), description: "Drag to reorder. One full-width image or video per item; maximum 30 combined." }),
+    defineField({ name: "media", title: "Case-study media", type: "array", of: [defineArrayMember({ type: "imagePanel" }), defineArrayMember({ type: "videoPanel" })], validation: r => r.required().min(1).max(maxProjectMedia), description: `Drag to reorder. One full-width image or video per item, up to ${maxProjectMedia} combined.` }),
     defineField({ name: "latestWork", title: "Latest Work after this case study", type: "object", fields: [
       defineField({ name: "heading", type: "string", initialValue: "Latest Work" }),
       defineField({ name: "introduction", type: "text", rows: 3 }),
