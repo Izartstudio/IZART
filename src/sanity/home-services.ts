@@ -20,7 +20,7 @@ export const getHomeServices = cache(async (): Promise<HomeServicesContent> => {
     const result = await client.fetch<HomeServicesContent | null>(
       `*[_id == $id && _type == "homeServices"][0]{
         heading, introduction, learnMoreLabel, industries, industriesLink,
-        services[]{"id": _key, title, description, href, background${projection}, project{label, href, year, image${projection}}}
+        services[]{"id": _key, title, description, href, "background": select(defined(backgroundSvg.asset) => {"src": backgroundSvg.asset->url}, background${projection}), project{label, href, year, image${projection}}}
       }`,
       { id: homeServicesDocumentId },
       { next: { revalidate: 60 } },

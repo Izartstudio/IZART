@@ -8,7 +8,6 @@ const quickLinks = [
   ["Authors", "/authors"],
   ["Careers", "/careers"],
   ["Blog", "/blogs"],
-  ["Privacy Policy", "/privacy-policy"],
 ] as const;
 
 const socialLinks = [
@@ -28,10 +27,7 @@ function MarqueeFeature() {
 
 function MarqueeGroup({ duplicate = false }: { duplicate?: boolean }) {
   return <div className="site-footer__marquee-group" aria-hidden={duplicate || undefined}>
-    <Image className="site-footer__wordmark" src="/assets/footer/footerlogo.svg" alt="" width={788} height={100} unoptimized />
-    <MarqueeFeature />
-    <Image className="site-footer__wordmark" src="/assets/footer/footerlogo.svg" alt="" width={788} height={100} unoptimized />
-    <MarqueeFeature />
+    <Image className="site-footer__wordmark" src="/assets/footer/footer.svg" alt="" width={1440} height={181} unoptimized />
   </div>;
 }
 
@@ -61,8 +57,15 @@ export function SiteFooter() {
         <MarqueeGroup />
         <MarqueeGroup duplicate />
       </div>
+      <MarqueeFeature />
     </div>
 
-    <p className="site-footer__copyright">{new Date().getFullYear()}. All Rights Reserved</p>
+    <div className="site-footer__legal">
+      <p>© Izart Content PVT LTD.</p>
+      <nav aria-label="Legal information">
+        <Link href="/privacy-policy">Privacy</Link>
+        <Link href="/terms">Terms</Link>
+      </nav>
+    </div>
   </footer>;
 }

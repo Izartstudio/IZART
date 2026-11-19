@@ -19,12 +19,12 @@ async function main() {
   async function image({ src, alt }: ServicesImage) {
     let upload = uploads.get(src);
     if (!upload) {
-      upload = client.assets.upload("image", createReadStream(path.resolve("public", "." + src)), {
+      upload = client.assets.upload(src.endsWith(".svg") ? "file" : "image", createReadStream(path.resolve("public", "." + src)), {
         filename: path.basename(src),
       }).then(asset => asset._id);
       uploads.set(src, upload);
     }
-    return { _type: "image", asset: { _type: "reference", _ref: await upload }, ...(alt ? { alt } : {}) };
+    return { _type: src.endsWith(".svg") ? "file" : "image", asset: { _type: "reference", _ref: await upload }, ...(alt ? { alt } : {}) };
   }
 
   const { services, ...fields } = defaultHomeServices;
@@ -32,7 +32,7 @@ async function main() {
     ...service,
     _key: id,
     _type: "homeService",
-    background: await image(background),
+    ...(background.src.endsWith(".svg") ? { backgroundSvg: await image(background) } : { background: await image(background) }),
     project: { ...project, image: await image(project.image) },
   })));
   await client.createIfNotExists({ _id: homeServicesDocumentId, _type: "homeServices", ...fields, services: tabs });

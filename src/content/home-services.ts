@@ -40,7 +40,7 @@ export const defaultHomeServices: HomeServicesContent = {
       title: "Brand Identity",
       description: "Establish a unique visual and verbal identity that ensures your brand is instantly recognizable and memorable to your audience.",
       href: "/brand-identity",
-      background: { src: "/assets/home/services/service-1.webp" },
+      background: { src: "/assets/home/services/service-1.svg" },
       project,
     },
     {
@@ -48,7 +48,7 @@ export const defaultHomeServices: HomeServicesContent = {
       title: "Spatial Design",
       description: "Bring your brand into physical spaces through immersive, memorable experiences.",
       href: "/services/spatial-design",
-      background: { src: "/assets/home/services/service-2.webp" },
+      background: { src: "/assets/home/services/service-2.svg" },
       project,
     },
     {
@@ -56,7 +56,7 @@ export const defaultHomeServices: HomeServicesContent = {
       title: "Digital Ecosystem",
       description: "Create a distinctive visual and verbal identity for your spatial design that makes it instantly recognizable and memorable to your audience.",
       href: "/website-design-and-development",
-      background: { src: "/assets/home/services/service-3.webp" },
+      background: { src: "/assets/home/services/service-3.svg" },
       project,
     },
     {
@@ -64,7 +64,7 @@ export const defaultHomeServices: HomeServicesContent = {
       title: "Content IPs",
       description: "Create a distinctive visual and verbal identity for your spatial design that makes it instantly recognizable and memorable to your audience.",
       href: "/services/brand-growth",
-      background: { src: "/assets/home/services/service-4.webp" },
+      background: { src: "/assets/home/services/service-4.svg" },
       project,
     },
     {
@@ -72,7 +72,7 @@ export const defaultHomeServices: HomeServicesContent = {
       title: "Brand Launch & Campaigns",
       description: "Create a distinctive visual and verbal identity for your spatial design that makes it instantly recognizable and memorable to your audience.",
       href: "/services/brand-launch",
-      background: { src: "/assets/home/services/service-5.webp" },
+      background: { src: "/assets/home/services/service-5.svg" },
       project,
     },
   ],

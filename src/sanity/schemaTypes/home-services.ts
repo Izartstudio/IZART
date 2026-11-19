@@ -23,7 +23,8 @@ export const homeServices = defineType({
           defineField({ name: "title", type: "string", validation: rule => rule.required() }),
           defineField({ name: "description", type: "text", rows: 3, validation: rule => rule.required() }),
           linkField("Learn More destination"),
-          defineField({ name: "background", title: "Full-screen background", type: "image", options: { hotspot: true }, validation: rule => rule.required().assetRequired() }),
+          defineField({ name: "backgroundSvg", title: "Original SVG background", type: "file", options: { accept: ".svg,image/svg+xml" }, description: "Displayed in its original format when supplied." }),
+          defineField({ name: "background", title: "Full-screen background", type: "image", options: { hotspot: true }, validation: rule => rule.custom((value, context) => value?.asset?._ref || (context.parent as { backgroundSvg?: { asset?: { _ref?: string } } })?.backgroundSvg?.asset?._ref ? true : "Add a background image or SVG.") }),
           defineField({
             name: "project", title: "Featured project card", type: "object", validation: rule => rule.required(),
             fields: [
