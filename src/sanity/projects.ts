@@ -4,7 +4,7 @@ import { createClient } from "@sanity/client";
 import { localProjects, retiredProjectSlugs } from "@/content/local-projects";
 import { defaultPortfolioSettings, type PortfolioSettings } from "@/content/portfolio-page";
 import { withProjectTheme } from "@/lib/project-theme.server";
-import { maxProjectMedia, type Project } from "@/content/project";
+import type { Project } from "@/content/project";
 export const sanityConfigured = Boolean(process.env.SANITY_PROJECT_ID);
 const client = sanityConfigured ? createClient({ projectId: process.env.SANITY_PROJECT_ID!, dataset: process.env.SANITY_DATASET || "production", apiVersion: "2026-09-17", useCdn: false, perspective: "published", token: process.env.SANITY_API_READ_TOKEN }) : null;
 const image = '{"url": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}';
@@ -39,7 +39,6 @@ export const getProject = cache(async (slug: string): Promise<Project | null> =>
   ]);
   const project = remote || (!settings.useCmsProjects ? local : null);
   if (!project) return null;
-  if (project.media.length > maxProjectMedia) throw new Error(`A case study cannot contain more than ${maxProjectMedia} media items.`);
   return withProjectTheme({ ...project, year: project.year.trim() || local?.year || "" });
 });
 export async function getProjectSlugs(): Promise<string[]> {
