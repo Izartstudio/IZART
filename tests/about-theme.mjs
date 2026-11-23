@@ -26,7 +26,7 @@ const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.Modu
 const exported = {};
 new Function('require', 'exports', 'React', compiled)(name => {
   if (name === 'react') return React;
-  return { AboutIntroduction: () => null, ClientLogoStrip: () => null, StatsGrid: () => null };
+  return { AboutIntroduction: () => null, ClientLogoStrip: () => null, StatsGrid: () => null, VideoExpansion: () => null };
 }, exported, React);
 const root = createRoot(document.getElementById('root'));
 const mount = () => React.act(() => root.render(React.createElement(React.StrictMode, null, React.createElement(exported.AboutStats, null, React.createElement('section', { className: 'video-expansion' })))));

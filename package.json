@@ -10,6 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "check": "npm run lint && npm run typecheck && npm run build",
     "studio": "sanity dev",
+    "test:components": "node --test tests/*.mjs",
     "test:seo": "python3 scripts/test-seo.py",
     "test:performance": "node scripts/test-performance.mjs",
     "test:crawlers": "node scripts/test-crawlers.mjs",

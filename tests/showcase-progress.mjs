@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client';
 
 const dom = new JSDOM('<div id="root"></div>');
 Object.assign(global, { window: dom.window, document: dom.window.document, IS_REACT_ACT_ENVIRONMENT: true });
+global.MutationObserver = window.MutationObserver;
 const frames = new Map();
 let frameId = 0;
 global.requestAnimationFrame = callback => { frames.set(++frameId, callback); return frameId; };
@@ -23,6 +24,7 @@ window.innerWidth = 1000;
 window.scrollY = 0;
 let centers = [500, 900, 1500];
 const proto = window.HTMLElement.prototype;
+Object.defineProperty(proto, 'clientWidth', { get() { return window.innerWidth; } });
 Object.defineProperty(proto, 'scrollWidth', { get() { return this.className === 'showcase__track' ? 3000 : 0; } });
 proto.getBoundingClientRect = function () {
   const index = this.dataset.project;
@@ -33,6 +35,14 @@ const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.Modu
 const exported = {};
 new Function('require', 'exports', 'React', compiled)(name => {
   if (name === 'react') return React;
+  if (name === '@/hooks/use-section-cursor') return { useSectionCursor: () => {} };
+  if (name === '@/components/site/scroll-indicator') {
+    const source = fs.readFileSync('src/components/site/scroll-indicator.tsx', 'utf8');
+    const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React } }).outputText;
+    const progress = {};
+    new Function('exports', 'React', code)(progress, React);
+    return progress;
+  }
   throw new Error(name);
 }, exported, React);
 const root = createRoot(document.getElementById('root'));
@@ -53,7 +63,7 @@ function scroll(offset) {
   window.dispatchEvent(new window.Event('scroll'));
   flush();
 }
-const marker = () => document.querySelector('.showcase-progress__marker').style.left;
+const marker = () => document.querySelector('.showcase-progress__marker').style.left.match(/[-\d.]+%/)?.[0];
 mount(3); flush();
 assert.equal(document.querySelectorAll('.is-major').length, 3);
 assert.equal(marker(), '0%');

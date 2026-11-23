@@ -1,29 +1,23 @@
-import Image from "next/image";
+import { getOutcomeStats } from "@/sanity/outcome-stats";
+import { OutcomeStats } from "./outcome-stats.client";
 
 export type ServiceOutcome = { summary?: string; benefit?: string; why?: string };
 
-export function OutcomeSection({ content = {} }: { content?: ServiceOutcome }) {
+export async function OutcomeSection({ content = {} }: { content?: ServiceOutcome }) {
   return <section className="outcome-section" aria-labelledby="outcome-title">
-    <div className="outcome-section__left">
-      <h2 id="outcome-title" className="services-introduction__label outcome-section__label">
-        The Outcome
-        <i className="services-introduction__corner services-introduction__corner--tl" aria-hidden="true" />
-        <i className="services-introduction__corner services-introduction__corner--tr" aria-hidden="true" />
-        <i className="services-introduction__corner services-introduction__corner--bl" aria-hidden="true" />
-        <i className="services-introduction__corner services-introduction__corner--br" aria-hidden="true" />
+    <OutcomeStats stats={await getOutcomeStats()} />
+    <div className="outcome-section__body">
+      <h2 id="outcome-title" className="section-selection outcome-section__label">
+        <span className="section-selection__text">The Outcome</span>
+        {["top", "right", "bottom", "left"].map(edge => <i key={edge} className={`selection-border selection-border--${edge}`} aria-hidden="true" />)}
       </h2>
-      <p className="outcome-section__summary">
-        {content.summary || 'A complete, documented brand identity system - logo suite, color system, typography, visual language, verbal guidelines, and a design system ready for deployment across digital and physical environments.'}
-      </p>
-    </div>
-    <div className="outcome-section__right">
-      <div className="outcome-section__block">
-        <h3>Benefit</h3>
-        <p>{content.benefit || "Brands with strong, consistent identities generate higher customer trust, lower cost-per-acquisition, and stronger recall. Izart's identity systems are built not just for launch day, but for the full arc of your brand's growth."}</p>
-      </div>
-      <div className="outcome-section__block">
-        <h3 className="outcome-section__why-title">Why <Image src="/assets/site/logo.svg" alt="Izart Studio" width={157} height={20} /></h3>
-        <p>{content.why || 'We approach brand identity as infrastructure, not decoration. Every decision we make is anchored in market insight, audience psychology, and long-term scalability - ensuring your brand holds its ground in competitive categories and scales without losing coherence.'}</p>
+      <div className="outcome-section__copy">
+        <p>{content.summary || "We specialize in crafting unique brands and delivering seamless experiences that empower businesses to effectively differentiate themselves. Our goal is to help them engage meaningfully with their audiences while successfully expanding across diverse markets."}</p>
+        <p>{content.benefit || "We create unique brands and seamless experiences that empower businesses to differentiate themselves, engage meaningfully with their audiences, and expand successfully across various markets."}</p>
+        <div className="outcome-section__takeaway">
+          <h3>What you take away</h3>
+          <p>{content.why || "A clearly defined brand position, along with a distinctive identity system, creates a cohesive experience across both digital and physical touchpoints. Additionally, adaptable brand assets are essential, ensuring that they are prepared for whatever comes next."}</p>
+        </div>
       </div>
     </div>
   </section>;

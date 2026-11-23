@@ -24,8 +24,8 @@ export async function POST(request: Request) {
     resume: text(body.resume, 2000),
     motivation: text(body.motivation, 5000),
   };
-  if (!submission.name || !submission.role || !submission.slug || !/^\S+@\S+\.\S+$/.test(submission.email) || !validLink(submission.portfolio) || !validLink(submission.resume) || !submission.motivation) {
-    return Response.json({ message: "Please complete your name, email, portfolio link, résumé link, and short note." }, { status: 422 });
+  if (!submission.name || !submission.role || !submission.slug || !/^\S+@\S+\.\S+$/.test(submission.email) || !validLink(submission.portfolio) || !submission.motivation) {
+    return Response.json({ message: "Please complete your name, email, portfolio link, and short note." }, { status: 422 });
   }
   const webhookUrl = process.env.CAREERS_GOOGLE_SHEETS_WEBHOOK_URL;
   if (!webhookUrl) return Response.json({ message: "Applications are not connected yet. Please email operations@izart.in." }, { status: 503 });

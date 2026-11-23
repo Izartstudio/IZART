@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { AboutIntroduction } from "./about-introduction";
 import { ClientLogoStrip } from "./client-logo-strip";
+import { VideoExpansion } from "./video-expansion.client";
 import { StatsGrid } from "./stats-grid";
 
-export function AboutStats({ children }: { children?: ReactNode }) {
+export function AboutStats() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,11 +95,15 @@ export function AboutStats({ children }: { children?: ReactNode }) {
   // About and the showreel share one painted surface, including during
   // interrupted transitions. Neither child can expose a differently colored seam.
   return <div ref={sectionRef} className="about-theme">
-    <section className="about-stats" aria-label="About Izart and company statistics">
-      <AboutIntroduction />
-      <ClientLogoStrip />
-      <StatsGrid />
+    <section id="about-izart" className="about-stats" aria-label="About Izart and company statistics">
+      <div className="about-stats__video-slot" aria-hidden="true" />
+      <div className="about-stats__content">
+        <AboutIntroduction />
+        <ClientLogoStrip />
+        <StatsGrid />
+      </div>
     </section>
-    {children}
+    <section className="video-expansion" aria-label="Izart studio showreel" />
+    <VideoExpansion />
   </div>;
 }

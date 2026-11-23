@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { NavigationContrast } from "./navigation-contrast";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { MouseEvent } from "react";
 import { useEffect, useState, useRef } from "react";
 import { ArrowIcon, SiteButton } from "./site-button";
@@ -15,13 +16,26 @@ const sections: Record<string, Item[]> = {
     { label: "Brand Launch & Campaign Planning", href: "/services/brand-launch", children: [{ label: "Launch Strategy", href: "/services/brand-launch/launch-strategy" }, { label: "Creative Campaigns", href: "/services/brand-launch/creative-campaigns" }] },
     { label: "Spatial Design", href: "/services/spatial-design", children: [{ label: "Retail Design", href: "/services/spatial-design/retail-design" }, { label: "Exhibition Design", href: "/services/spatial-design/exhibition-design" }] },
   ],
-  Industries: [{ label: "Consumer Brands", href: "/industries/consumer-brands" }, { label: "Technology", href: "/industries/technology" }, { label: "Real Estate", href: "/industries/real-estate" }, { label: "Hospitality", href: "/industries/hospitality" }],
-  Resources: [{ label: "Insights", href: "/blogs" }, { label: "Case Studies", href: "/projects" }, { label: "Brand Masterclass", href: "/brand-masterclass" }],
+  Industries: [
+    { label: "Consumer Brands", href: "/industries/consumer-brands" },
+    { label: "Technology", href: "/industries/technology" },
+    { label: "Real Estate", href: "/industries/real-estate" },
+    { label: "Hospitality", href: "/industries/hospitality" },
+  ],
+  Resources: [{ label: "Brand Masterclass", href: "/brand-masterclass" }, { label: "Insights", href: "/blogs" }, { label: "Case Studies", href: "/projects" }, { label: "Authors", href: "/authors" }],
 };
-const utilities = [["Careers", "/careers"], ["Manifesto", "/manifesto"], ["About Us", "/about-us"], ["Brand Masterclass", "/brand-masterclass"], ["Store", "/store"], ["Playground", "/playground"]] as const;
+const sectionPages: Partial<Record<string, string>> = { Services: "/services", Industries: "/industries" };
+const utilities = [["Careers", "/careers"], ["Manifesto", "/manifesto"], ["About Us", "/#about-izart"], ["Brand Masterclass", "/brand-masterclass"], ["Store", "/store"], ["Playground", "/playground"]] as const;
 const socials = [["Instagram", "https://www.instagram.com/izart_studio/", "ig"], ["Behance", "https://www.behance.net/izartstudio_", "Bē"], ["Pinterest", "https://in.pinterest.com/izartstudio/", "p"], ["LinkedIn", "https://www.linkedin.com/company/izart-media", "in"]] as const;
 
+const primaryLinks = [
+  ["Services", "/services"], ["Portfolio", "/projects"],
+  ["Careers", "/careers"], ["Manifesto", "/manifesto"],
+] as const;
+
 export function SiteNavigation() {
+  const pathname = usePathname();
+  const currentPage = (href: string) => pathname === href ? "page" as const : undefined;
   const [compact, setCompact] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -53,7 +67,7 @@ export function SiteNavigation() {
     return () => { document.body.style.overflow = old; removeEventListener("keydown", escape); };
   }, [open]);
   useEffect(() => {
-    if (open) { setPresent(true); return; }
+    if (open) return;
     const resetTimer = window.setTimeout(() => {
       setPresent(false);
       setSection(null);
@@ -100,7 +114,14 @@ export function SiteNavigation() {
       <div className={`menu-overlay__body${section ? " has-section" : ""}${child ? " has-child" : ""}`}>
         <div className="menu-overlay__primary">
           <div className="menu-overlay__main-links">
-            {Object.keys(sections).map(name => <button type="button" className={section === name ? "is-active" : ""} key={name} onClick={() => activate(name)} onPointerEnter={event => { if (!compact && event.pointerType === "mouse") activate(name); }} onFocus={() => { if (!compact) activate(name); }} aria-expanded={section === name}><span>{name}</span><ArrowIcon /></button>)}
+            {Object.keys(sections).map(name => {
+              const href = sectionPages[name];
+              if (!href) return <button type="button" className={section === name ? "is-active" : ""} key={name} onClick={() => activate(name)} onPointerEnter={event => { if (!compact && event.pointerType === "mouse") activate(name); }} onFocus={() => { if (!compact) activate(name); }} aria-expanded={section === name}><span>{name}</span><ArrowIcon /></button>;
+              return <div className={`menu-overlay__section-link${section === name ? " is-active" : ""}`} key={name} onPointerEnter={event => { if (!compact && event.pointerType === "mouse") activate(name); }}>
+                <Link href={href} onClick={close} onFocus={() => { if (!compact) activate(name); }} aria-current={currentPage(href)}><span>{name}</span><ArrowIcon /></Link>
+                <button className="menu-overlay__section-toggle" type="button" aria-label={`Show ${name} submenu`} aria-expanded={section === name} onClick={() => activate(name)}><ArrowIcon /></button>
+              </div>;
+            })}
             <Link href="/projects" onClick={close} onPointerEnter={() => { if (!compact) showDefault(); }} onFocus={() => { if (!compact) showDefault(); }}>Portfolio</Link>
           </div>
           <div className="menu-overlay__utility">{utilities.map(([label, href]) => <Link href={href} key={label} onClick={close} onPointerEnter={() => { if (!compact) showDefault(); }} onFocus={() => { if (!compact) showDefault(); }}>{label}</Link>)}</div>
@@ -111,7 +132,7 @@ export function SiteNavigation() {
             <p>Latest Project · Real Estate</p>
             <h2>BENICIO HOMES</h2>
           </div>
-          <Link className="menu-overlay__project-cta" href="/projects/benicio" onClick={close}>View Project <span aria-hidden="true">→</span></Link>
+          <SiteButton custom className="site-button menu-overlay__project-cta" href="/projects/benicio" onClick={close}>View Project <span aria-hidden="true">→</span></SiteButton>
         </article>
         {Object.entries(sections).map(([sectionName, sectionItems]) => <nav className={`menu-overlay__secondary${section === sectionName ? " is-visible" : ""}`} aria-label={`${sectionName} navigation`} aria-hidden={section !== sectionName} inert={section !== sectionName ? true : undefined} key={sectionName}>
           {sectionItems.map((item, itemIndex) => compact ? <div className="menu-overlay__mobile-service" key={item.label}>
@@ -135,8 +156,10 @@ export function SiteNavigation() {
     <div className="site-nav__backdrop" aria-hidden="true"><span /><span /><span /><span /></div>
     <div className="site-nav__inner">
       <Link className="site-nav__logo" href="/" aria-label="Izart Studio home" onClick={close}><Image src="/assets/site/logo.svg" alt="Izart Studio" width={157} height={20} priority /></Link>
-      <nav className="site-nav__links" aria-label="Primary navigation"><Link href="/services" onClick={close}>Services</Link><Link href="/projects" onClick={close}>Portfolio</Link><Link href="/careers" onClick={close}>Careers</Link><Link href="/manifesto" onClick={close}>Manifesto</Link></nav>
-      <div className="site-nav__actions"><SiteButton className="site-nav__quote" href="/#Get-Quote" icon={<ArrowIcon />}>Get Quote</SiteButton><button ref={toggleRef} className="site-nav__menu" type="button" aria-expanded={open} aria-controls="open-menu-navigation" aria-label={open ? "Close menu" : "Open menu"} onClick={() => { if (open) close(); else { setHidden(false); setOpen(true); } }}><span /><span /><span /></button></div>
+      <nav className="site-nav__links" aria-label="Primary navigation">
+        {primaryLinks.map(([label, href]) => <Link key={href} href={href} aria-current={currentPage(href)} onClick={close}>{label}</Link>)}
+      </nav>
+      <div className="site-nav__actions"><SiteButton className="site-nav__quote" href="/#Get-Quote" icon={<ArrowIcon />}>Get Quote</SiteButton><button ref={toggleRef} className="site-nav__menu" type="button" aria-expanded={open} aria-controls="open-menu-navigation" aria-label={open ? "Close menu" : "Open menu"} onClick={() => { if (open) close(); else { setHidden(false); setPresent(true); setOpen(true); } }}><span /><span /><span /></button></div>
     </div>
     </header>
   </>;

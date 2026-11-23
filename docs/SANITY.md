@@ -56,7 +56,7 @@ Without a configured CMS, the current local projects remain available. Before CM
 
 **Portfolio page:** page heading, grid introduction, view labels, initial Gallery/Grid view, ordered project references, and the case-study link archive.
 
-**Case study:** client/name/year, introduction, services, cover and cover description, gallery summary, listing order/visibility, homepage image/video/order, optional logo, SEO/social image, and the details accordion. Drag image/video panels to reorder; up to 35 combined panels. Image panels support separate mobile artwork and alt text. Videos support posters, playback mode, and WebVTT captions.
+**Case study:** client/name/year, introduction, services, cover and cover description, gallery summary, listing order/visibility, homepage image/video/order, optional logo, SEO/social image, and the details accordion. Drag image/video panels to reorder; up to 51 combined panels. Image panels support separate mobile artwork and alt text. Videos support posters, playback mode, and WebVTT captions.
 
 **Cover colors - optional overrides:** portfolio background, two blob colors, inner-page background, and preferred text color. Leave fields empty for automatic sampling from the actual project cover. Old hard-coded fixture colors are not treated as overrides. Clear an override to restore automatic colors. Text is corrected when necessary to maintain at least 4.5:1 contrast; blob colors can be toned down for legibility.
 
@@ -65,3 +65,7 @@ Cover sampling runs server-side on a small image. Samples are bounded and cached
 ## Publish changes
 
 Publish the edited document. Website data revalidates after approximately 60 seconds; the first request can receive the previous version while regeneration completes. No webhook or draft preview is configured. For production, set the same server-side Sanity environment variables on the host and deploy the updated code. Enabling project indexing still requires the deployment's `SITE_INDEXABLE` setting.
+
+### Industries hero
+
+`Industries Hero` is a singleton (`industries-hero`) shared with the homepage's hero renderer. Edit desktop/mobile headings, button labels/link, and two ordered hero image arrays independently of the homepage. Heading line breaks are preserved. Publish to update the page; published content refreshes within 60 seconds. Empty image arrays use the homepage's original hero assets. Seed once with `npx sanity exec scripts/import-industries-hero-to-sanity.ts --with-user-token`; existing published/draft content is preserved.

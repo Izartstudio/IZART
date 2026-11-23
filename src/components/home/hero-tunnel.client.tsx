@@ -3,19 +3,8 @@
 import { useEffect, useRef } from "react";
 import type { Group, Mesh, MeshBasicMaterial, PlaneGeometry, Texture } from "three";
 
-const LEFT_IMAGES = [
-  "e91dc062a1a59f16", "57cb78ce7e06b163", "64fca4272dfdc8cd", "a370e8f239fd8425",
-  "dcb9b722713b8e60", "1e59c3163b8cf57f", "ab4b8ac7fe797408", "9032a9e3c276e74c",
-  "208281e65159850b", "21ff60b5fbfba415", "ff52c994a68122be", "60a0b5dcb8fefee0",
-  "9e5a52b06e87a993", "2992efd92d63fba1",
-].map((name) => `/assets/home/hero/${name}.png`);
-
-const RIGHT_IMAGES = [
-  "7414e5ade0071462", "0615313848989a07", "f1eae0767b049122", "f1eae0767b049122",
-  "2b4f9d39b93fcbfc", "1137b80ce6f84421", "cf52df744008140d", "3c841850363f9998",
-  "cd31d1301a875461", "70b004c27847af0b", "7ee0e539f319e6c2", "228449da58b524e4",
-  "827d5004dd28385f", "ba328ce711bc9c9a",
-].map((name) => `/assets/home/hero/${name}.png`);
+import { heroLeftImages, heroRightImages } from "@/content/hero-images";
+import { getImageProps } from "next/image";
 
 const TUNNEL_WIDTH = 2.72;
 const TUNNEL_HEIGHT = 2.1;
@@ -80,7 +69,7 @@ function frameArtwork(image: HTMLImageElement, mark: HTMLImageElement | null, as
   return card;
 }
 
-export function HeroTunnel() {
+export function HeroTunnel({ leftImages, rightImages }: { leftImages?: string[]; rightImages?: string[] }) {
   const frameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,7 +83,7 @@ export function HeroTunnel() {
       if (disposed) return;
 
       const scene = new THREE.Scene();
-      const background = new THREE.Color("#080808");
+      const background = new THREE.Color("#000000");
       scene.background = background;
       scene.fog = new THREE.Fog(background, SEGMENT_DEPTH * 3.8, SEGMENT_DEPTH * 7.2);
 
@@ -114,7 +103,10 @@ export function HeroTunnel() {
 
       const makeMaterials = (urls: string[]) => urls.map((url) => {
         const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, side: THREE.DoubleSide });
-        loader.load(url, (artwork) => {
+        const source = url.startsWith("https://cdn.sanity.io/")
+          ? getImageProps({ src: url, alt: "", width: 640, height: 480 }).props.src
+          : url;
+        loader.load(source, (artwork) => {
           if (disposed) { artwork.dispose(); return; }
           const card = frameArtwork(artwork.image, mark, SEGMENT_DEPTH / rowHeight);
           const texture = card ? new THREE.CanvasTexture(card) : artwork;
@@ -133,8 +125,8 @@ export function HeroTunnel() {
         return material;
       });
 
-      const leftMaterials = makeMaterials(LEFT_IMAGES);
-      const rightMaterials = makeMaterials(RIGHT_IMAGES);
+      const leftMaterials = makeMaterials(leftImages?.length ? leftImages : heroLeftImages);
+      const rightMaterials = makeMaterials(rightImages?.length ? rightImages : heroRightImages);
       const allMaterials = [...leftMaterials, ...rightMaterials];
       let leftIndex = 0;
       let rightIndex = 0;
@@ -267,7 +259,7 @@ export function HeroTunnel() {
     });
 
     return () => cleanup();
-  }, []);
+  }, [leftImages, rightImages]);
 
   return <div ref={frameRef} className="home-hero__tunnel" aria-hidden="true" />;
 }

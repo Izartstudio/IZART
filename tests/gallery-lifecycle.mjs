@@ -8,8 +8,11 @@ import { createRoot } from 'react-dom/client';
 const dom = new JSDOM('<div id="root"></div>');
 Object.assign(global, { window: dom.window, document: dom.window.document, IS_REACT_ACT_ENVIRONMENT: true,
   innerWidth: 1280, innerHeight: 720, getComputedStyle: () => ({ top: '119px' }),
-  matchMedia: () => ({ matches: false }) });
+  matchMedia: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }) });
 window.scrollY = 0;
+
+Object.defineProperty(document, "hidden", { value: false });
+global.IntersectionObserver = class { observe() {} disconnect() {} };
 const frames = new Map();
 let nextFrame = 0, time = 0, creates = 0, disposes = 0;
 global.requestAnimationFrame = callback => { frames.set(++nextFrame, callback); return nextFrame; };
@@ -20,6 +23,8 @@ const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.Modu
 const exportsObject = {};
 new Function('require', 'exports', compiled)(name => {
   if (name === 'react') return React;
+  if (name === '@/lib/project-theme') return { createProjectTheme: () => ({}) };
+  if (name === 'next/image') return { getImageProps: props => ({ props }) };
   if (name === '../paper-renderer') return { createPaperRenderer: () => {
     creates++;
     return { resize() {}, render(progress) { renders.push(progress); return true; }, dispose() { disposes++; } };
@@ -62,6 +67,7 @@ mount(true); flush(5);
 assert.equal(creates, 2, 'view switching reuses renderer');
 assert.ok(renders.length > stoppedAt, 'gallery resumes');
 React.act(() => { window.scrollY = 0; window.dispatchEvent(new window.Event('scroll')); });
+
 flush(60); assert.equal(renders.at(-1), 0);
 React.act(() => root.unmount());
 assert.equal(frames.size, 0, 'unmount cancels pending work');

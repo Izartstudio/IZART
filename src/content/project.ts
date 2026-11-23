@@ -1,6 +1,6 @@
 import type { ProjectColorOverrides, ProjectTheme } from "@/lib/project-theme";
 
-export const maxProjectMedia = 35;
+export const maxProjectMedia = 51;
 
 export type ProjectImage = { url: string; width: number; height: number };
 export type ImagePanel = { _key: string; _type: "imagePanel"; image: ProjectImage; mobileImage?: ProjectImage; alt: string; decorative?: boolean; imageTitle?: string; caption?: string; creditText?: string; creatorName?: string; licenseUrl?: string; rightsUrl?: string };
@@ -14,7 +14,7 @@ export type Project = {
   listingPalette?: Record<string, { background?: string }>;
   listingAlt?: string;
   listingOrder?: number; showInProjects?: boolean;
-  featuredOnHomepage?: boolean; homepageOrder?: number;
+  featuredOnHomepage?: boolean; featuredOnIndustries?: boolean; homepageOrder?: number;
   homepageImage?: ProjectImage; homepageHoverVideo?: string;
   latestWork?: { heading?: string; introduction?: string; projectSlugs?: string[] };
   media: (ImagePanel | VideoPanel)[];

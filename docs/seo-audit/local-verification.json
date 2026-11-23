@@ -1,6 +1,6 @@
 {
-  "baseUrl": "http://127.0.0.1:3101",
-  "expectedIndexable": true,
+  "baseUrl": "http://127.0.0.1:3100",
+  "expectedIndexable": false,
   "pagesChecked": 65,
   "results": [
     {
@@ -342,37 +342,40 @@
     {
       "path": "/projects/loupe",
       "status": 200,
-      "title": "Loupe | Izart Studio",
+      "title": "Loupe | UX Strategy | Izart Studio",
       "failures": []
     },
     {
       "path": "/projects/manjn",
       "status": 200,
-      "title": "MANJN | Izart Studio",
+      "title": "Manjn | Brand Identity & Packaging | Izart Studio",
       "failures": []
     },
     {
       "path": "/projects/mystiqare",
       "status": 200,
-      "title": "MYSTIQARE | Izart Studio",
+      "title": "Mystiqare | Skincare Brand Identity & Packaging | Izart Studio",
       "failures": []
     },
     {
       "path": "/projects/plattr",
       "status": 200,
-      "title": "PLATTR | Izart Studio",
+      "title": "Plattr | Brand Identity | Izart Studio",
       "failures": []
     },
     {
       "path": "/projects/seraano",
       "status": 200,
-      "title": "Seraano by Aarza Realty | Luxury Real Estate Branding | Izart Studio",
-      "failures": []
+      "title": "Seraano by Aarza | Brand Identity | Izart Studio",
+      "failures": [
+        "established title changed",
+        "established description changed"
+      ]
     },
     {
       "path": "/projects/soak-studio",
       "status": 200,
-      "title": "SOAK STUDIO | Izart Studio",
+      "title": "Soak Studio | Brand Identity | Izart Studio",
       "failures": []
     },
     {
@@ -383,9 +386,15 @@
     },
     {
       "path": "/projects/wg1",
-      "status": 200,
-      "title": "WG1 | Nutraceutical Brand Identity & Packaging | Izart Studio",
-      "failures": []
+      "status": 404,
+      "title": "Izart Studio",
+      "failures": [
+        "HTTP 404",
+        "incorrect canonical",
+        "0 H1s",
+        "established title changed",
+        "established description changed"
+      ]
     },
     {
       "path": "/website-design-and-development",
@@ -394,5 +403,13 @@
       "failures": []
     }
   ],
-  "failures": []
+  "failures": [
+    "/projects/seraano: established title changed",
+    "/projects/seraano: established description changed",
+    "/projects/wg1: HTTP 404",
+    "/projects/wg1: incorrect canonical",
+    "/projects/wg1: 0 H1s",
+    "/projects/wg1: established title changed",
+    "/projects/wg1: established description changed"
+  ]
 }

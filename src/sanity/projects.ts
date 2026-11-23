@@ -14,7 +14,7 @@ const projection = `{
   "listingImage": listingImage${image}, listingDescription, listingAlt,
   "listingPalette": coalesce(listingImage.asset->metadata.palette, media[_type == "imagePanel"][0].image.asset->metadata.palette),
   "listingOrder": coalesce(listingOrder, 999), "showInProjects": coalesce(showInProjects, true),
-  "featuredOnHomepage": coalesce(featuredOnHomepage, false), "homepageOrder": coalesce(homepageOrder, 999),
+  "featuredOnHomepage": coalesce(featuredOnHomepage, false), featuredOnIndustries, "homepageOrder": coalesce(homepageOrder, 999),
   "homepageImage": homepageImage${image}, "homepageHoverVideo": homepageHoverVideo.asset->url,
   "latestWork": latestWork{heading, introduction, "projectSlugs": projects[]->slug.current},
   "details": coalesce(details[]{_key, title, body}, []),
@@ -65,9 +65,12 @@ export const getProjects = cache(async (): Promise<(Project & { listingImage: No
   return resolved.sort((a, b) => (positions.get(a.slug) ?? Infinity) - (positions.get(b.slug) ?? Infinity) || (a.listingOrder ?? 999) - (b.listingOrder ?? 999) || a.name.localeCompare(b.name));
 });
 export type HomepageProject = Pick<Project, "slug" | "name" | "services" | "homepageHoverVideo" | "year" | "listingDescription"> & { homepageImage: NonNullable<Project["homepageImage"]> };
-export const getHomepageProjects = cache(async (): Promise<HomepageProject[]> => {
+const getShowcaseProjects = cache(async (placement: "home" | "industries"): Promise<HomepageProject[]> => {
   const projects = await getProjects();
-  return projects.filter(project => project.featuredOnHomepage === true)
+  return projects.filter(project => (placement === "industries" ? project.featuredOnIndustries ?? project.featuredOnHomepage : project.featuredOnHomepage) === true)
     .sort((a, b) => (a.homepageOrder ?? a.listingOrder ?? 999) - (b.homepageOrder ?? b.listingOrder ?? 999))
     .map(project => ({ slug: project.slug, name: project.name, year: project.year, listingDescription: project.listingDescription, services: project.services, homepageImage: project.homepageImage || project.listingImage, homepageHoverVideo: project.homepageHoverVideo }));
 });
+
+export const getHomepageProjects = () => getShowcaseProjects("home");
+export const getIndustriesProjects = () => getShowcaseProjects("industries");

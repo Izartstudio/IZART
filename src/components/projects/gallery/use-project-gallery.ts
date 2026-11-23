@@ -83,19 +83,11 @@ export function useProjectGallery(projects: ListingProject[], enabled: boolean) 
   const measure = useCallback(() => {
     const host = hostRef.current, gallery = galleryRef.current;
     if (!host || !gallery || !enabledRef.current) return;
-    const nav = document.querySelector<HTMLElement>(".site-nav");
-    // The nav's hide/show transform must not resize or reposition the gallery.
-    // Reserve its original layout height even when returning with a hidden nav.
-    const clearance = nav && nav.offsetHeight > 0 ? nav.offsetHeight + 12 : 96;
-    host.style.setProperty("--projects-nav-offset", `${clearance}px`);
     const offset = Number.parseFloat(getComputedStyle(gallery).top) || 0;
     scrollStart.current = Math.max(0, host.getBoundingClientRect().top + window.scrollY - offset);
     const mobile = matchMedia(MOBILE_QUERY).matches;
     const cardStep = gallery.offsetHeight * (mobile ? MOBILE_CARD_STEP : DESKTOP_CARD_STEP);
     scrollDistance.current = Math.max(1, Math.max(0, projects.length - 1) * cardStep);
-    // End when the last card completes, reserving only the sticky top inset.
-    // Additional exit runway leaves a blank block before the following section.
-    host.style.height = `${offset + gallery.offsetHeight + scrollDistance.current}px`;
     rendererRef.current?.resize();
     updateTarget();
   }, [projects.length, updateTarget]);

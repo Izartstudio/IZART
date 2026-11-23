@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ReactNode, type CSSProperties } from "react";
+import { useMemo, useState, type ReactNode, type CSSProperties } from "react";
 import { ProjectFilter } from "./project-filter";
 import { ProjectBackdrop } from "./gallery/project-backdrop";
 import { ProjectsGallery } from "./gallery/projects-gallery";
@@ -15,15 +15,19 @@ const industriesBySlug: Record<string, string[]> = {
     "soak-studio": ["Beauty & Wellness"], seraano: ["Real Estate"], plattr: ["Food & Beverage"], "dogs-and-cats": ["Pet Care"],
   };
 
+const industryLabels = (project: ListingProject) => project.industries?.length ? project.industries : industriesBySlug[project.slug] || [];
+
 export function ProjectsIndex({ projects, settings }: { projects: ListingProject[]; settings: PortfolioSettings }) {
   const [view, setView] = useState<ProjectsView>(settings.defaultView);
   const [service, setService] = useState("");
   const [industry, setIndustry] = useState("");
-  const industryLabels = (project: ListingProject) => project.industries?.length ? project.industries : industriesBySlug[project.slug] || [];
   const serviceMatches = (project: ListingProject) => !service || project.services.includes(service);
   const industryMatches = (project: ListingProject) => !industry || industryLabels(project).includes(industry);
-  const serviceOptions = [...new Set(projects.filter(industryMatches).flatMap(project => project.services))].sort();
-  const industryOptions = [...new Set(projects.filter(serviceMatches).flatMap(industryLabels))].sort();
+  // Both menus use the full project collection so every combination stays selectable.
+  const { serviceOptions, industryOptions } = useMemo(() => ({
+    serviceOptions: [...new Set(projects.flatMap(project => project.services))].sort(),
+    industryOptions: [...new Set(projects.flatMap(industryLabels))].sort(),
+  }), [projects]);
   const filtered = projects.filter(project => serviceMatches(project) && industryMatches(project));
 
   const filters = <div className="projects-filters" aria-label="Filter projects">

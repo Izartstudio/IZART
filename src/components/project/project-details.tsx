@@ -23,11 +23,12 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   const origin = useRef({ button: { left: 0, top: 0, width: 0, height: 0 }, media: { left: 0, top: 0, width: 0, height: 0 }, documentTop: 0, scrollY: 0 });
   const animations = useRef<Animation[]>([]);
   const busy = useRef(false);
-  const mobileDrawer = useRef(false);
+  const [mobileDrawer, setMobileDrawer] = useState(false);
   const scrim = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
-  const [drawerClosing, setDrawerClosing] = useState(false);
+  const [closingButton, setClosingButton] = useState<DOMRect | null>(null);
+  const drawerClosing = closingButton !== null;
   const [settling, setSettling] = useState(false);
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [expanded, setExpanded] = useState<string | null>(project.details?.[0]?._key || null);
@@ -54,12 +55,11 @@ export function ProjectDetails({ project, children }: { project: Project; childr
     const content = copy.current!;
     const old = origin.current;
     const previousOverflow = document.body.style.overflow;
-    if (window.matchMedia("(max-width: 767px)").matches) document.body.style.overflow = "hidden";
+    if (mobileDrawer) document.body.style.overflow = "hidden";
     const hero = document.querySelector<HTMLElement>(".project-hero");
     const previousInert = hero?.inert;
     if (hero) hero.inert = true;
-    mobileDrawer.current = window.matchMedia("(max-width: 767px)").matches;
-    if (mobileDrawer.current) {
+    if (mobileDrawer) {
       const drawer = panel.parentElement!;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const animation = drawer.animate([{ transform: "translateY(100%)" }, { transform: "translateY(0)" }], { duration: reduced ? 0 : 480, easing });
@@ -88,13 +88,13 @@ export function ProjectDetails({ project, children }: { project: Project; childr
       document.body.style.overflow = previousOverflow;
       if (hero) hero.inert = previousInert || false;
     };
-  }, [open]);
+  }, [open, mobileDrawer]);
 
   const show = () => {
     if (busy.current || !gallery.current || !trigger.current) return;
     busy.current = true;
-    setDrawerClosing(false);
-    mobileDrawer.current = window.matchMedia("(max-width: 767px)").matches;
+    setClosingButton(null);
+    setMobileDrawer(window.matchMedia("(max-width: 767px)").matches);
     const media = gallery.current.getBoundingClientRect();
     origin.current = { button: trigger.current.getBoundingClientRect(), media, documentTop: media.top + window.scrollY, scrollY: window.scrollY };
     setPlaceholderHeight(media.height);
@@ -103,7 +103,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   const close = async () => {
     if (busy.current) return;
     busy.current = true;
-    if (mobileDrawer.current) {
+    if (mobileDrawer) {
       const drawer = surface.current!.parentElement!;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       animations.current.forEach(animation => animation.cancel());
@@ -112,10 +112,9 @@ export function ProjectDetails({ project, children }: { project: Project; childr
       const button = trigger.current!.getBoundingClientRect();
       // Lock the source rectangle: dynamic viewport units must not change mid-morph.
       Object.assign(drawer.style, { left: `${bounds.left}px`, top: `${bounds.top}px`, bottom: "auto", width: `${bounds.width}px`, height: `${bounds.height}px` });
-      setDrawerClosing(true);
+      setClosingButton(button);
       copy.current!.inert = true;
       workspace.current?.focus({ preventScroll: true });
-      origin.current.button = button;
       const animation = drawer.animate([
         { transformOrigin: "top left", transform: "translate3d(0,0,0) scale(1,1)", borderRadius: "0px" },
         { transformOrigin: "top left", transform: `translate3d(${button.left - bounds.left}px,${button.top - bounds.top}px,0) scale(${button.width / bounds.width},${button.height / bounds.height})`, borderRadius: "0px" },
@@ -180,12 +179,12 @@ export function ProjectDetails({ project, children }: { project: Project; childr
   }, [open, settling]);
 
   return <>
-    <div ref={shell} className={`project-details-shell${open ? " is-open" : ""}`} style={open && mobileDrawer.current ? { height: placeholderHeight } : undefined}>
-      <div ref={workspace} className="project-details-workspace" tabIndex={-1} role={open ? "dialog" : undefined} aria-modal={open && mobileDrawer.current || undefined} aria-label={open ? `${project.name} project details` : undefined}
+    <div ref={shell} className={`project-details-shell${open ? " is-open" : ""}`} style={open && mobileDrawer ? { height: placeholderHeight } : undefined}>
+      <div ref={workspace} className="project-details-workspace" tabIndex={-1} role={open ? "dialog" : undefined} aria-modal={open && mobileDrawer || undefined} aria-label={open ? `${project.name} project details` : undefined}
         onKeyDown={event => {
           if (!open) return;
           if (event.key === "Escape") { event.preventDefault(); void close(); }
-          if (event.key === "Tab" && mobileDrawer.current) {
+          if (event.key === "Tab" && mobileDrawer) {
             const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(focusable)).filter(item => !item.closest('[inert]') && item.getClientRects().length);
             const first = items[0]; const last = items[items.length - 1];
             if (document.activeElement === workspace.current) { event.preventDefault(); (event.shiftKey ? last : first)?.focus(); }
@@ -194,7 +193,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
           }
         }}>
         {open && <button ref={scrim} className="project-details-scrim" tabIndex={-1} aria-label="Close project details" onClick={() => void close()} />}
-        {drawerClosing && open && <div className="project-details-trigger is-visible project-details-morph-label" aria-hidden="true" style={{ left: origin.current.button.left, top: origin.current.button.top, width: origin.current.button.width, height: origin.current.button.height }}><span>Project Details</span><span>[ + ]</span></div>}
+        {closingButton && open && <div className="project-details-trigger is-visible project-details-morph-label" aria-hidden="true" style={{ left: closingButton.left, top: closingButton.top, width: closingButton.width, height: closingButton.height }}><span>Project Details</span><span>[ + ]</span></div>}
         {enabled && <div className="project-details-panel" inert={!open} aria-hidden={!open}>
           <div ref={surface} className={`project-details-surface${drawerClosing ? " is-morphing-to-trigger" : ""}`} />
 
@@ -211,7 +210,7 @@ export function ProjectDetails({ project, children }: { project: Project; childr
           })}</div>
           </div>
         </div>}
-        <div ref={gallery} id="case-study-media" className="project-media project-details-gallery" inert={open && mobileDrawer.current} tabIndex={open ? 0 : undefined} role={open ? "region" : undefined} aria-label={open ? "Case-study images and videos" : undefined}>{children}</div>
+        <div ref={gallery} id="case-study-media" className="project-media project-details-gallery" inert={open && mobileDrawer} tabIndex={open ? 0 : undefined} role={open ? "region" : undefined} aria-label={open ? "Case-study images and videos" : undefined}>{children}</div>
       </div>
     </div>
     {enabled && <button ref={trigger} className={`project-details-trigger${visible ? " is-visible" : ""}${open ? " is-expanded" : ""}${settling ? " is-settling" : ""}`} aria-haspopup="dialog" aria-expanded={open} tabIndex={visible && !open ? 0 : -1} onClick={show}><span>Project Details</span><span aria-hidden="true">[ + ]</span></button>}

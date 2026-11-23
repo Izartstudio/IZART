@@ -2,10 +2,11 @@
 
 import Image, { type ImageLoaderProps } from "next/image";
 import Link from "next/link";
-import type { RefObject, ReactNode } from "react";
+import type { RefObject, ReactNode, CSSProperties } from "react";
 import type { ListingProject, ProjectsView } from "../project-types";
 import { ProjectPagination } from "./project-pagination";
 import type { PortfolioSettings } from "@/content/portfolio-page";
+import { DESKTOP_CARD_STEP, MOBILE_CARD_STEP } from "./constants";
 import { ViewToggle } from "./view-toggle";
 
 const imageLoader = ({ src }: ImageLoaderProps) => src;
@@ -16,7 +17,12 @@ export function ProjectsGallery({ filters, settings, projects, active, view, set
   goTo: (index: number) => void;
 }) {
   const project = projects[active];
-  return <section ref={hostRef} className="projects-gallery" aria-label="Project gallery">
+  const intervals = Math.max(0, projects.length - 1);
+  const travel = {
+    "--projects-desktop-travel": intervals * DESKTOP_CARD_STEP,
+    "--projects-mobile-travel": intervals * MOBILE_CARD_STEP,
+  } as CSSProperties;
+  return <section style={travel} ref={hostRef} className="projects-gallery" aria-label="Project gallery">
     <div ref={galleryRef} className="projects-gallery__sticky">
       <nav className="projects-rail" aria-label="Choose project"><ProjectPagination projects={projects} active={active} choose={goTo} /></nav>
       <div className="projects-gallery__info">

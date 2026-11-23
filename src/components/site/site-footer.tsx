@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArtworkStrip } from "./artwork-strip";
+import { FooterImageCycle } from "./footer-image-cycle.client";
 
 const quickLinks = [
   ["Work", "/projects"],
@@ -16,14 +16,6 @@ const socialLinks = [
   ["Instagram", "https://www.instagram.com/izart_studio/", "ig"],
   ["Pinterest", "https://in.pinterest.com/izartstudio/", "p"],
 ] as const;
-
-function MarqueeFeature() {
-  return <div className="site-footer__marquee-feature">
-    <Image src="/assets/footer/marquee-feature.png" alt="" width={270} height={270} />
-    <ArtworkStrip />
-    <ArtworkStrip edge="bottom" />
-  </div>;
-}
 
 function MarqueeGroup({ duplicate = false }: { duplicate?: boolean }) {
   return <div className="site-footer__marquee-group" aria-hidden={duplicate || undefined}>
@@ -57,7 +49,7 @@ export function SiteFooter() {
         <MarqueeGroup />
         <MarqueeGroup duplicate />
       </div>
-      <MarqueeFeature />
+      <FooterImageCycle />
     </div>
 
     <div className="site-footer__legal">

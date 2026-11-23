@@ -17,7 +17,11 @@ export async function POST(request: Request) {
   let body: ContactPayload;
 
   try {
-    body = await request.json() as ContactPayload;
+    const parsed: unknown = await request.json();
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return Response.json({ message: "Invalid form submission." }, { status: 400 });
+    }
+    body = parsed;
   } catch {
     return Response.json({ message: "Invalid form submission." }, { status: 400 });
   }
@@ -52,9 +56,12 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...submission, secret: process.env.GOOGLE_SHEETS_WEBHOOK_SECRET || "" }),
       cache: "no-store",
+      signal: AbortSignal.timeout(15000),
     });
 
     if (!sheetsResponse.ok) throw new Error(`Google Sheets returned ${sheetsResponse.status}`);
+    const acknowledgement = await sheetsResponse.json();
+    if (acknowledgement?.ok !== true) throw new Error("Enquiry was not acknowledged");
     return Response.json({ ok: true });
   } catch (error) {
     console.error("Contact form delivery failed", error);

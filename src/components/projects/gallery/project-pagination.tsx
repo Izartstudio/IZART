@@ -1,4 +1,4 @@
-import { ProjectProgress, projectProgressLeft } from "@/components/site/project-progress";
+import { ScrollIndicator, projectProgressLeft } from "@/components/site/scroll-indicator";
 import type { KeyboardEvent } from "react";
 import type { ListingProject } from "../project-types";
 
@@ -14,7 +14,7 @@ export function ProjectPagination({ projects, active, choose, interactive = true
     buttons[index]?.focus({ preventScroll: true });
   };
   return <div className="project-pagination" onKeyDown={onKeyDown}>
-    <ProjectProgress count={projects.length} active={active}>
+    <ScrollIndicator variant="ruler" count={projects.length} active={active}>
       {projects.map((project, index) => <button
         className="project-pagination__stop" key={project.slug} type="button"
         aria-label={`Go to ${project.name}`} aria-current={active === index ? "true" : undefined}
@@ -24,6 +24,6 @@ export function ProjectPagination({ projects, active, choose, interactive = true
           width: `min(40px, ${100 / projects.length}%)`,
         }}
       />)}
-    </ProjectProgress>
+    </ScrollIndicator>
   </div>;
 }

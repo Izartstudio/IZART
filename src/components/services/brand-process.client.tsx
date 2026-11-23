@@ -1,11 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { defaultProcessSteps, type ServiceProcessStep } from "./service-detail-defaults";
 
-export function BrandProcess({ steps = defaultProcessSteps }: { steps?: ServiceProcessStep[] }) {
+type ProcessProps = {
+  steps?: ServiceProcessStep[];
+  heading?: string;
+  variant?: "default" | "brand-identity" | "industries";
+  id?: string;
+};
+
+export function BrandProcess({ steps = defaultProcessSteps, heading, variant = "default", id }: ProcessProps) {
+  const headingId = useId();
+  const styled = variant !== "default";
   const processSteps = steps.length ? steps : defaultProcessSteps;
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -80,13 +89,13 @@ export function BrandProcess({ steps = defaultProcessSteps }: { steps?: ServiceP
     };
   }, [processSteps]);
 
-  const step = processSteps[activeStep];
+  const step = processSteps[Math.min(activeStep, processSteps.length - 1)];
 
-  return <section ref={sectionRef} className="brand-process" aria-labelledby="brand-process-title">
+  return <section ref={sectionRef} id={id} className="brand-process" data-variant={variant} aria-labelledby={headingId}>
     <div className="brand-process__sticky">
       <div ref={trackRef} className="brand-process__track" aria-hidden="true">
         {processSteps.map((item, stepIndex) => <div className="brand-process__scene" key={item.number}>
-          {item.images.map((image, imageIndex) => <div className={`brand-process__image brand-process__image--${imageIndex + 1}`} key={image}>
+          {item.images.map((image, imageIndex) => <div className={`brand-process__image brand-process__image--${imageIndex + 1}`} key={`${image}-${imageIndex}`}>
             <Image
               src={image.startsWith("/") || image.startsWith("https://") ? image : `/assets/services/process/${image}.png`}
               alt=""
@@ -97,7 +106,7 @@ export function BrandProcess({ steps = defaultProcessSteps }: { steps?: ServiceP
           </div>)}
         </div>)}
       </div>
-      <h2 id="brand-process-title" className="brand-process__label">Our Process</h2>
+      <h2 id={headingId} className="brand-process__label">{heading ?? (styled ? "The Process" : "Our Process")}</h2>
       <article className="brand-process__card">
         <div className="brand-process__card-copy" key={step.number}>
           <div className="brand-process__weeks">

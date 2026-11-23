@@ -21,8 +21,8 @@ export function ServicesHeroMosaic({ images, labels: categoryLabels }: Props) {
     let labelRenderer: CSS2DRenderer | undefined;
     let resizeObserver: ResizeObserver | undefined;
     let timeline: gsap.core.Timeline | undefined;
-    let floatingLabels: HTMLSpanElement[] = [];
-    let repeatedCards: Array<{
+    const floatingLabels: HTMLSpanElement[] = [];
+    const repeatedCards: Array<{
       group: THREE.Group;
       material: THREE.MeshBasicMaterial;
       scatterX: number;
@@ -111,7 +111,7 @@ export function ServicesHeroMosaic({ images, labels: categoryLabels }: Props) {
       const tileWidth = cellWidth * columns;
       const tileHeight = cellHeight * rows;
 
-      cards = visible.map(({ item, texture, index }) => {
+      cards = visible.map(({ texture, index }) => {
         const column = index % columns;
         const row = Math.floor(index / columns);
         // Jitter one card inside every cell. This keeps a random collage feel
@@ -402,7 +402,7 @@ export function ServicesHeroMosaic({ images, labels: categoryLabels }: Props) {
       });
       repeatedCards.forEach(({ material }) => material.dispose());
     };
-  }, [images]);
+  }, [images, categoryLabels]);
 
   return <section className={styles.hero} aria-label="Izart Studio services">
     <div className={styles.stage} ref={hostRef}>

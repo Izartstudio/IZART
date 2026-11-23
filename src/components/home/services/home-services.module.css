@@ -47,6 +47,7 @@
 
 /* Each layer opens across the scroll range around its tab boundary. */
 .background + .background {
+  will-change: clip-path;
   clip-path: inset(clamp(0%, calc((var(--service-index) + .2 - var(--service-position, 0)) * 250%), 100%) 0 0);
 }
 
@@ -153,23 +154,30 @@
     opacity: 0;
   }
 
-  .learn:hover:has(.cursor[data-visible]) {
+  .stage[data-cursor-visible] .learn:hover {
     cursor: none;
   }
 
-  .learn:hover .cursor[data-visible] {
+  .cursor {
     position: absolute;
-    top: -50px;
-    left: -50px;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    opacity: 0;
+    visibility: hidden;
+    will-change: transform;
+    transition: opacity .12s ease;
     display: grid;
     place-items: center;
     width: 100px;
     aspect-ratio: 1;
     border-radius: 50%;
     background: rgb(41 95 18 / 34%);
-    backdrop-filter: blur(4px);
+
     pointer-events: none;
   }
+
+  .stage .cursor:global(.is-visible) { opacity: 1; visibility: visible; }
 
   .cursor::before {
     content: "";

@@ -19,6 +19,9 @@ assert.equal(serviceScrollState(0,0,5).progress,0);
 for (let i=0;i<5;i++) assert.equal(serviceScrollState((i+.5)*200,1000,5).active,i);
 const dom = new JSDOM('<div id="root"></div>');
 Object.assign(global,{window:dom.window,document:dom.window.document,IS_REACT_ACT_ENVIRONMENT:true});
+window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+global.IntersectionObserver = class { observe() {} disconnect() {} };
+for (const method of ["pause", "load"]) window.HTMLMediaElement.prototype[method] = () => {};
 let top=100, height=5000, resize, next=0;
 const frames=new Map();
 window.requestAnimationFrame=cb=>{frames.set(++next,cb);return next;};
@@ -30,6 +33,10 @@ global.ResizeObserver=class {constructor(cb){resize=cb;}observe(){observed++;}di
 const styles=new Proxy({}, {get:(_,key)=>String(key)});
 const {ServicesShowcase}=compile('src/components/services/services-showcase.client.tsx',{
  './service-showcase-data':data,
+ '@/components/site/scroll-indicator':{ScrollIndicator:()=>null},
+   '@/components/site/site-button':{SiteButton:({ children, ...props })=>React.createElement('a',props,children)},
+ './service-section-cursor.client':{ServiceSectionCursor:()=>null},
+ './service-crt.client':{ServiceCrt:()=>null},
  './services-showcase.module.css':{__esModule:true,default:styles},
  'next/image':{__esModule:true,default:()=>null},
  'next/link':{__esModule:true,default:({children,...props})=>React.createElement('a',props,children)},
@@ -42,7 +49,7 @@ flush();assert.equal(observed,4);
 document.querySelector('.fill').style.transform='scaleX(0)';
 window.dispatchEvent(new window.Event('scroll'));flush();
 assert.equal(document.querySelector('.fill').style.transform,'','CSS must own the timeline axis');
-function verify(index){const copy=document.querySelector('.copy[data-active="true"]');assert.match(copy.querySelector('h3').textContent,new RegExp(showcaseServices[index].title));assert.equal(copy.querySelector('a').getAttribute('href'),showcaseServices[index].href);assert.equal(document.querySelectorAll('.copy[data-active="true"]').length,1);assert.equal(document.querySelectorAll('nav[aria-label="Choose a service"]').length,0);assert.equal(document.querySelectorAll('.copy:not([data-active="true"])[inert]').length,4);}
+function verify(index){const copy=document.querySelector('.copy[data-active="true"]');assert.match(copy.querySelector('h3').textContent,new RegExp(showcaseServices[index].title));assert.equal(document.querySelector('.stageLink').getAttribute('href'),showcaseServices[index].href);assert.equal(document.querySelectorAll('.copy[data-active="true"]').length,1);assert.equal(document.querySelectorAll('nav[aria-label="Choose a service"]').length,0);assert.equal(document.querySelectorAll('.copy:not([data-active="true"])[inert]').length,4);}
 
 let seed=42;
 for(let i=0;i<2000;i++){

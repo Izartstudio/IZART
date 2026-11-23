@@ -65,7 +65,7 @@ const fallback: CareersPageData = {
   archiveImages: fallbackImages.map(([url, label]) => ({ url, label, alt: "" })),
   disciplineTitle: "THE DISCIPLINE",
   disciplineCopy: "The way we work is straightforward. We think first, then we build. Execution waits until the thinking is ready, and if something feels off, we pause and fix it before moving ahead. That often means asking better questions, challenging assumptions, and stepping back when the work calls for it. The pace can feel slower at the start, and it leads to work that holds up over time, instead of work that has to be reworked again and again.",
-  teamImage: { url: "/assets/home/showcase/project1.png", alt: "Izart Studio team", label: "" },
+  teamImage: { url: "/assets/careers/team.JPG", alt: "Izart Studio team", label: "" },
   jobs: fallbackJobs,
 };
 

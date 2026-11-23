@@ -1,20 +1,32 @@
 import { ButtonBorder } from "./button-border";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
-type SiteButtonProps = {
-  children: ReactNode;
-  className?: string;
-  href: string;
-  icon?: ReactNode;
-};
+type Appearance = { children: ReactNode; icon?: ReactNode; custom?: boolean };
+type SiteButtonProps = Appearance & (
+  | (ComponentProps<typeof Link> & { as?: never })
+  | (ComponentProps<"button"> & { as: "button" })
+  | (ComponentProps<"a"> & { as: "a" })
+);
 
-export function SiteButton({ children, className, href, icon }: SiteButtonProps) {
-  return <Link className={`site-button${className ? ` ${className}` : ""}`} href={href}>
+export function SiteButton({ children, className, icon, custom, ...props }: SiteButtonProps) {
+  const classes = custom ? className : ["site-button", className].filter(Boolean).join(" ");
+  const contents = <>
     <ButtonBorder />
-    <span className="site-button__label">{children}</span>
-    {icon ? <span className="site-button__icon" aria-hidden="true">{icon}</span> : null}
-  </Link>;
+    {custom ? children : <span className="site-button__label">{children}</span>}
+    {icon && <span className="site-button__icon" aria-hidden="true">{icon}</span>}
+  </>;
+
+  if (props.as === "button") {
+    const { as: element, type = "button", ...attributes } = props;
+    const Button = element;
+    return <Button {...attributes} type={type} className={classes}>{contents}</Button>;
+  }
+  if (props.as === "a") {
+    const { as: Anchor, ...attributes } = props;
+    return <Anchor {...attributes} className={classes}>{contents}</Anchor>;
+  }
+  return <Link {...props} className={classes}>{contents}</Link>;
 }
 
 export function ArrowIcon() {

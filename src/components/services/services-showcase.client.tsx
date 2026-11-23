@@ -1,4 +1,5 @@
 "use client";
+import { SiteButton } from "@/components/site/site-button";
 
 import Link from "next/link";
 import { ScrollIndicator } from "@/components/site/scroll-indicator";
@@ -80,7 +81,7 @@ export function ServicesShowcase({ circularCursor = true, stickyIntro: pinIntro 
     {!stickyIntro && introContent}
     <div ref={stickyRef} className={styles.sticky}>
       <div ref={stageRef} className={`${styles.stage}${circularCursor ? ` ${styles.hasCursor}` : ""}`}>
-        {circularCursor && <Link className={styles.stageLink} href={showcaseServices[active].href} aria-label={`Learn more about ${showcaseServices[active].title}`} />}
+        {circularCursor && <Link data-service-cursor-target className={styles.stageLink} href={showcaseServices[active].href} aria-label={`Learn more about ${showcaseServices[active].title}`} />}
         {showcaseServices.map((item, index) => <ServiceMedia key={item.slug} service={item} index={index} active={index === active} />)}
         {crtEffect && <ServiceCrt stageRef={stageRef} active={active} poster={showcaseServices[active].image} mobilePoster={showcaseServices[active].mobileImage} />}
         <div className={styles.shade} />
@@ -92,7 +93,7 @@ export function ServicesShowcase({ circularCursor = true, stickyIntro: pinIntro 
           <div className={styles.copies}>
             {showcaseServices.map((service, index) => <div className={styles.copy} key={service.slug} data-active={active === index} aria-hidden={active !== index} inert={active !== index}>
               <h3><span>{String(index + 1).padStart(2,"0")}{"//"}</span><span>{service.title}</span></h3>
-              <div className={styles.details}><p className={styles.description}>{service.description}</p>{(!circularCursor || mobile) && <Link className={styles.learn} href={service.href} aria-label={`Learn more about ${service.title}`}>Learn More <span aria-hidden="true">→</span></Link>}</div>
+              <div className={styles.details}><p className={styles.description}>{service.description}</p>{(!circularCursor || mobile) && <SiteButton custom className={`site-button ${styles.learn}`} href={service.href} aria-label={`Learn more about ${service.title}`}>Learn More <span aria-hidden="true">→</span></SiteButton>}</div>
             </div>)}
           </div>
         </div>
@@ -196,7 +197,6 @@ function ServiceMedia({ service, index, active }: {
     <picture>
       {mobileImage && <source media="(max-width: 767px)" srcSet={mobileImage} />}
       {/* Native picture selects one already-compressed poster without fetching both variants. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={image} alt="" width={1440} height={810} loading="lazy" decoding="async" />
     </picture>
     {video && <video ref={ref} muted loop playsInline preload="none" disablePictureInPicture tabIndex={-1} />}

@@ -1,6 +1,6 @@
 "use client";
 import { ContactShader } from "./contact-shader.client";
-import { ButtonBorder } from "@/components/site/button-border";
+import { SiteButton } from "@/components/site/site-button";
 import { ArtworkStrip } from "@/components/site/artwork-strip";
 
 import type { CSSProperties, FormEvent } from "react";
@@ -23,6 +23,7 @@ export function ContactForm({ animatedBackground = false }: { animatedBackground
   const sectionRef = useRef<HTMLElement>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [budgetIndex, setBudgetIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -85,7 +86,7 @@ export function ContactForm({ animatedBackground = false }: { animatedBackground
         Have a cool idea?<br />Let’s collaborate
       </h2>
 
-      <form onSubmit={submitForm}>
+      <form onSubmit={submitForm} onReset={() => setBudgetIndex(null)}>
         <div className="contact-form__fields">
           <input className="contact-form__field contact-form__animate" style={revealStyle(1)} name="name" type="text" placeholder="What’s your name?" aria-label="Your name" autoComplete="name" required />
           <input className="contact-form__field contact-form__animate" style={revealStyle(2)} name="email" type="email" placeholder="What’s your email address?" aria-label="Your email address" autoComplete="email" required />
@@ -106,11 +107,12 @@ export function ContactForm({ animatedBackground = false }: { animatedBackground
 
         <fieldset className="contact-form__group contact-form__budget contact-form__animate" style={revealStyle(7)}>
           <legend>What’s your budget?</legend>
-          <div className="contact-form__budget-options">
-            {budgets.map(budget => <label key={budget}>
-              <input type="radio" name="budget" value={budget} />
+          <div className="contact-form__budget-options" style={{ "--budget-index": budgetIndex ?? 0 } as CSSProperties}>
+            {budgets.map((budget, index) => <label key={budget}>
+              <input type="radio" name="budget" value={budget} checked={budgetIndex === index} onChange={() => setBudgetIndex(index)} />
               <span>{budget}</span>
             </label>)}
+            <span className="contact-form__budget-marker" data-visible={budgetIndex !== null} aria-hidden="true"><i /></span>
           </div>
         </fieldset>
 
@@ -127,10 +129,10 @@ export function ContactForm({ animatedBackground = false }: { animatedBackground
         <label className="contact-form__honeypot" aria-hidden="true">Company<input name="company" type="text" tabIndex={-1} autoComplete="off" /></label>
 
         <div className="contact-form__actions contact-form__animate" style={revealStyle(9)}>
-          <button className="site-button contact-form__submit" type="submit" disabled={status === "sending"}>
-            <ButtonBorder />
-            <span className="site-button__label">{status === "sending" ? "Sending…" : "Submit Form →"}</span>
-          </button>
+          <SiteButton as="button" className="contact-form__submit" type="submit" disabled={status === "sending"}>
+
+            {status === "sending" ? "Sending…" : "Submit Form →"}
+          </SiteButton>
           <p className={`contact-form__status${status === "error" ? " is-error" : ""}`} aria-live="polite">{message}</p>
         </div>
       </form>

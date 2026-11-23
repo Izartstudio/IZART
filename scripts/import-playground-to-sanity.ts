@@ -57,7 +57,11 @@ async function main() {
     }
     await client.patch(id).ifRevisionId(current._rev).setIfMissing({
       title: playgroundFallback.title, seoTitle: playgroundFallback.seoTitle, description: playgroundFallback.description, indexable: false,
-    }).set({ genres: updatedGenres.map(({ validCards: _validCards, ...genre }) => genre) }).commit();
+    }).set({ genres: updatedGenres.map(({ validCards, ...genre }) => {
+      // The projected count is useful for merging but is not a Studio field.
+      void validCards;
+      return genre;
+    }) }).commit();
   } else {
     await client.createIfNotExists({ ...playgroundFallback, _id: id, _type: "playgroundPage", genres });
   }

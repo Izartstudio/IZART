@@ -15,26 +15,32 @@ export function PointToPixel() {
     const update = () => {
       frame = 0;
       if (!compact.matches) return;
-      // A selection owns its border and corners, so each box appears with its word.
-      steps.forEach(step => {
-        const threshold = window.innerHeight * .82;
-        step.classList.toggle("is-active", motion.matches || step.getBoundingClientRect().top <= threshold);
-      });
-      if (connector) {
-        const bounds = connector.getBoundingClientRect();
-        const progress = motion.matches ? 1 : Math.min(1, Math.max(0, (window.innerHeight * .7 - bounds.top) / Math.max(1, bounds.height)));
+      const height = window.innerHeight;
+      const activeSteps = steps.map(step => motion.matches || step.getBoundingClientRect().top <= height * .82);
+      const bounds = connector?.getBoundingClientRect();
+      steps.forEach((step, index) => step.classList.toggle("is-active", activeSteps[index]));
+      if (bounds) {
+        const progress = motion.matches ? 1 : Math.min(1, Math.max(0, (height * .7 - bounds.top) / Math.max(1, bounds.height)));
         host.style.setProperty("--bridge-line-progress", String(progress));
       }
     };
-    const requestUpdate = () => { if (!frame) frame = window.requestAnimationFrame(update); };
+    const requestUpdate = () => { if (compact.matches && !frame) frame = window.requestAnimationFrame(update); };
+    let nearby = false;
+    const visibility = new IntersectionObserver(([entry]) => {
+      nearby = entry.isIntersecting;
+      requestUpdate();
+    }, { rootMargin: "100% 0px" });
+    visibility.observe(host);
+    const onScroll = () => { if (nearby) requestUpdate(); };
     update();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", requestUpdate);
     window.addEventListener("pageshow", requestUpdate);
     motion.addEventListener("change", requestUpdate);
     return () => {
+      visibility.disconnect();
       window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", requestUpdate);
       window.removeEventListener("pageshow", requestUpdate);
       motion.removeEventListener("change", requestUpdate);

@@ -1,3 +1,4 @@
+import { SiteButton } from "@/components/site/site-button";
 import Link from "next/link";
 import { CareerApplicationForm } from "./career-application-form.client";
 import type { CareerJob } from "@/sanity/careers";
@@ -11,7 +12,7 @@ export function CareerJobPage({ job }: { job: CareerJob }) {
       <div className="career-detail__hero-copy">
         <h1 id="career-job-title">{job.heroTitle || job.role}</h1>
         <p>{job.summary}</p>
-        <a className="career-detail__apply" href="#apply">{job.applyLabel || "Apply Now"}</a>
+        <SiteButton as="a" className="career-detail__apply" href="#apply">{job.applyLabel || "Apply Now"}</SiteButton>
       </div>
       <dl className="career-detail__facts">
         <div><dt>Role</dt><dd>{job.role}</dd></div>

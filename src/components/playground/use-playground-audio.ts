@@ -81,7 +81,7 @@ export function usePlaygroundAudio(url?: string | null, nextUrl?: string | null)
         element.loop = true;
         const source = audio.createMediaElementSource(element);
         const gain = audio.createGain();
-        const voice: Voice = { element, source, gain, url: trackUrl, startedAt: 0 };
+        const voice: Voice = { element, source, gain, url: String(trackUrl), startedAt: 0 };
         pending = voice;
         gain.gain.value = 0;
         source.connect(gain).connect(audio.destination);
@@ -109,16 +109,19 @@ export function usePlaygroundAudio(url?: string | null, nextUrl?: string | null)
       }
     }
 
-    if (!url) {
-      transition(null, audio.currentTime);
-      setReadyUrl(null);
-      setStatus("");
-    } else if (active.current?.url !== url) {
-      setStatus("Loading track…");
-      void loadTrack(audio, url);
-    } else {
-      setStatus("");
-    }
+    queueMicrotask(() => {
+      if (cancelled) return;
+      if (!url) {
+        transition(null, audio.currentTime);
+        setReadyUrl(null);
+        setStatus("");
+      } else if (active.current?.url !== url) {
+        setStatus("Loading track…");
+        void loadTrack(audio, url);
+      } else {
+        setStatus("");
+      }
+    });
     return () => {
       cancelled = true;
       if (pending) {
