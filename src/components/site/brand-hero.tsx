@@ -1,7 +1,6 @@
 import { SiteButton } from "@/components/site/site-button";
 import { HeroImageField } from "@/components/home/hero-image-field.client";
 import styles from "@/components/home/hero-image-field.module.css";
-import { HeroExplore } from "@/components/home/hero-explore.client";
 
 export type BrandHeroContent = {
   title: string;
@@ -28,6 +27,5 @@ export function BrandHero({ content = homepageHero, id = "home-title", showActio
       <h1 id={id} className={styles.title}><span className={styles.desktop}><Lines text={content.title} /></span><span className={styles.mobile}><Lines text={content.mobileTitle || content.title} /></span></h1>
       {showAction && <SiteButton className={styles.action} href={content.buttonHref}><span className={styles.desktop}>{content.buttonLabel}</span><span className={styles.mobile}>{content.mobileButtonLabel || content.buttonLabel}</span></SiteButton>}
     </div>
-    {Boolean(projectImages?.length) && <HeroExplore />}
   </section>;
 }

@@ -13,7 +13,7 @@
   z-index: 1;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 26% 23% at 50% 50%, #000c 0%, #0009 45%, transparent 100%),
+  background: radial-gradient(ellipse 36% 25% at 50% 50%, rgb(0 0 0 / 92%) 0%, rgb(0 0 0 / 84%) 44%, rgb(0 0 0 / 48%) 72%, transparent 100%),
     radial-gradient(ellipse 85% 85% at 50% 50%,transparent 38%,#0006 100%),
     linear-gradient(#0009,#0002 23%,#0002 80%,#0007);
 }
@@ -34,7 +34,7 @@
 .action { display: inline-flex; margin-top: 26px; pointer-events: auto; }
 @media (max-width: 767px) {
   .hero { min-height: 600px; }
-  .hero::before { background: radial-gradient(ellipse 65% 19% at 50% 50%,#000d,#0006 65%,transparent),radial-gradient(ellipse 100% 85% at 50% 50%,transparent 40%,#0006 100%),linear-gradient(#0008,#0002 23%,#0002 80%,#0006); }
+  .hero::before { background: radial-gradient(ellipse 72% 23% at 50% 50%, rgb(0 0 0 / 94%) 0%, rgb(0 0 0 / 84%) 46%, rgb(0 0 0 / 44%) 76%, transparent 100%),radial-gradient(ellipse 100% 85% at 50% 50%,transparent 40%,#0006 100%),linear-gradient(#0008,#0002 23%,#0002 80%,#0006); }
   .copy { width: min(360px,80vw); }
   .hero h1.title { font-size: clamp(22px,5.8vw,32px); line-height: 1.3; }
   .desktop { display: none; }
@@ -44,13 +44,8 @@
 .hero:has(.field[data-renderer="fallback"]) .copy { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .canvas { transition: none; } .copy { opacity: 1; } }
 
-.hero :global(.hero-explore) { position: absolute; z-index: 3; bottom: 9%; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: space-between; gap: 48px; padding: 17px 25px; background: #080b07cc; color: #fff; border: 1px solid #35de1240; cursor: pointer; font: inherit; opacity: var(--hero-intro,0); }
-.hero :global(.hero-explore:hover) { border-color: #35de12; }
-.hero :global(.hero-explore:disabled) { pointer-events: none; }
 
 
-.hero:has(.field[data-renderer="fallback"]) :global(.hero-explore) { opacity: 1; }
 
 .hero:has(.field:not([data-ready], [data-renderer="fallback"]))::after,
-.hero:has(.field:not([data-ready], [data-renderer="fallback"])) .copy,
-.hero:has(.field:not([data-ready], [data-renderer="fallback"])) :global(.hero-explore) { visibility: hidden; }
+.hero:has(.field:not([data-ready], [data-renderer="fallback"])) .copy { visibility: hidden; }

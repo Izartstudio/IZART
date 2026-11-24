@@ -19,7 +19,8 @@ export async function ServiceDetailPage({ slug, title, description }: { slug: st
     <ServicesHero images={content.heroImages || fallbackImages} title={content.title || title} description={content.description || description} imageLayout="brand-identity" />
     {slug === "digital-ecosystem" || slug === "spatial-design"
       ? <ServicesShowcase services={content.showcase?.states} heading={content.showcase?.heading} introduction={content.showcase?.description} />
-      : <BrandProcess variant={slug === "brand-identity" ? "brand-identity" : "default"} steps={content.processSteps ?? (slug === "brand-identity" ? brandIdentityProcessSteps : undefined)} />}
+      : null}
+    <BrandProcess variant="industries" steps={content.processSteps ?? (slug === "brand-identity" ? brandIdentityProcessSteps : undefined)} />
     <OutcomeSection content={content.outcome} />
     <ProcessFaq entries={content.faqs} />
     <ContactForm />

@@ -1,5 +1,4 @@
 import { SiteButton } from "@/components/site/site-button";
-import Link from "next/link";
 import { CareerApplicationForm } from "./career-application-form.client";
 import type { CareerJob } from "@/sanity/careers";
 import { CareersHeroBackground } from "./careers-hero-background";
@@ -33,7 +32,7 @@ export function CareerJobPage({ job }: { job: CareerJob }) {
         {job.requirements.length > 0 && <section id="requirements" className="career-detail__list"><h2>{job.requirementsTitle}</h2>
           <ol>{job.requirements.map((item, index) => <li key={index}><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></li>)}</ol>
         </section>}
-        <Link className="career-detail__back" href="/careers">← Back to careers</Link>
+        <SiteButton className="career-detail__back" href="/careers"><span aria-hidden="true">←</span> Back to careers</SiteButton>
       </div>
     </section>
     <CareerApplicationForm role={job.role} slug={job.slug} />

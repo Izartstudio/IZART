@@ -59,14 +59,12 @@ try {
   }
   await page.setViewport({ width: 1440, height: 900 });
   await page.evaluate(() => scrollTo(0, 0));
-  const explore = await page.waitForSelector(".hero-explore");
-  await explore.click();
+  assert.equal(await page.$(".hero-explore"), null);
+  await page.mouse.wheel({ deltaY: 950 });
   await page.waitForFunction(() => {
-    const button = document.querySelector(".hero-explore");
-    return !button.disabled && Math.abs(document.querySelector(".home .showcase").getBoundingClientRect().top) < 2;
+    const showcase = document.querySelector(".home .showcase");
+    return scrollY > 0 && showcase.getBoundingClientRect().top <= 0;
   });
-  await page.evaluate(() => scrollTo(0, 0));
-  await page.waitForFunction(() => document.documentElement.hasAttribute("data-hero-locked"));
   await page.goto(new URL("/industries", origin).href, { waitUntil: "domcontentloaded" });
   await page.waitForSelector(".showcase--industries");
   const showcase = await page.$eval(".showcase--industries", element => ({ cards: element.querySelectorAll(".showcase-card").length, ticks: element.querySelectorAll(".showcase-progress__navigation button").length }));

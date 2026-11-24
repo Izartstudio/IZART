@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { ContactShader } from "@/components/home/contact-shader.client";
 import { ArtworkStrip } from "@/components/site/artwork-strip";
 import { SiteButton } from "@/components/site/site-button";
 
@@ -37,7 +36,6 @@ export function CareerApplicationForm({ role, slug }: { role: string; slug: stri
   }
 
   return <section id="apply" className="career-application" aria-label={`Apply for ${role}`}>
-    <ContactShader />
     <p className="career-application__intro">If this sounds like the kind of place you want to be, send us your portfolio at <a href="mailto:operations@izart.in">operations@izart.in</a> along with a short note on how you think about your work. The note matters as much as the portfolio. We look at how you approach problems more than anything else, and tools and formats matter less than clarity of intent.</p>
     <div className="career-application__card">
       <ArtworkStrip />

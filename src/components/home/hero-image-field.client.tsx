@@ -85,7 +85,6 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
       const loader = new THREE.TextureLoader();
       loader.setCrossOrigin("anonymous");
       const textures = new Set<Texture>();
-      const aspects = urls.map(() => 1.25);
       const materials = urls.map(() => new THREE.MeshBasicMaterial({
         color: "#b6bcb1", transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false,
       }));
@@ -111,7 +110,7 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
         mesh.position.set(Math.sin(longitude) * radius, latitude * 12, -Math.cos(longitude) * radius);
         mesh.lookAt(0, mesh.position.y, 0);
         const width = 1.1 + noise(seed + 6101) ** 1.6 * 3;
-        mesh.scale.set(width, width / aspects[image], 1);
+        mesh.scale.set(width, width / 1.25, 1);
         group.add(mesh);
         cards.push({ mesh, image, width, tilt: mesh.rotation.y });
       }
@@ -137,7 +136,6 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
           texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
           renderer.initTexture(texture);
           textures.add(texture);
-          aspects[index] = aspect;
           materials[index].map = texture;
           materials[index].needsUpdate = true;
           cards.forEach(card => {
@@ -170,7 +168,6 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
       const viewFrustum = new THREE.Frustum();
       const projectionView = new THREE.Matrix4();
       let drag: { x: number; y: number; yaw: number; id: number } | null = null;
-      let departureStart: number | null = null;
       let contextLost = false;
       const canRender = () => !contextLost && visible && !document.hidden && !disposed && frame.dataset.renderer !== "fallback";
       const render = (now: number) => {
@@ -238,10 +235,6 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
             hasVisibleArtwork = viewFrustum.intersectsObject(card.mesh);
           }
         }
-        if (departureStart !== null) {
-          const progress = THREE.MathUtils.smoothstep(now - departureStart, 0, 1650);
-          group.position.copy(viewDirection).multiplyScalar(progress * 19);
-        }
         composer.render(delta);
         if (!presented && hasVisibleArtwork) {
           presented = true;
@@ -254,7 +247,7 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
         if (isHome && presented) homeCamera = { yaw, height: cameraHeight, elapsed: Math.min(introDuration, motion.matches ? introDuration : introElapsed) };
         const stillTurning = Math.abs(desiredYaw - yaw) > .00005 || Math.abs(desiredHeight - cameraHeight) > .00005;
         const hoverPending = !motion.matches && (Math.abs(targetYaw + dragYaw - yaw) > .00005 || Math.abs(targetHeight - cameraHeight) > .00005);
-        if (departureStart !== null || imagesFading || !introFinished || stillTurning || hoverPending || motionAmount > .001) requestFrame();
+        if (imagesFading || !introFinished || stillTurning || hoverPending || motionAmount > .001) requestFrame();
         else previousTime = 0;
       };
       function requestFrame() { if (!raf && canRender()) raf = requestAnimationFrame(render); }
@@ -288,29 +281,6 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
         drag = { x: event.clientX, y: event.clientY, yaw: dragYaw, id: event.pointerId };
       };
       const pointerUp = () => { drag = null; };
-      const captureGallery = (event: Event) => {
-        const bounds = frame.getBoundingClientRect();
-        const projected = new THREE.Vector3();
-        const visibleCards = cards.filter(card => {
-          card.mesh.getWorldPosition(projected).project(camera);
-          return projectImages?.includes(urls[card.image]) && Math.abs(projected.x) < .9 && Math.abs(projected.y) < .9 && projected.z < 1 && card.mesh.material.opacity > .1;
-        }).sort((a, b) => b.mesh.material.opacity - a.mesh.material.opacity).filter((card, index, sorted) => sorted.findIndex(other => other.image === card.image) === index).slice(0, 6).map(card => {
-          card.mesh.getWorldPosition(projected).project(camera);
-          const distance = card.mesh.position.distanceTo(camera.position);
-          const width = card.width / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * distance) * bounds.height;
-          return { src: urls[card.image], x: bounds.left + (projected.x + 1) * bounds.width / 2 - width / 2, y: bounds.top + (1 - projected.y) * bounds.height / 2 - width / aspects[card.image] / 2, width, height: width / aspects[card.image] };
-        });
-        (event as CustomEvent).detail(visibleCards);
-        departureStart = performance.now();
-        requestFrame();
-      };
-      const restoreGallery = () => {
-        departureStart = null;
-        group.position.set(0, 0, 0);
-        requestFrame();
-      };
-      section.addEventListener("hero:restore", restoreGallery);
-      section.addEventListener("hero:capture", captureGallery);
       const pointerLeave = () => {
         drag = null;
         targetYaw = yaw - dragYaw;
@@ -345,8 +315,6 @@ export function HeroImageField({ leftImages = heroLeftImages, rightImages = hero
       resize();
       cleanup = () => {
         disposed = true;
-        section.removeEventListener("hero:restore", restoreGallery);
-        section.removeEventListener("hero:capture", captureGallery);
         cancelAnimationFrame(raf);
         resizeObserver.disconnect();
         intersectionObserver.disconnect();
